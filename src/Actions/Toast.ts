@@ -1,5 +1,5 @@
 import {BaseAction} from "./BaseAction";
-import {SerializableType, Serialized} from "../Common/Encodable";
+import {SerializableType, Serialized} from "../Common/Serializable";
 
 type ToastType = "success" | "error" | "information" | "warning";
 

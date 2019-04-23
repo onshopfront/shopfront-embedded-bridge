@@ -11,6 +11,6 @@ export declare class Application {
     protected handleEvent(event: keyof FromShopfront, data: {}): void;
     protected ready(): void;
     protected emit(event: keyof FromShopfront, data?: {}): void;
-    on(event: keyof FromShopfront, callback: Function): void;
-    off(event: keyof FromShopfront, callback: () => void): void;
+    addEventListener(event: keyof FromShopfront, callback: Function): void;
+    removeEventListener(event: keyof FromShopfront, callback: () => void): void;
 }

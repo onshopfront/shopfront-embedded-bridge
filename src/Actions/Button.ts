@@ -1,5 +1,5 @@
 import {BaseAction} from "./BaseAction";
-import {SerializableType, Serialized} from "../Common/Encodable";
+import {SerializableType, Serialized} from "../Common/Serializable";
 
 export class Button extends BaseAction<Button> {
     protected supportedEvents = ["click"];

@@ -1,5 +1,5 @@
 import {BaseAction} from "./BaseAction";
-import {SerializableType, Serialized} from "../Common/Encodable";
+import {SerializableType, Serialized} from "../Common/Serializable";
 
 class InternalRedirect extends BaseAction<InternalRedirect> {
     protected supportedEvents = ["click"];

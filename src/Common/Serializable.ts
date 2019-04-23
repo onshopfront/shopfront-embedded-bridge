@@ -1,8 +1,8 @@
 export interface Serialized<T> {
     properties: Array<any>,
     events: {
-        [event: string]: Array<Function>,
-    }
+        [event: string]: Array<string>,
+    },
     type: SerializableType<T>,
 }
 

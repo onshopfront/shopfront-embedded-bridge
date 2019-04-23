@@ -1,10 +1,13 @@
 import {EventEmitter} from "../Common/EventEmitter";
-import {Serializable, SerializableStatic, SerializableType, Serialized} from "../Common/Encodable";
+import {Serializable, SerializableStatic, SerializableType, Serialized} from "../Common/Serializable";
 import {staticImplements} from "../Utilities/Static";
+import ActionEventRegistrar from "../Utilities/ActionEventRegistrar";
 
 @staticImplements<SerializableStatic>()
 export class BaseAction<T> extends EventEmitter {
-    protected target: SerializableType<T>;
+    protected target    : SerializableType<T>;
+    protected events    : Array<{callback: Function, type: string, id: string}>;
+    protected properties: Array<any>;
 
     constructor(serialized: Serialized<T>) {
         if(new.target === BaseAction) {
@@ -13,18 +16,80 @@ export class BaseAction<T> extends EventEmitter {
 
         super();
 
-        this.target = serialized.type;
+        this.target     = serialized.type;
+        this.events     = [];
+        this.properties = serialized.properties;
     }
 
     public serialize(): Serialized<T> {
+        const events: {[event: string]: Array<string>} = {};
+        for(let i = 0, l = this.events.length; i < l; i++) {
+            if(typeof events[this.events[i].type] === "undefined") {
+                events[this.events[i].type] = [];
+            }
+
+            events[this.events[i].type].push(this.events[i].id);
+        }
+
         return {
-            properties: [],
-            events    : {},
+            properties: this.properties,
+            events    : events,
             type      : this.target,
         }
     }
 
     public static deserialize<T extends Serializable<T>>(serialized: Serialized<T>): T {
         return new serialized.type(serialized);
+    }
+
+    public addEventListener(event: string, callback: Function): void {
+        super.addEventListener(event, callback);
+
+        const id = `${Date.now()}-${event}-${Math.random()}`;
+        ActionEventRegistrar.add(id, this);
+
+        this.events.push({
+            id,
+            callback,
+            type: event,
+        });
+    }
+
+    public removeEventListener(event: string, callback: Function): void {
+        super.removeEventListener(event, callback);
+
+        for(let i = 0, l = this.events.length; i < l; i++) {
+            if(this.events[i].type !== event) {
+                continue;
+            }
+
+            if(this.events[i].callback !== callback) {
+                continue;
+            }
+
+            const id = this.events[i].id;
+
+            ActionEventRegistrar.remove(id);
+
+            this.events = [
+                ...this.events.slice(0, i),
+                ...this.events.slice(i + 1),
+            ];
+
+            break;
+        }
+    }
+
+    public handleRegistrarEvent(id: string, data: {}) {
+        for(let i = 0, l = this.events.length; i < l; i++) {
+            if(this.events[i].id !== id) {
+                continue;
+            }
+
+            this.events[i].callback(data);
+            this.removeEventListener(this.events[i].type, this.events[i].callback);
+
+            break;
+        }
     }
 }

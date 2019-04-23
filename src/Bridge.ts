@@ -12,6 +12,14 @@ interface ApplicationEventListener {
 
 export class Bridge {
     public static createApplication(options: ApplicationOptions): Application {
+        if(typeof options.id === "undefined") {
+            throw new TypeError("You must specify the ID for the application");
+        }
+
+        if(typeof options.vendor === "undefined") {
+            throw new TypeError("You must specify the Vendor for the application");
+        }
+
         return new Application(new Bridge(options.id, options.vendor));
     }
 
