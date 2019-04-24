@@ -1,9 +1,9 @@
-abstract class BaseEvent {
+export abstract class BaseEvent {
     protected callback: Function;
 
-    constructor(callback: Function) {
+    protected constructor(callback: Function) {
         this.callback = callback;
     }
 
-    public abstract async emit(data: {}): Promise<void>;
+    public abstract async emit(data: object): Promise<any>;
 }

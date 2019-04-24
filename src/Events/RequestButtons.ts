@@ -1,13 +1,14 @@
-import {FromShopfrontCallbacks} from "../ApplicationEvents";
-import {Button} from "..";
+import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
+import {Bridge, Button} from "..";
+import {BaseEvent} from "./BaseEvent";
 
 export class RequestButtons extends BaseEvent {
     constructor(callback: FromShopfrontCallbacks["REQUEST_BUTTONS"]) {
         super(callback);
     }
 
-    async emit(data: {}): Promise<void> {
-        let result = await Promise.resolve(this.callback());
+    public async emit(data: {location: string, id: string}): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
+        let result = await Promise.resolve(this.callback(data.location));
 
         if(!Array.isArray(result)) {
             result = [result];
@@ -19,6 +20,13 @@ export class RequestButtons extends BaseEvent {
             }
         }
 
-        // TODO: Fire Event
+        return result;
+    }
+
+    public static async respond(bridge: Bridge, buttons: Array<Button>, id: string): Promise<void> {
+        bridge.sendMessage(ToShopfront.RESPONSE_BUTTONS, {
+            id,
+            buttons,
+        });
     }
 }
