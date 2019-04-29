@@ -52,7 +52,7 @@ export class Bridge {
     }
 
     protected registerListeners() {
-        window.addEventListener("message", this.handleMessage);
+        window.addEventListener("message", this.handleMessage, false);
     }
 
     protected unregisterListeners() {
@@ -64,7 +64,15 @@ export class Bridge {
             return;
         }
 
+        if(typeof event.data !== "object" || event.data === null) {
+            return;
+        }
+
         if(typeof event.data.type !== "string") {
+            return;
+        }
+
+        if(event.data.from !== "ShopfrontApplicationAgent") {
             return;
         }
 
@@ -98,6 +106,7 @@ export class Bridge {
 
             window.parent.postMessage({
                 type,
+                origin: this.url.origin,
             }, this.url.origin);
 
             return;
@@ -109,6 +118,7 @@ export class Bridge {
 
         this.target.parent.postMessage({
             type,
+            origin: this.url.origin,
             data
         }, this.url.origin);
     }
