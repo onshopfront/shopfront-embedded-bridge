@@ -7,8 +7,8 @@ export class RequestButtons extends BaseEvent {
         super(callback);
     }
 
-    public async emit(data: {location: string, id: string}): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
-        let result = await Promise.resolve(this.callback(data.location));
+    public async emit(data: {location: string, id: string, context: any}): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
+        let result = await Promise.resolve(this.callback(data.location, data.context));
 
         if(!Array.isArray(result)) {
             result = [result];
