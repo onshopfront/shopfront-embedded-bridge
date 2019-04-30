@@ -13,12 +13,12 @@ class InternalRedirect extends BaseAction<InternalRedirect> {
                 return {
                     properties: [to],
                     events    : {},
-                    type      : InternalRedirect as unknown as SerializableType<InternalRedirect>, // Required to get around the type checker for the moment
+                    type      : "InternalRedirect"
                 }
             } else {
                 return to;
             }
-        })());
+        })(), InternalRedirect);
 
         if(typeof to !== "string") {
             to      = to as Serialized<InternalRedirect>;
@@ -41,12 +41,12 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
                 return {
                     properties: [to],
                     events    : {},
-                    type      : ExternalRedirect as unknown as SerializableType<ExternalRedirect>, // Required to get around the type checker for the moment
+                    type      : "ExternalRedirect",
                 }
             } else {
                 return to;
             }
-        })());
+        })(), ExternalRedirect);
 
         if(to instanceof URL) {
             this.to = to;

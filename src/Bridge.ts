@@ -7,7 +7,7 @@ interface ApplicationOptions {
 }
 
 interface ApplicationEventListener {
-    (event: keyof ApplicationEvents.FromShopfront, data: {}): void;
+    (event: keyof ApplicationEvents.FromShopfront, data: {}, id: string): void;
 }
 
 export class Bridge {
@@ -59,7 +59,7 @@ export class Bridge {
         window.removeEventListener("message", this.handleMessage);
     }
 
-    protected handleMessage(event: MessageEvent) {
+    protected handleMessage = (event: MessageEvent) => {
         if(event.origin !== this.url.origin) {
             return;
         }
@@ -76,11 +76,23 @@ export class Bridge {
             return;
         }
 
+        if(typeof event.data.origins === "undefined") {
+            return;
+        } else if(event.data.origins.from !== this.url.origin || event.data.origins.to !== window.location.origin) {
+            return;
+        }
+
         if(this.target === null) {
+            if(event.data.type !== "READY") {
+                return;
+            }
+
             if(window.parent !== event.source) {
                 // Not from the parent frame
                 return;
             }
+
+            this.target = event.source;
         } else {
             if(event.source !== this.target) {
                 // Not from the source we want
@@ -90,11 +102,11 @@ export class Bridge {
 
         // Emit the event
         for(let i = 0, l = this.listeners.length; i < l; i++) {
-            this.listeners[i](event.data.type, event.data.data);
+            this.listeners[i](event.data.type, event.data.data, event.data.id);
         }
-    }
+    };
 
-    public sendMessage(type: ApplicationEvents.ToShopfront, data?: {}) {
+    public sendMessage(type: ApplicationEvents.ToShopfront, data?: {}, id?: string) {
         if(type === ApplicationEvents.ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
@@ -106,8 +118,12 @@ export class Bridge {
 
             window.parent.postMessage({
                 type,
-                origin: this.url.origin,
-            }, this.url.origin);
+                origins: {
+                    to  : this.url.origin,
+                    from: window.location.origin,
+                },
+                key: this.key,
+            }, /* can't use this because of sandbox: this.url.origin */ '*');
 
             return;
         }
@@ -118,9 +134,14 @@ export class Bridge {
 
         this.target.parent.postMessage({
             type,
-            origin: this.url.origin,
-            data
-        }, this.url.origin);
+            origins: {
+                to  : this.url.origin,
+                from: window.location.origin,
+            },
+            key: this.key,
+            id,
+            data,
+        }, '*' /* can't use this because of sandbox: this.url.origin */);
     }
 
     public addEventListener(listener: ApplicationEventListener) {

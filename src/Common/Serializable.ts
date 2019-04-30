@@ -3,7 +3,8 @@ export interface Serialized<T> {
     events: {
         [event: string]: Array<string>,
     },
-    type: SerializableType<T>,
+    //type: SerializableType<T>,
+    type: string,
 }
 
 export interface SerializableType<T> {

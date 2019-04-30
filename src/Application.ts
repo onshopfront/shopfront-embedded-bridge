@@ -28,15 +28,15 @@ export class Application {
         this.bridge.destroy();
     }
 
-    protected handleEvent(event: keyof FromShopfront, data: {}) {
+    protected handleEvent = (event: keyof FromShopfront, data: {}, id: string) => {
         if(event === "READY") {
             this.isReady = true;
         }
 
-        this.emit(event, data);
-    }
+        this.emit(event, data, id);
+    };
 
-    protected emit(event: keyof FromShopfront, data: any = {}) {
+    protected emit(event: keyof FromShopfront, data: any = {}, id: string) {
         let results = [];
 
         for(let e of this.listeners[event].values()) {
@@ -50,14 +50,14 @@ export class Application {
 
                 return Promise.all(results)
                     .then((res: Array<Array<Button>>) => {
-                        return RequestButtons.respond(this.bridge, res.flat(), data.id);
+                        return RequestButtons.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_SETTINGS":
                 results = results as unknown as Array<Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>>;
 
                 return Promise.all(results)
                     .then((res: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>) => {
-                        return RequestSettings.respond(this.bridge, res.flat(), data.id);
+                        return RequestSettings.respond(this.bridge, res.flat(), id);
                     });
         }
     }

@@ -22,9 +22,6 @@ export class RequestSettings extends BaseEvent {
             throw new Error("Multiple settings responses found, please ensure you are only subscribed to REQUEST_SETTINGS once");
         }
 
-        bridge.sendMessage(ToShopfront.RESPONSE_SETTINGS, {
-            id,
-            settings: settings[0],
-        });
+        bridge.sendMessage(ToShopfront.RESPONSE_SETTINGS, settings[0], id);
     }
 }

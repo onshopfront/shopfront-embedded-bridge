@@ -1,5 +1,5 @@
 import {BaseAction} from "./BaseAction";
-import {SerializableType, Serialized} from "../Common/Serializable";
+import {Serialized} from "../Common/Serializable";
 
 type ToastType = "success" | "error" | "information" | "warning";
 
@@ -16,12 +16,12 @@ export class Toast extends BaseAction<Toast> {
                 return {
                     properties: [type, message],
                     events    : {},
-                    type      : Toast as unknown as SerializableType<Toast>, // Required to get around the type checker for the moment
+                    type      : "Toast",
                 }
             } else {
                 return type;
             }
-        })());
+        })(), Toast);
 
         if(typeof message === "undefined") {
             type         = type as Serialized<Toast>;

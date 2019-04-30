@@ -1,5 +1,5 @@
 import {BaseAction} from "./BaseAction";
-import {SerializableType, Serialized} from "../Common/Serializable";
+import {Serialized} from "../Common/Serializable";
 
 export class Button extends BaseAction<Button> {
     protected supportedEvents = ["click"];
@@ -14,12 +14,12 @@ export class Button extends BaseAction<Button> {
                 return {
                     properties: [label, icon],
                     events    : {},
-                    type      : Button as unknown as SerializableType<Button>, // Required to get around the type checker for the moment
+                    type      : "Button"
                 }
             } else {
                 return label;
             }
-        })());
+        })(), Button);
 
         if(typeof icon === "undefined") {
             label      = label as Serialized<Button>;

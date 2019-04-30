@@ -1,15 +1,20 @@
 import {EventEmitter} from "../Common/EventEmitter";
-import {Serializable, SerializableStatic, SerializableType, Serialized} from "../Common/Serializable";
+import {Serializable, SerializableStatic, Serialized} from "../Common/Serializable";
 import {staticImplements} from "../Utilities/Static";
 import ActionEventRegistrar from "../Utilities/ActionEventRegistrar";
 
 @staticImplements<SerializableStatic>()
 export class BaseAction<T> extends EventEmitter {
-    protected target    : SerializableType<T>;
+    //protected target    : SerializableType<T>;
+    protected target    : string;
     protected events    : Array<{callback: Function, type: string, id: string}>;
     protected properties: Array<any>;
 
-    constructor(serialized: Serialized<T>) {
+    public static serializedRegistry: {
+        [id: string]: any,
+    } = {};
+
+    constructor(serialized: Serialized<T>, type: any) {
         if(new.target === BaseAction) {
             throw new TypeError("You cannot construct BaseAction instances directly");
         }
@@ -19,6 +24,9 @@ export class BaseAction<T> extends EventEmitter {
         this.target     = serialized.type;
         this.events     = [];
         this.properties = serialized.properties;
+
+        // Ensure that we are registered in the registry
+        BaseAction.serializedRegistry[this.target] = type;
     }
 
     public serialize(): Serialized<T> {
@@ -39,7 +47,7 @@ export class BaseAction<T> extends EventEmitter {
     }
 
     public static deserialize<T extends Serializable<T>>(serialized: Serialized<T>): T {
-        return new serialized.type(serialized);
+        return new BaseAction.serializedRegistry[serialized.type](serialized);
     }
 
     public addEventListener(event: string, callback: Function): void {
