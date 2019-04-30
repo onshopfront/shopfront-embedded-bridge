@@ -88,7 +88,7 @@ export class BaseAction<T> extends EventEmitter {
         }
     }
 
-    public handleRegistrarEvent(id: string, data: {}) {
+    public handleRegistrarEvent(id: string, data: any) {
         for(let i = 0, l = this.events.length; i < l; i++) {
             if(this.events[i].id !== id) {
                 continue;

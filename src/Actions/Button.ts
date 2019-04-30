@@ -21,13 +21,18 @@ export class Button extends BaseAction<Button> {
             }
         })(), Button);
 
-        if(typeof icon === "undefined") {
+        if(typeof icon === "undefined" && typeof label !== "string") {
             label      = label as Serialized<Button>;
             this.label = label.properties[0];
             this.icon  = label.properties[1];
         } else {
             this.label = label as string;
-            this.icon  = icon;
+
+            if(typeof icon === "undefined") {
+                this.icon = "";
+            } else {
+                this.icon = icon;
+            }
         }
     }
 }

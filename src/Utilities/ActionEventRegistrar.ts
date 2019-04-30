@@ -15,7 +15,7 @@ class ActionEventRegistrar {
         delete this.events[id];
     }
 
-    public fire(id: string, data: {}) {
+    public fire(id: string, data: any) {
         if(typeof this.events[id] === "undefined") {
             // The event must have stopped listening
             return;

@@ -5,6 +5,7 @@ import {Serializable} from "./Common/Serializable";
 import {Button} from "./Actions/Button";
 import {RequestSettings} from "./Events/RequestSettings";
 import {RequestButtons} from "./Events/RequestButtons";
+import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 
 export class Application {
     protected bridge   : Bridge;
@@ -15,6 +16,7 @@ export class Application {
         READY           : new Map(),
         REQUEST_SETTINGS: new Map(),
         REQUEST_BUTTONS : new Map(),
+        CALLBACK        : new Map(),
     };
 
     constructor(bridge: Bridge) {
@@ -28,9 +30,14 @@ export class Application {
         this.bridge.destroy();
     }
 
-    protected handleEvent = (event: keyof FromShopfront, data: {}, id: string) => {
+    protected handleEvent = (event: keyof FromShopfront, data: any, id: string) => {
         if(event === "READY") {
             this.isReady = true;
+        }
+
+        if(event === "CALLBACK") {
+            this.handleEventCallback(data);
+            return;
         }
 
         this.emit(event, data, id);
@@ -78,6 +85,8 @@ export class Application {
                 c = new RequestButtons(callback as FromShopfrontCallbacks["REQUEST_BUTTONS"]);
                 this.listeners[event].set(callback, c);
                 break;
+            case "CALLBACK":
+                throw new TypeError("Callback event is not valid for external use");
         }
 
         if(c === null) {
@@ -102,5 +111,15 @@ export class Application {
         const serialized = item.serialize();
 
         this.bridge.sendMessage(ToShopfront.SERIALIZED, serialized);
+    }
+
+    protected handleEventCallback(data: {id?: string, data: any}) {
+        if(typeof data.id === "undefined") {
+            return;
+        }
+
+        let id = data.id;
+
+        ActionEventRegistrar.fire(id, data.data);
     }
 }
