@@ -1,5 +1,5 @@
 import {BaseAction} from "./BaseAction";
-import {SerializableType, Serialized} from "../Common/Serializable";
+import {Serialized} from "../Common/Serializable";
 
 class InternalRedirect extends BaseAction<InternalRedirect> {
     protected supportedEvents = ["click"];
@@ -39,7 +39,7 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
         super((() => {
             if(to instanceof URL) {
                 return {
-                    properties: [to],
+                    properties: [to.href],
                     events    : {},
                     type      : "ExternalRedirect",
                 }
@@ -52,7 +52,7 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
             this.to = to;
         } else {
             to      = to as Serialized<ExternalRedirect>;
-            this.to = to.properties[0];
+            this.to = new URL(to.properties[0]);
         }
     }
 }
