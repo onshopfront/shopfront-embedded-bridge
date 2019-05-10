@@ -12,6 +12,8 @@ pipelines:
         trigger: manual
         deployment: production
         script:
+          - npm install
+          - npm run-script build
           - npm version minor -m "Upgrade to %s [skip ci]"
           - git push && git push --tags
           - pipe: atlassian/npm-publish:0.2.0
