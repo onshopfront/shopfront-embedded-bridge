@@ -39,3 +39,7 @@ export interface FromShopfront {
     REQUEST_BUTTONS : RequestButtons,
     CALLBACK        : Callback,
 }
+
+export interface FromShopfrontInternal {
+    CYCLE_KEY: "CYCLE_KEY",
+}

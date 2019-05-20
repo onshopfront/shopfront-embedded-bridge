@@ -1,5 +1,11 @@
 import {Bridge} from "./Bridge";
-import {FromShopfront, FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "./ApplicationEvents";
+import {
+    FromShopfront,
+    FromShopfrontCallbacks,
+    FromShopfrontInternal,
+    FromShopfrontReturns,
+    ToShopfront
+} from "./ApplicationEvents";
 import {Ready} from "./Events/Ready";
 import {Serializable} from "./Common/Serializable";
 import {Button} from "./Actions/Button";
@@ -10,6 +16,7 @@ import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 export class Application {
     protected bridge   : Bridge;
     protected isReady  : boolean;
+    protected key      : string;
     protected listeners: {
         [key in keyof FromShopfront]: Map<Function, FromShopfront[key]>;
     } = {
@@ -22,6 +29,7 @@ export class Application {
     constructor(bridge: Bridge) {
         this.bridge  = bridge;
         this.isReady = false;
+        this.key     = '';
 
         this.bridge.addEventListener(this.handleEvent);
     }
@@ -30,9 +38,11 @@ export class Application {
         this.bridge.destroy();
     }
 
-    protected handleEvent = (event: keyof FromShopfront, data: any, id: string) => {
+    protected handleEvent = (event: keyof FromShopfront | FromShopfrontInternal, data: any, id: string) => {
         if(event === "READY") {
             this.isReady = true;
+            this.key     = data.key;
+            data         = undefined;
         }
 
         if(event === "CALLBACK") {
@@ -40,7 +50,16 @@ export class Application {
             return;
         }
 
-        this.emit(event, data, id);
+        if(event === "CYCLE_KEY") {
+            if(typeof data !== "object" || data === null) {
+                return;
+            }
+
+            this.key = data.key;
+            return;
+        }
+
+        this.emit(<keyof FromShopfront>event, data, id);
     };
 
     protected emit(event: keyof FromShopfront, data: any = {}, id: string) {
@@ -121,5 +140,9 @@ export class Application {
         let id = data.id;
 
         ActionEventRegistrar.fire(id, data.data);
+    }
+
+    public getAuthenticationKey(): string {
+        return this.key;
     }
 }
