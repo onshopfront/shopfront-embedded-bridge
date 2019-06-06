@@ -132,6 +132,10 @@ export class Application {
         this.bridge.sendMessage(ToShopfront.SERIALIZED, serialized);
     }
 
+    public download(file: string): void {
+        this.bridge.sendMessage(ToShopfront.DOWNLOAD, file);
+    }
+
     protected handleEventCallback(data: {id?: string, data: any}) {
         if(typeof data.id === "undefined") {
             return;

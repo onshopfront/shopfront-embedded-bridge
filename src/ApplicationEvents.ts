@@ -9,6 +9,7 @@ export enum ToShopfront {
     SERIALIZED        = "SERIALIZED",
     RESPONSE_BUTTONS  = "RESPONSE_BUTTONS",
     RESPONSE_SETTINGS = "RESPONSE_SETTINGS",
+    DOWNLOAD          = "DOWNLOAD",
 }
 
 export enum WithinApplication {
