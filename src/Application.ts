@@ -87,6 +87,13 @@ export class Application {
                     .then((res: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>) => {
                         return RequestSettings.respond(this.bridge, res.flat(), id);
                     });
+            case "REQUEST_TABLE_COLUMNS":
+                results = results as unknown as Array<Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>>;
+
+                return Promise.all(results)
+                    .then((res: Array<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>) => {
+                        return RequestTableColumns.respond(this.bridge, res.flat(), id);
+                    });
         }
     }
 

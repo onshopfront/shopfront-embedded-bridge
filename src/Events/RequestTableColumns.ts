@@ -7,8 +7,8 @@ export class RequestTableColumns extends BaseEvent {
         super(callback);
     }
 
-    async emit(data: {}): Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]> {
-        const result = await Promise.resolve(this.callback());
+    async emit(data: {location: string, context: any}): Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]> {
+        const result = await Promise.resolve(this.callback(data.location, data.context));
 
         if(typeof result !== "object" || result === null) {
             throw new TypeError("Callback must return an object");
