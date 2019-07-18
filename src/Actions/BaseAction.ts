@@ -40,10 +40,30 @@ export class BaseAction<T> extends EventEmitter {
         }
 
         return {
-            properties: this.properties,
+            properties: this.serializeProperties(this.properties),
             events    : events,
             type      : this.target,
         }
+    }
+
+    protected serializeProperties(properties: Array<any>): Array<any> {
+        const results: Array<any> = [];
+
+        // Loop through current layer of properties
+        for (let i = 0, l = properties.length; i < l; i++) {
+            if (Array.isArray(properties[i])) {
+                // Prepare to recurse through next layer of properties
+                results.push(this.serializeProperties(properties[i]));
+            } else if (properties[i] instanceof BaseAction) {
+                // Serialize property
+                results.push(properties[i].serialize());
+            } else {
+                // Assume that the property is already serializable
+                results.push(properties[i]);
+            }
+        }
+
+        return results;
     }
 
     public static deserialize<T extends Serializable<T>>(serialized: Serialized<T>): T {

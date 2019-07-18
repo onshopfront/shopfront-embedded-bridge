@@ -1,0 +1,51 @@
+import {BaseAction} from "./BaseAction";
+import {Serialized} from "../Common/Serializable";
+import {Button} from "./Button";
+
+type DialogType = "success" | "information" | "question" | "danger" | "warning" | "error" | "edit" | "frame";
+
+export class Dialog extends BaseAction<Dialog> {
+    protected supportedEvents = ["close"];
+
+    protected type     : DialogType;
+    protected closeable: boolean;
+    protected header   : string;
+    protected content  : string;
+    protected buttons  : Array<Button>;
+
+    constructor(
+        type: Serialized<Dialog> | DialogType,
+        closeable?: boolean,
+        header?: string,
+        content?: string,
+        buttons?: Array<Button>
+    ) {
+        // https://github.com/Microsoft/TypeScript/issues/8277
+        super((() => {
+            if(typeof type === "string") {
+                return {
+                    properties: [type, closeable, header, content, buttons],
+                    events    : {},
+                    type      : "Dialog",
+                }
+            } else {
+                return type;
+            }
+        })(), Dialog);
+
+        if(typeof header === "undefined") {
+            type           = type as Serialized<Dialog>;
+            this.type      = type.properties[0];
+            this.closeable = type.properties[1];
+            this.header    = type.properties[2];
+            this.content   = type.properties[3];
+            this.buttons   = type.properties[4]; // Note: This should be deserialized
+        } else {
+            this.type      = type as DialogType;
+            this.closeable = closeable as boolean;
+            this.header    = header    as string;
+            this.content   = content   as string;
+            this.buttons   = buttons   as Array<Button>;
+        }
+    }
+}
