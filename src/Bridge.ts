@@ -106,7 +106,7 @@ export class Bridge {
         }
     };
 
-    public sendMessage(type: ApplicationEvents.ToShopfront, data?: {}, id?: string) {
+    public sendMessage(type: ApplicationEvents.ToShopfront, data?: {} | null, id?: string) {
         if(type === ApplicationEvents.ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");

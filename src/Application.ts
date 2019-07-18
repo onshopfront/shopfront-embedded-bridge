@@ -12,6 +12,7 @@ import {Button} from "./Actions/Button";
 import {RequestSettings} from "./Events/RequestSettings";
 import {RequestButtons} from "./Events/RequestButtons";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
+import {RequestTableColumns} from "./Events/RequestTableColumns";
 
 export class Application {
     protected bridge   : Bridge;
@@ -20,10 +21,11 @@ export class Application {
     protected listeners: {
         [key in keyof FromShopfront]: Map<Function, FromShopfront[key]>;
     } = {
-        READY           : new Map(),
-        REQUEST_SETTINGS: new Map(),
-        REQUEST_BUTTONS : new Map(),
-        CALLBACK        : new Map(),
+        READY                : new Map(),
+        REQUEST_SETTINGS     : new Map(),
+        REQUEST_BUTTONS      : new Map(),
+        REQUEST_TABLE_COLUMNS: new Map(),
+        CALLBACK             : new Map(),
     };
 
     constructor(bridge: Bridge) {
@@ -102,6 +104,10 @@ export class Application {
                 break;
             case "REQUEST_BUTTONS":
                 c = new RequestButtons(callback as FromShopfrontCallbacks["REQUEST_BUTTONS"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "REQUEST_TABLE_COLUMNS":
+                c = new RequestTableColumns(callback as FromShopfrontCallbacks["REQUEST_TABLE_COLUMNS"]);
                 this.listeners[event].set(callback, c);
                 break;
             case "CALLBACK":
