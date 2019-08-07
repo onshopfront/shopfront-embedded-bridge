@@ -17,7 +17,7 @@
   ],
   "private": false,
   "devDependencies": {
-    "typescript": "^3.4.3"
+    "typescript": "^3.5.3"
   },
   "scripts": {
     "type-check": "tsc --noEmit",

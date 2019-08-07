@@ -40,7 +40,7 @@ export class Application {
         this.bridge.destroy();
     }
 
-    protected handleEvent = (event: keyof FromShopfront | FromShopfrontInternal, data: any, id: string) => {
+    protected handleEvent = (event: keyof FromShopfront | keyof FromShopfrontInternal, data: any, id: string) => {
         if(event === "READY") {
             this.isReady = true;
             this.key     = data.key;

@@ -1,7 +1,7 @@
 import {Application} from "./Application";
 import * as ApplicationEvents from "./ApplicationEvents";
 import { IndexedDBBackend } from "@shopfront/lumberjack/lib/Backends/IndexedDBBackend";
-import { Lumberjack } from "@shopfront/lumberjack/lib";
+import { Lumberjack } from "@shopfront/lumberjack";
 
 // Bootstrap the application
 const backend = new IndexedDBBackend({
