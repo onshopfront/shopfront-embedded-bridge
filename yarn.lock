@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@shopfront/lumberjack@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@shopfront/lumberjack/-/lumberjack-0.4.0.tgz#fb9733445c3487f77b2ba90105fa806aba0a6a06"
-  integrity sha512-M9cIdiW43msCatLBA9/Tjq+LG+gt3vGsEihNApHTZg9mcOEwETrFQO9oHl7ck+VJVipHEwcabspL3eZCtOwPfQ==
-
 typescript@^3.5.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"

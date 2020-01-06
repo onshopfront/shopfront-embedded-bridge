@@ -1,19 +1,5 @@
 import {Application} from "./Application";
 import * as ApplicationEvents from "./ApplicationEvents";
-import { IndexedDBBackend } from "@shopfront/lumberjack/lib/Backends/IndexedDBBackend";
-import { Lumberjack } from "@shopfront/lumberjack";
-
-// Bootstrap the application
-const backend = new IndexedDBBackend({
-    expire: 1000 * 60 * 24 * 3,
-});
-
-const lumberjack = new Lumberjack(backend, {
-    trace    : true,
-    timestamp: true,
-});
-
-lumberjack.inject();
 
 interface ApplicationOptions {
     id    : string; // The Client ID

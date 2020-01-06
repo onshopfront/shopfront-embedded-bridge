@@ -24,7 +24,5 @@
     "type-check:watch": "yarn run type-check --watch",
     "build": "tsc"
   },
-  "dependencies": {
-    "@shopfront/lumberjack": "^0.4.0"
-  }
+  "dependencies": {}
 }
