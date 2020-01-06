@@ -12,6 +12,7 @@ export enum ToShopfront {
     RESPONSE_SETTINGS      = "RESPONSE_SETTINGS",
     RESPONSE_TABLE_COLUMNS = "RESPONSE_TABLE_COLUMNS",
     DOWNLOAD               = "DOWNLOAD",
+    LOAD                   = "LOAD",
 }
 
 export enum WithinApplication {

@@ -149,6 +149,12 @@ export class Application {
         this.bridge.sendMessage(ToShopfront.DOWNLOAD, file);
     }
 
+    public load(): () => void {
+        this.bridge.sendMessage(ToShopfront.LOAD, true);
+
+        return () => this.bridge.sendMessage(ToShopfront.LOAD, false);
+    }
+
     protected handleEventCallback(data: {id?: string, data: any}) {
         if(typeof data.id === "undefined") {
             return;

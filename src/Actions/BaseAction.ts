@@ -5,7 +5,6 @@ import ActionEventRegistrar from "../Utilities/ActionEventRegistrar";
 
 @staticImplements<SerializableStatic>()
 export class BaseAction<T> extends EventEmitter {
-    //protected target    : SerializableType<T>;
     protected target    : string;
     protected events    : Array<{callback: Function, type: string, id: string}>;
     protected properties: Array<any>;
