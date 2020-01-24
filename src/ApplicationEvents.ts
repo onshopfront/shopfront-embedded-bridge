@@ -60,5 +60,6 @@ export interface FromShopfront {
 }
 
 export interface FromShopfrontInternal {
-    CYCLE_KEY: "CYCLE_KEY",
+    CYCLE_KEY       : "CYCLE_KEY",
+    LOCATION_CHANGED: "LOCATION_CHANGED",
 }

@@ -23,6 +23,10 @@ class ActionEventRegistrar {
 
         this.events[id].handleRegistrarEvent(id, data);
     }
+
+    public clear() {
+        this.events = {};
+    }
 }
 
 export default new ActionEventRegistrar();

@@ -59,6 +59,9 @@ export class Application {
 
             this.key = data.key;
             return;
+        } else if(event === "LOCATION_CHANGED") {
+            // Unregister all serialized listeners as they're no longer displayed
+            ActionEventRegistrar.clear();
         }
 
         this.emit(<keyof FromShopfront>event, data, id);

@@ -114,7 +114,6 @@ export class BaseAction<T> extends EventEmitter {
             }
 
             this.events[i].callback(data);
-            this.removeEventListener(this.events[i].type, this.events[i].callback);
 
             break;
         }
