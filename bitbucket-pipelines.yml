@@ -5,16 +5,16 @@ pipelines:
     - step:
         name: Build
         script:
-          - npm install
-          - npm run-script build
+          - yarn
+          - yarn run build
     - step:
         name: Publish
         trigger: manual
         deployment: production
         script:
-          - npm install
-          - npm run-script build
-          - npm version minor -m "Upgrade to %s [skip ci]"
+          - yarn
+          - yarn run build
+          - yarn version minor -m "Upgrade to %s [skip ci]"
           - git push && git push --tags
           - pipe: atlassian/npm-publish:0.2.0
             variables:
