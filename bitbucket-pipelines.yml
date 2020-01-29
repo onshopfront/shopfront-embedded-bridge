@@ -14,7 +14,7 @@ pipelines:
         script:
           - yarn
           - yarn run build
-          - yarn version minor -m "Upgrade to %s [skip ci]"
+          - yarn version --minor -m "Upgrade to %s [skip ci]"
           - git push && git push --tags
           - pipe: atlassian/npm-publish:0.2.0
             variables:
