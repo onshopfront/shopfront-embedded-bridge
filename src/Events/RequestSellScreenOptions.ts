@@ -22,6 +22,14 @@ export class RequestSellScreenOptions extends BaseEvent {
         }
     }
 
+    public static validateURL(url: string): void {
+        const urlObj = new URL(url);
+
+        if(urlObj.protocol !== "https:") {
+            throw new TypeError(`The URL "${url}" is invalid, please ensure that you're using the HTTPS protocol`);
+        }
+    }
+
     public async emit(data: {}): Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]> {
         let result = await Promise.resolve(this.callback());
 
@@ -33,6 +41,8 @@ export class RequestSellScreenOptions extends BaseEvent {
             if(!result[i].url || !result[i].title) {
                 throw new TypeError("You must specify both a URL and a title");
             }
+
+            RequestSellScreenOptions.validateURL(result[i].url);
 
             result[i].id = RequestSellScreenOptions.getOptionId(result[i].url);
         }
