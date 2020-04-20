@@ -13,6 +13,7 @@ import {RequestSettings} from "./Events/RequestSettings";
 import {RequestButtons} from "./Events/RequestButtons";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 import {RequestTableColumns} from "./Events/RequestTableColumns";
+import {RequestSellScreenOptions} from "./Events/RequestSellScreenOptions";
 
 export class Application {
     protected bridge   : Bridge;
@@ -21,11 +22,12 @@ export class Application {
     protected listeners: {
         [key in keyof FromShopfront]: Map<Function, FromShopfront[key]>;
     } = {
-        READY                : new Map(),
-        REQUEST_SETTINGS     : new Map(),
-        REQUEST_BUTTONS      : new Map(),
-        REQUEST_TABLE_COLUMNS: new Map(),
-        CALLBACK             : new Map(),
+        READY                      : new Map(),
+        REQUEST_SETTINGS           : new Map(),
+        REQUEST_BUTTONS            : new Map(),
+        REQUEST_TABLE_COLUMNS      : new Map(),
+        REQUEST_SELL_SCREEN_OPTIONS: new Map(),
+        CALLBACK                   : new Map(),
     };
 
     constructor(bridge: Bridge) {
@@ -78,26 +80,33 @@ export class Application {
         // Respond if necessary
         switch(event) {
             case "REQUEST_BUTTONS":
-                results = results as unknown as Array<Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>>;
+                results = results as Array<Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>>;
 
                 return Promise.all(results)
                     .then((res: Array<Array<Button>>) => {
                         return RequestButtons.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_SETTINGS":
-                results = results as unknown as Array<Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>>;
+                results = results as Array<Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>>;
 
                 return Promise.all(results)
                     .then((res: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>) => {
                         return RequestSettings.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_TABLE_COLUMNS":
-                results = results as unknown as Array<Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>>;
+                results = results as Array<Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>>;
 
                 return Promise.all(results)
                     .then((res: Array<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>) => {
                         return RequestTableColumns.respond(this.bridge, res.flat(), id);
                     });
+            case "REQUEST_SELL_SCREEN_OPTIONS":
+                results = results as Array<Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>>;
+
+                return Promise.all(results)
+                    .then((res: Array<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>) => {
+                        return RequestSellScreenOptions.respond(this.bridge, res.flat(), id);
+                    })
         }
     }
 
@@ -119,6 +128,10 @@ export class Application {
                 break;
             case "REQUEST_TABLE_COLUMNS":
                 c = new RequestTableColumns(callback as FromShopfrontCallbacks["REQUEST_TABLE_COLUMNS"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "REQUEST_SELL_SCREEN_OPTIONS":
+                c = new RequestSellScreenOptions(callback as FromShopfrontCallbacks["REQUEST_SELL_SCREEN_OPTIONS"]);
                 this.listeners[event].set(callback, c);
                 break;
             case "CALLBACK":
