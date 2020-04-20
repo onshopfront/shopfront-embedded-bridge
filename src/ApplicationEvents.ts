@@ -15,6 +15,8 @@ export enum ToShopfront {
     RESPONSE_SELL_SCREEN_OPTIONS = "RESPONSE_SELL_SCREEN_OPTIONS",
     DOWNLOAD                     = "DOWNLOAD",
     LOAD                         = "LOAD",
+    // Emitable Events
+    SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
 }
 
 export enum WithinApplication {

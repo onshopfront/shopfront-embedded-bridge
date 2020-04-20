@@ -14,6 +14,7 @@ import {RequestButtons} from "./Events/RequestButtons";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 import {RequestTableColumns} from "./Events/RequestTableColumns";
 import {RequestSellScreenOptions} from "./Events/RequestSellScreenOptions";
+import {BaseEmitableEvent} from "./EmitableEvents/BaseEmitableEvent";
 
 export class Application {
     protected bridge   : Bridge;
@@ -152,14 +153,20 @@ export class Application {
         this.listeners[event].delete(callback);
     }
 
-    public send(item: Serializable<any>) {
+    public send(item: BaseEmitableEvent<any>): void;
+    public send(item: Serializable<any>): void;
+    public send(item: any): void {
         if(item instanceof Button) {
             throw new TypeError("You cannot send Buttons to Shopfront without Shopfront requesting them");
         }
 
-        const serialized = item.serialize();
+        if(item instanceof BaseEmitableEvent) {
+            this.bridge.sendMessage(item.getEvent(), item.getData());
+        } else {
+            const serialized = item.serialize();
 
-        this.bridge.sendMessage(ToShopfront.SERIALIZED, serialized);
+            this.bridge.sendMessage(ToShopfront.SERIALIZED, serialized);
+        }
     }
 
     public download(file: string): void {
