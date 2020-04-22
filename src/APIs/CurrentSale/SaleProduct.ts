@@ -8,7 +8,7 @@ export class SaleProduct {
     protected name?: string;
     protected type?: ShopfrontSaleProductType;
     protected taxRateAmount?: number;
-    protected note?: string;
+    protected note: string;
     protected contains: Array<SaleProduct>;
     protected edited: boolean;
     protected caseQuantity?: number;
@@ -21,6 +21,7 @@ export class SaleProduct {
 
         this.contains = [];
         this.edited   = typeof price !== "undefined";
+        this.note     = "";
     }
 
     /**
@@ -139,7 +140,7 @@ export class SaleProduct {
     /**
      * Get the sale note attached to this product.
      *
-     * @returns {string | undefined}
+     * @returns {string}
      */
     public getNote() {
         return this.note;

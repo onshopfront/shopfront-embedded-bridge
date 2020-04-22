@@ -1,4 +1,4 @@
-import {ShopfrontSalePayment, ShopfrontSalePaymentStatus} from "./ShopfrontSaleState";
+import {ShopfrontSalePayment} from "./ShopfrontSaleState";
 
 export enum SalePaymentStatus {
     APPROVED  = "completed",
@@ -9,7 +9,7 @@ export enum SalePaymentStatus {
 export class SalePayment {
     protected id: string;
     protected type?: string;
-    protected status?: ShopfrontSalePaymentStatus;
+    protected status?: SalePaymentStatus;
     protected amount: number;
     protected cashout?: number;
     protected rounding?: number;
@@ -79,7 +79,7 @@ export class SalePayment {
     /**
      * Get the status of this payment method.
      *
-     * @returns {ShopfrontSalePaymentStatus | undefined}
+     * @returns {SalePaymentStatus | undefined}
      */
     public getStatus() {
         return this.status;
@@ -104,7 +104,7 @@ export class SalePayment {
     }
 
     /**
-     * Get the amount of rounding that has been applied to this payment method.
+     * Get the amount of rounding applied to this payment method.
      *
      * @returns {number | undefined}
      */
