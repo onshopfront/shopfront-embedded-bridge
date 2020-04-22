@@ -39,6 +39,8 @@ export class Sale {
      * @returns {Promise<void>}
      */
     public async refreshSale() {
+        this.checkIfCancelled();
+
         const newSale = await this.application.getCurrentSale();
 
         if(newSale === false) {
