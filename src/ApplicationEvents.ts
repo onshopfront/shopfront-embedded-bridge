@@ -5,6 +5,7 @@ import {RequestButtons} from "./Events/RequestButtons";
 import {Callback} from "./Events/Callback";
 import {RequestTableColumns} from "./Events/RequestTableColumns";
 import {RequestSellScreenOptions, SellScreenOption} from "./Events/RequestSellScreenOptions";
+import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 
 export enum ToShopfront {
     READY                        = "READY",
@@ -15,6 +16,8 @@ export enum ToShopfront {
     RESPONSE_SELL_SCREEN_OPTIONS = "RESPONSE_SELL_SCREEN_OPTIONS",
     DOWNLOAD                     = "DOWNLOAD",
     LOAD                         = "LOAD",
+    REQUEST_CURRENT_SALE         = "REQUEST_CURRENT_SALE",
+
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
 }
@@ -46,6 +49,10 @@ export interface FromShopfrontReturns {
     },
     REQUEST_SELL_SCREEN_OPTIONS: Array<SellScreenOption>,
     CALLBACK: void,
+    RESPONSE_CURRENT_SALE: {
+        requestId: string,
+        saleState: ShopfrontSaleState,
+    },
 }
 
 export interface FromShopfrontCallbacks {
@@ -67,6 +74,7 @@ export interface FromShopfront {
 }
 
 export interface FromShopfrontInternal {
-    CYCLE_KEY       : "CYCLE_KEY",
-    LOCATION_CHANGED: "LOCATION_CHANGED",
+    CYCLE_KEY            : "CYCLE_KEY",
+    LOCATION_CHANGED     : "LOCATION_CHANGED",
+    RESPONSE_CURRENT_SALE: "RESPONSE_CURRENT_SALE",
 }

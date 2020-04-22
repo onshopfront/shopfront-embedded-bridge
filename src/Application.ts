@@ -15,6 +15,8 @@ import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 import {RequestTableColumns} from "./Events/RequestTableColumns";
 import {RequestSellScreenOptions} from "./Events/RequestSellScreenOptions";
 import {BaseEmitableEvent} from "./EmitableEvents/BaseEmitableEvent";
+import {Sale} from "./APIs/CurrentSale/Sale";
+import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 
 export class Application {
     protected bridge   : Bridge;
@@ -65,6 +67,9 @@ export class Application {
         } else if(event === "LOCATION_CHANGED") {
             // Unregister all serialized listeners as they're no longer displayed
             ActionEventRegistrar.clear();
+            return;
+        } else if(event === "RESPONSE_CURRENT_SALE") {
+            // Handled elsewhere
             return;
         }
 
@@ -191,5 +196,49 @@ export class Application {
 
     public getAuthenticationKey(): string {
         return this.key;
+    }
+
+    /**
+     * Get the current sale on the sell screen, if the current device is not a register
+     * then this will return false.
+     *
+     * @returns {Promise<Sale | boolean>}
+     */
+    public async getCurrentSale(): Promise<Sale | false> {
+        const saleRequest = `SaleRequest-${Date.now().toString()}`;
+
+        const promise: Promise<ShopfrontSaleState | false> = new Promise(res => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
+                if(event !== "RESPONSE_CURRENT_SALE") {
+                    return;
+                }
+
+                data = data as {
+                    requestId: string,
+                    saleState: ShopfrontSaleState | false,
+                };
+
+                if(data.requestId !== saleRequest) {
+                    return;
+                }
+
+                this.bridge.removeEventListener(listener);
+                res(data.saleState);
+            };
+
+            this.bridge.addEventListener(listener);
+        });
+
+        this.bridge.sendMessage(ToShopfront.REQUEST_CURRENT_SALE, {
+            requestId: saleRequest,
+        });
+
+        const saleState = await promise;
+
+        if(saleState === false) {
+            return saleState;
+        }
+
+        return new Sale(this, saleState);
     }
 }

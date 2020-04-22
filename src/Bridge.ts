@@ -7,7 +7,7 @@ interface ApplicationOptions {
 }
 
 interface ApplicationEventListener {
-    (event: keyof ApplicationEvents.FromShopfront, data: {}, id: string): void;
+    (event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal, data: {}, id: string): void;
 }
 
 export class Bridge {

@@ -1,0 +1,81 @@
+import {BaseAction} from "./BaseAction";
+import {Serialized} from "../Common/Serializable";
+import {ShopfrontSalePaymentStatus} from "../APIs/CurrentSale/ShopfrontSaleState";
+
+export interface SaleUpdateChanges {
+    PRODUCT_ADD: {
+        id           : string,
+        quantity     : number,
+        price?       : number,
+        consolidate? : boolean,
+        indexAddress?: Array<number>,
+    },
+    PRODUCT_REMOVE: {
+        id          : string,
+        indexAddress: Array<number>,
+    },
+    PAYMENT_ADD: {
+        id: string,
+        amount: number,
+        cashout?: number | boolean,
+        status?: ShopfrontSalePaymentStatus,
+    },
+    PAYMENT_REVERSE: {
+        id: string,
+        amount: number,
+        cashout?: number,
+        status?: ShopfrontSalePaymentStatus,
+    },
+    SALE_CANCEL : {},
+    CUSTOMER_ADD: {
+        id: string,
+    },
+    CUSTOMER_REMOVE   : {},
+    SALE_EXTERNAL_NOTE: {
+        note: string,
+        append?: boolean,
+    },
+    SALE_INTERNAL_NOTE: {
+        note: string,
+        append?: boolean,
+    },
+    SALE_ORDER_REFERENCE: {
+        reference: string,
+    },
+}
+
+export class SaleUpdate<K extends keyof SaleUpdateChanges> extends BaseAction<SaleUpdate<K>> {
+    protected supportedEvents = [];
+
+    protected type: K;
+    protected data: SaleUpdateChanges[K];
+
+    constructor(type: Serialized<SaleUpdate<K>> | K, data?: SaleUpdateChanges[K]) {
+        // https://github.com/Microsoft/TypeScript/issues/8277
+        super((() => {
+            if(typeof type === "string") {
+                return {
+                    properties: [type, data],
+                    events    : {},
+                    type      : "SaleUpdate"
+                }
+            } else {
+                return type;
+            }
+        })(), SaleUpdate);
+
+        if(typeof data === "undefined" && typeof type !== "string") {
+            type      = type as Serialized<SaleUpdate<K>>;
+            this.type = type.properties[0];
+            this.data = type.properties[1];
+        } else {
+            this.type = type as K;
+
+            if(typeof data === "undefined") {
+                throw new TypeError("Invalid sale update data specified");
+            } else {
+                this.data = data;
+            }
+        }
+    }
+}
