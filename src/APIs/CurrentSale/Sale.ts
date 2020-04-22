@@ -3,6 +3,7 @@ import {ShopfrontSaleState} from "./ShopfrontSaleState";
 import {SaleUpdate, SaleUpdateChanges} from "../../Actions/SaleUpdate";
 import {SaleProduct} from "./SaleProduct";
 import {SalePayment} from "./SalePayment";
+import {SaleCustomer} from "./SaleCustomer";
 
 export class Sale {
     protected application: Application;

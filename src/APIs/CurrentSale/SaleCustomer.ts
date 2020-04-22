@@ -1,4 +1,4 @@
-class SaleCustomer {
+export class SaleCustomer {
     protected id: string;
 
     constructor(id: string) {
