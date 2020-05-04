@@ -15,22 +15,23 @@ import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 import {RequestTableColumns} from "./Events/RequestTableColumns";
 import {RequestSellScreenOptions} from "./Events/RequestSellScreenOptions";
 import {BaseEmitableEvent} from "./EmitableEvents/BaseEmitableEvent";
-import {Sale} from "./APIs/CurrentSale/Sale";
+import {Sale} from "./APIs/CurrentSale";
 import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
+import {InternalPageMessage} from "./Events/InternalPageMessage";
 
 export class Application {
     protected bridge   : Bridge;
     protected isReady  : boolean;
     protected key      : string;
     protected listeners: {
-        [key in keyof FromShopfront]: Map<Function, FromShopfront[key]>;
+        [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<Function, FromShopfront[key]>;
     } = {
         READY                      : new Map(),
         REQUEST_SETTINGS           : new Map(),
         REQUEST_BUTTONS            : new Map(),
         REQUEST_TABLE_COLUMNS      : new Map(),
         REQUEST_SELL_SCREEN_OPTIONS: new Map(),
-        CALLBACK                   : new Map(),
+        INTERNAL_PAGE_MESSAGE      : new Map(),
     };
 
     constructor(bridge: Bridge) {
@@ -73,10 +74,10 @@ export class Application {
             return;
         }
 
-        this.emit(<keyof FromShopfront>event, data, id);
+        this.emit(event, data, id);
     };
 
-    protected emit(event: keyof FromShopfront, data: any = {}, id: string) {
+    protected emit(event: keyof Omit<FromShopfront, "CALLBACK">, data: any = {}, id: string) {
         let results = [];
 
         for(let e of this.listeners[event].values()) {
@@ -116,7 +117,7 @@ export class Application {
         }
     }
 
-    public addEventListener(event: keyof FromShopfront, callback: Function) {
+    public addEventListener(event: keyof Omit<FromShopfront, "CALLBACK">, callback: Function) {
         let c = null;
 
         switch(event) {
@@ -140,8 +141,10 @@ export class Application {
                 c = new RequestSellScreenOptions(callback as FromShopfrontCallbacks["REQUEST_SELL_SCREEN_OPTIONS"]);
                 this.listeners[event].set(callback, c);
                 break;
-            case "CALLBACK":
-                throw new TypeError("Callback event is not valid for external use");
+            case "INTERNAL_PAGE_MESSAGE":
+                c = new InternalPageMessage(callback as FromShopfrontCallbacks["INTERNAL_PAGE_MESSAGE"], this);
+                this.listeners[event].set(callback, c);
+                break;
         }
 
         if(c === null) {
@@ -154,7 +157,7 @@ export class Application {
         }
     }
 
-    public removeEventListener(event: keyof FromShopfront, callback: () => void) {
+    public removeEventListener(event: keyof Omit<FromShopfront, "CALLBACK">, callback: () => void) {
         this.listeners[event].delete(callback);
     }
 

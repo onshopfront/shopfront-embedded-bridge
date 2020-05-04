@@ -6,6 +6,8 @@ import {Callback} from "./Events/Callback";
 import {RequestTableColumns} from "./Events/RequestTableColumns";
 import {RequestSellScreenOptions, SellScreenOption} from "./Events/RequestSellScreenOptions";
 import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
+import {InternalPageMessage} from "./Events/InternalPageMessage";
+import {InternalMessageSource} from "./APIs/InternalMessages/InternalMessageSource";
 
 export enum ToShopfront {
     READY                        = "READY",
@@ -20,6 +22,7 @@ export enum ToShopfront {
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
+    INTERNAL_PAGE_MESSAGE     = "INTERNAL_PAGE_MESSAGE",
 }
 
 export enum WithinApplication {
@@ -53,7 +56,15 @@ export interface FromShopfrontReturns {
         requestId: string,
         saleState: ShopfrontSaleState,
     },
+    INTERNAL_PAGE_MESSAGE: void,
 }
+
+type InternalPageMessageCallback = (event: {
+    method   : "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS",
+    url      : string,
+    message  : any,
+    reference: InternalMessageSource,
+}) => Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>
 
 export interface FromShopfrontCallbacks {
     READY                      : () => Promise<FromShopfrontReturns["READY"]>,
@@ -61,6 +72,7 @@ export interface FromShopfrontCallbacks {
     REQUEST_BUTTONS            : () => Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
     REQUEST_TABLE_COLUMNS      : () => Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
     REQUEST_SELL_SCREEN_OPTIONS: () => Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
+    INTERNAL_PAGE_MESSAGE      : InternalPageMessageCallback,
     CALLBACK                   : () => Promise<FromShopfrontReturns["CALLBACK"]>,
 }
 
@@ -70,6 +82,7 @@ export interface FromShopfront {
     REQUEST_BUTTONS            : RequestButtons,
     REQUEST_TABLE_COLUMNS      : RequestTableColumns,
     REQUEST_SELL_SCREEN_OPTIONS: RequestSellScreenOptions,
+    INTERNAL_PAGE_MESSAGE      : InternalPageMessage,
     CALLBACK                   : Callback,
 }
 
