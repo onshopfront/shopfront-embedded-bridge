@@ -3,7 +3,7 @@ import {
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
-    FromShopfrontReturns,
+    FromShopfrontReturns, RegisterChangedEvent,
     ToShopfront
 } from "./ApplicationEvents";
 import {Ready} from "./Events/Ready";
@@ -18,11 +18,14 @@ import {BaseEmitableEvent} from "./EmitableEvents/BaseEmitableEvent";
 import {Sale} from "./APIs/CurrentSale";
 import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 import {InternalPageMessage} from "./Events/InternalPageMessage";
+import {RegisterChanged} from "./Events/RegisterChanged";
 
 export class Application {
     protected bridge   : Bridge;
     protected isReady  : boolean;
     protected key      : string;
+    protected register : string | null;
+    protected outlet   : string | null;
     protected listeners: {
         [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<Function, FromShopfront[key]>;
     } = {
@@ -32,14 +35,18 @@ export class Application {
         REQUEST_TABLE_COLUMNS      : new Map(),
         REQUEST_SELL_SCREEN_OPTIONS: new Map(),
         INTERNAL_PAGE_MESSAGE      : new Map(),
+        REGISTER_CHANGED           : new Map(),
     };
 
     constructor(bridge: Bridge) {
-        this.bridge  = bridge;
-        this.isReady = false;
-        this.key     = '';
+        this.bridge   = bridge;
+        this.isReady  = false;
+        this.key      = '';
+        this.register = null;
+        this.outlet   = null;
 
         this.bridge.addEventListener(this.handleEvent);
+        this.addEventListener("REGISTER_CHANGED", this.handleLocationChanged);
     }
 
     public destroy() {
@@ -50,7 +57,10 @@ export class Application {
         if(event === "READY") {
             this.isReady = true;
             this.key     = data.key;
-            data         = undefined;
+            data = {
+                outlet  : data.outlet,
+                register: data.register,
+            };
         }
 
         if(event === "CALLBACK") {
@@ -113,7 +123,7 @@ export class Application {
                 return Promise.all(results)
                     .then((res: Array<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>) => {
                         return RequestSellScreenOptions.respond(this.bridge, res.flat(), id);
-                    })
+                    });
         }
     }
 
@@ -145,6 +155,10 @@ export class Application {
                 c = new InternalPageMessage(callback as FromShopfrontCallbacks["INTERNAL_PAGE_MESSAGE"], this);
                 this.listeners[event].set(callback, c);
                 break;
+            case "REGISTER_CHANGED":
+                c = new RegisterChanged(callback as FromShopfrontCallbacks["REGISTER_CHANGED"]);
+                this.listeners[event].set(callback, c);
+                break;
         }
 
         if(c === null) {
@@ -153,7 +167,10 @@ export class Application {
 
         if(event === "READY" && this.isReady) {
             c = c as Ready;
-            c.emit({});
+            c.emit({
+                outlet: this.outlet,
+                register: this.register,
+            });
         }
     }
 
@@ -195,6 +212,11 @@ export class Application {
         let id = data.id;
 
         ActionEventRegistrar.fire(id, data.data);
+    }
+
+    protected handleLocationChanged(data: RegisterChangedEvent) {
+        this.register = data.register;
+        this.outlet = data.outlet;
     }
 
     public getAuthenticationKey(): string {

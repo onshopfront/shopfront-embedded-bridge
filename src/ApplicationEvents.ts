@@ -8,6 +8,7 @@ import {RequestSellScreenOptions, SellScreenOption} from "./Events/RequestSellSc
 import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 import {InternalPageMessage} from "./Events/InternalPageMessage";
 import {InternalMessageSource} from "./APIs/InternalMessages/InternalMessageSource";
+import {RegisterChanged} from "./Events/RegisterChanged";
 
 export enum ToShopfront {
     READY                        = "READY",
@@ -57,6 +58,7 @@ export interface FromShopfrontReturns {
         saleState: ShopfrontSaleState,
     },
     INTERNAL_PAGE_MESSAGE: void,
+    REGISTER_CHANGED: void,
 }
 
 export interface InternalPageMessageEvent {
@@ -66,13 +68,19 @@ export interface InternalPageMessageEvent {
     reference: InternalMessageSource,
 }
 
+export interface RegisterChangedEvent {
+    register: null | string;
+    outlet  : null | string;
+}
+
 export interface FromShopfrontCallbacks {
-    READY                      : () => Promise<FromShopfrontReturns["READY"]>,
+    READY                      : (event: RegisterChangedEvent) => Promise<FromShopfrontReturns["READY"]>,
     REQUEST_SETTINGS           : () => Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
     REQUEST_BUTTONS            : () => Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
     REQUEST_TABLE_COLUMNS      : () => Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
     REQUEST_SELL_SCREEN_OPTIONS: () => Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
     INTERNAL_PAGE_MESSAGE      : (event: InternalPageMessageEvent) => Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
+    REGISTER_CHANGED           : (event: RegisterChangedEvent) => Promise<FromShopfrontReturns["REGISTER_CHANGED"]>,
     CALLBACK                   : () => Promise<FromShopfrontReturns["CALLBACK"]>,
 }
 
@@ -83,6 +91,7 @@ export interface FromShopfront {
     REQUEST_TABLE_COLUMNS      : RequestTableColumns,
     REQUEST_SELL_SCREEN_OPTIONS: RequestSellScreenOptions,
     INTERNAL_PAGE_MESSAGE      : InternalPageMessage,
+    REGISTER_CHANGED           : RegisterChanged,
     CALLBACK                   : Callback,
 }
 

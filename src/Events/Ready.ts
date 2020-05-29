@@ -6,7 +6,13 @@ export class Ready extends BaseEvent {
         super(callback);
     }
 
-    async emit(data: {}): Promise<FromShopfrontReturns["READY"]> {
-        return this.callback();
+    async emit(data: {
+        outlet: string | null,
+        register: string | null,
+    }): Promise<FromShopfrontReturns["READY"]> {
+        return this.callback({
+            outlet: data.outlet,
+            register: data.register,
+        });
     }
 }
