@@ -59,12 +59,12 @@ export interface FromShopfrontReturns {
     INTERNAL_PAGE_MESSAGE: void,
 }
 
-type InternalPageMessageCallback = (event: {
+export interface InternalPageMessageEvent {
     method   : "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS",
     url      : string,
     message  : any,
     reference: InternalMessageSource,
-}) => Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>
+}
 
 export interface FromShopfrontCallbacks {
     READY                      : () => Promise<FromShopfrontReturns["READY"]>,
@@ -72,7 +72,7 @@ export interface FromShopfrontCallbacks {
     REQUEST_BUTTONS            : () => Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
     REQUEST_TABLE_COLUMNS      : () => Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
     REQUEST_SELL_SCREEN_OPTIONS: () => Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
-    INTERNAL_PAGE_MESSAGE      : InternalPageMessageCallback,
+    INTERNAL_PAGE_MESSAGE      : (event: InternalPageMessageEvent) => Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
     CALLBACK                   : () => Promise<FromShopfrontReturns["CALLBACK"]>,
 }
 
