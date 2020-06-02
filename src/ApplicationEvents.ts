@@ -20,6 +20,7 @@ export enum ToShopfront {
     DOWNLOAD                     = "DOWNLOAD",
     LOAD                         = "LOAD",
     REQUEST_CURRENT_SALE         = "REQUEST_CURRENT_SALE",
+    DATABASE_REQUEST             = "DATABASE_REQUEST",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -96,7 +97,8 @@ export interface FromShopfront {
 }
 
 export interface FromShopfrontInternal {
-    CYCLE_KEY            : "CYCLE_KEY",
-    LOCATION_CHANGED     : "LOCATION_CHANGED",
-    RESPONSE_CURRENT_SALE: "RESPONSE_CURRENT_SALE",
+    CYCLE_KEY                : "CYCLE_KEY",
+    LOCATION_CHANGED         : "LOCATION_CHANGED",
+    RESPONSE_CURRENT_SALE    : "RESPONSE_CURRENT_SALE",
+    RESPONSE_DATABASE_REQUEST: "RESPONSE_DATABASE_REQUEST",
 }

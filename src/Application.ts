@@ -19,6 +19,7 @@ import {Sale} from "./APIs/CurrentSale";
 import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 import {InternalPageMessage} from "./Events/InternalPageMessage";
 import {RegisterChanged} from "./Events/RegisterChanged";
+import {Database} from "./APIs/Database/Database";
 
 export class Application {
     protected bridge   : Bridge;
@@ -37,6 +38,7 @@ export class Application {
         INTERNAL_PAGE_MESSAGE      : new Map(),
         REGISTER_CHANGED           : new Map(),
     };
+    public database: Database;
 
     constructor(bridge: Bridge) {
         this.bridge   = bridge;
@@ -44,6 +46,7 @@ export class Application {
         this.key      = '';
         this.register = null;
         this.outlet   = null;
+        this.database = new Database(this.bridge);
 
         this.bridge.addEventListener(this.handleEvent);
         this.addEventListener("REGISTER_CHANGED", this.handleLocationChanged);
@@ -79,7 +82,7 @@ export class Application {
             // Unregister all serialized listeners as they're no longer displayed
             ActionEventRegistrar.clear();
             return;
-        } else if(event === "RESPONSE_CURRENT_SALE") {
+        } else if(event === "RESPONSE_CURRENT_SALE" || event === "RESPONSE_DATABASE_REQUEST") {
             // Handled elsewhere
             return;
         }
