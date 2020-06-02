@@ -101,8 +101,9 @@ export class Bridge {
         }
 
         // Emit the event
-        for(let i = 0, l = this.listeners.length; i < l; i++) {
-            this.listeners[i](event.data.type, event.data.data, event.data.id);
+        const listeners = this.listeners;
+        for(let i = 0, l = listeners.length; i < l; i++) {
+            listeners[i](event.data.type, event.data.data, event.data.id);
         }
     };
 
