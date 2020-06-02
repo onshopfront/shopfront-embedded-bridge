@@ -62,7 +62,7 @@ export interface FromShopfrontReturns {
 }
 
 export interface InternalPageMessageEvent {
-    method   : "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS",
+    method   : "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS" | "EXTERNAL_APPLICATION",
     url      : string,
     message  : any,
     reference: InternalMessageSource,
