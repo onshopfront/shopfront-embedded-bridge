@@ -72,6 +72,7 @@ export interface InternalPageMessageEvent {
 export interface RegisterChangedEvent {
     register: null | string;
     outlet  : null | string;
+    user    : null | string;
 }
 
 export interface FromShopfrontCallbacks {

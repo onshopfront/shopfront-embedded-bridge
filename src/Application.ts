@@ -27,6 +27,7 @@ export class Application {
     protected key      : string;
     protected register : string | null;
     protected outlet   : string | null;
+    protected user     : string | null;
     protected listeners: {
         [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<Function, FromShopfront[key]>;
     } = {
@@ -46,6 +47,7 @@ export class Application {
         this.key      = '';
         this.register = null;
         this.outlet   = null;
+        this.user     = null;
         this.database = new Database(this.bridge);
 
         this.bridge.addEventListener(this.handleEvent);
@@ -173,6 +175,7 @@ export class Application {
             c.emit({
                 outlet: this.outlet,
                 register: this.register,
+                user: this.user,
             });
         }
     }
@@ -220,6 +223,7 @@ export class Application {
     protected handleLocationChanged(data: RegisterChangedEvent) {
         this.register = data.register;
         this.outlet = data.outlet;
+        this.user = data.user;
     }
 
     public getAuthenticationKey(): string {
