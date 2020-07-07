@@ -25,6 +25,7 @@ export enum ToShopfront {
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
     INTERNAL_PAGE_MESSAGE     = "INTERNAL_PAGE_MESSAGE",
+    TABLE_UPDATE              = "TABLE_UPDATE",
 }
 
 export enum WithinApplication {
@@ -40,7 +41,7 @@ export interface FromShopfrontReturns {
     },
     REQUEST_BUTTONS      : Array<Button>,
     REQUEST_TABLE_COLUMNS: null | {
-        header: Array<{
+        headers: Array<{
             label : string,
             key   : string,
             weight: number,
