@@ -4,6 +4,7 @@ import {SaleUpdate, SaleUpdateChanges} from "../../Actions/SaleUpdate";
 import {SaleProduct} from "./SaleProduct";
 import {SalePayment} from "./SalePayment";
 import {SaleCustomer} from "./SaleCustomer";
+import {InvalidSaleDeviceError, SaleCancelledError} from "./Exceptions";
 
 export class Sale {
     protected application: Application;
