@@ -21,6 +21,7 @@ export enum ToShopfront {
     LOAD                         = "LOAD",
     REQUEST_CURRENT_SALE         = "REQUEST_CURRENT_SALE",
     DATABASE_REQUEST             = "DATABASE_REQUEST",
+    UNSUPPORTED_EVENT            = "UNSUPPORTED_EVENT",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",

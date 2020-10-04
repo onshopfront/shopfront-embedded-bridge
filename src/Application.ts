@@ -95,6 +95,10 @@ export class Application {
     protected emit(event: keyof Omit<FromShopfront, "CALLBACK">, data: any = {}, id: string) {
         let results = [];
 
+        if(typeof this.listeners[event] === "undefined") {
+            return this.bridge.sendMessage(ToShopfront.UNSUPPORTED_EVENT, event, id);
+        }
+
         for(let e of this.listeners[event].values()) {
             results.push(e.emit(data) as Promise<FromShopfrontReturns[typeof event]>);
         }
