@@ -99,6 +99,10 @@ export class Application {
             return this.bridge.sendMessage(ToShopfront.UNSUPPORTED_EVENT, event, id);
         }
 
+        if(this.listeners[event].size === 0) {
+            return this.bridge.sendMessage(ToShopfront.NOT_LISTENING_TO_EVENT, event, id);
+        }
+
         for(let e of this.listeners[event].values()) {
             results.push(e.emit(data) as Promise<FromShopfrontReturns[typeof event]>);
         }
