@@ -5,5 +5,5 @@ export abstract class BaseEvent {
         this.callback = callback;
     }
 
-    public abstract async emit(data: object): Promise<any>;
+    public abstract emit(data: object): Promise<any>;
 }
