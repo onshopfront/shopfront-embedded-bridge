@@ -100,6 +100,13 @@ export interface FromShopfront {
     CALLBACK                   : Callback,
 }
 
+export const directShopfrontEvents = [
+    "SALE_PRODUCT_ADD",
+    "SALE_CUSTOMER_ADD",
+] as const;
+
+export type DirectShopfrontEvent = typeof directShopfrontEvents[number];
+
 export interface FromShopfrontInternal {
     CYCLE_KEY                : "CYCLE_KEY",
     LOCATION_CHANGED         : "LOCATION_CHANGED",

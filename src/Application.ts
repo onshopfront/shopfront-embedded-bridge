@@ -1,5 +1,7 @@
 import {Bridge} from "./Bridge";
 import {
+    DirectShopfrontEvent,
+    directShopfrontEvents,
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
@@ -39,6 +41,9 @@ export class Application {
         INTERNAL_PAGE_MESSAGE      : new Map(),
         REGISTER_CHANGED           : new Map(),
     };
+    protected directListeners: {
+        [K in DirectShopfrontEvent]?: Set<() => void | Promise<void>>;
+    } = {};
     public database: Database;
 
     constructor(bridge: Bridge) {
@@ -92,7 +97,28 @@ export class Application {
         this.emit(event, data, id);
     };
 
-    protected emit(event: keyof Omit<FromShopfront, "CALLBACK">, data: any = {}, id: string) {
+    protected emit(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, data: any = {}, id: string) {
+        if(directShopfrontEvents.includes(event as unknown as DirectShopfrontEvent)) {
+            event = (event as DirectShopfrontEvent);
+
+            const listeners = this.directListeners[event];
+            if(typeof listeners === "undefined") {
+                return this.bridge.sendMessage(ToShopfront.NOT_LISTENING_TO_EVENT);
+            }
+
+            const results = [];
+            for(const e of listeners.values()) {
+                results.push(e());
+            }
+
+            return Promise.all(results)
+                .then(() => {
+                    // Ensure void is returned
+                });
+        }
+
+        event = (event as keyof Omit<FromShopfront, "CALLBACK">);
+
         let results = [];
 
         if(typeof this.listeners[event] === "undefined") {
@@ -140,7 +166,17 @@ export class Application {
         }
     }
 
-    public addEventListener(event: keyof Omit<FromShopfront, "CALLBACK">, callback: Function) {
+    public addEventListener(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, callback: Function) {
+        if(directShopfrontEvents.includes(event as any)) {
+            event = (event as DirectShopfrontEvent);
+
+            if(typeof this.directListeners[event] === "undefined") {
+                this.directListeners[event] = new Set();
+            }
+
+            this.directListeners[event]!.add(callback as () => void);
+        }
+
         let c = null;
 
         switch(event) {
@@ -188,8 +224,13 @@ export class Application {
         }
     }
 
-    public removeEventListener(event: keyof Omit<FromShopfront, "CALLBACK">, callback: () => void) {
-        this.listeners[event].delete(callback);
+    public removeEventListener(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, callback: () => void) {
+        if(directShopfrontEvents.includes(event as any)) {
+            this.directListeners[event as DirectShopfrontEvent]?.delete(callback);
+            return;
+        }
+
+        this.listeners[event as keyof Omit<FromShopfront, "CALLBACK">].delete(callback);
     }
 
     public send(item: BaseEmitableEvent<any>): void;
