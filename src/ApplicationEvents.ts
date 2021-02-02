@@ -101,8 +101,10 @@ export interface FromShopfront {
 }
 
 export const directShopfrontEvents = [
-    "SALE_PRODUCT_ADD",
-    "SALE_CUSTOMER_ADD",
+    "SALE_ADD_PRODUCT",
+    "SALE_REMOVE_PRODUCT",
+    "SALE_ADD_CUSTOMER",
+    "SALE_REMOVE_CUSTOMER"
 ] as const;
 
 export type DirectShopfrontEvent = typeof directShopfrontEvents[number];
