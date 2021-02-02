@@ -23,6 +23,7 @@ export enum ToShopfront {
     DATABASE_REQUEST             = "DATABASE_REQUEST",
     UNSUPPORTED_EVENT            = "UNSUPPORTED_EVENT",
     NOT_LISTENING_TO_EVENT       = "NOT_LISTENING_TO_EVENT",
+    REQUEST_LOCATION             = "REQUEST_LOCATION",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -63,6 +64,12 @@ export interface FromShopfrontReturns {
     },
     INTERNAL_PAGE_MESSAGE: void,
     REGISTER_CHANGED: void,
+    RESPONSE_LOCATION: {
+        requestId: string,
+        register: string | null;
+        outlet: string | null;
+        user: string | null;
+    },
 }
 
 export interface InternalPageMessageEvent {
@@ -114,4 +121,5 @@ export interface FromShopfrontInternal {
     LOCATION_CHANGED         : "LOCATION_CHANGED",
     RESPONSE_CURRENT_SALE    : "RESPONSE_CURRENT_SALE",
     RESPONSE_DATABASE_REQUEST: "RESPONSE_DATABASE_REQUEST",
+    RESPONSE_LOCATION        : "RESPONSE_LOCATION",
 }

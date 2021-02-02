@@ -89,7 +89,11 @@ export class Application {
             // Unregister all serialized listeners as they're no longer displayed
             ActionEventRegistrar.clear();
             return;
-        } else if(event === "RESPONSE_CURRENT_SALE" || event === "RESPONSE_DATABASE_REQUEST") {
+        } else if(
+            event === "RESPONSE_CURRENT_SALE" ||
+            event === "RESPONSE_DATABASE_REQUEST" ||
+            event === "RESPONSE_LOCATION"
+        ) {
             // Handled elsewhere
             return;
         }
@@ -321,5 +325,56 @@ export class Application {
         }
 
         return new Sale(this, saleState);
+    }
+
+    /**
+     * Get the location from Shopfront
+     */
+    public async getLocation(): Promise<{
+        register: string | null;
+        outlet: string | null;
+        user: string | null;
+    }> {
+        const locationRequest = `LocationRequest-${Date.now().toString()}`;
+
+        const promise = new Promise<{
+            register: string | null;
+            outlet  : string | null;
+            user    : string | null;
+        }>(res => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
+                if(event !== "RESPONSE_LOCATION") {
+                    return;
+                }
+
+                data = data as {
+                    requestId: string;
+                    register: string | null;
+                    outlet: string | null;
+                    user: string | null;
+                };
+
+                if(data.requestId !== locationRequest) {
+                    return;
+                }
+
+                this.bridge.removeEventListener(listener);
+                res(data);
+            };
+
+            this.bridge.addEventListener(listener);
+        });
+
+        this.bridge.sendMessage(ToShopfront.REQUEST_LOCATION, {
+            requestId: locationRequest,
+        });
+
+        const location = await promise;
+
+        return {
+            register: location.register,
+            outlet  : location.outlet,
+            user    : location.user,
+        };
     }
 }
