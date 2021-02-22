@@ -42,7 +42,7 @@ export class Application {
         REGISTER_CHANGED           : new Map(),
     };
     protected directListeners: {
-        [K in DirectShopfrontEvent]?: Set<() => void | Promise<void>>;
+        [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
     } = {};
     public database: Database;
 
@@ -112,7 +112,7 @@ export class Application {
 
             const results = [];
             for(const e of listeners.values()) {
-                results.push(e());
+                results.push(e(data));
             }
 
             return Promise.all(results)
