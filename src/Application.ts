@@ -22,6 +22,7 @@ import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 import {InternalPageMessage} from "./Events/InternalPageMessage";
 import {RegisterChanged} from "./Events/RegisterChanged";
 import {Database} from "./APIs/Database/Database";
+import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
 
 export class Application {
     protected bridge   : Bridge;
@@ -40,6 +41,7 @@ export class Application {
         REQUEST_SELL_SCREEN_OPTIONS: new Map(),
         INTERNAL_PAGE_MESSAGE      : new Map(),
         REGISTER_CHANGED           : new Map(),
+        FORMAT_INTEGRATED_PRODUCT  : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -166,6 +168,13 @@ export class Application {
                 return Promise.all(results)
                     .then((res: Array<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>) => {
                         return RequestSellScreenOptions.respond(this.bridge, res.flat(), id);
+                    });
+            case "FORMAT_INTEGRATED_PRODUCT":
+                results = results as Array<Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>>;
+
+                return Promise.all(results)
+                    .then((res: Array<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>) => {
+                        return FormatIntegratedProduct.respond(this.bridge, res.flat(), id);
                     });
         }
     }

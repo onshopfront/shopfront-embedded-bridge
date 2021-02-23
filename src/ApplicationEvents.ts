@@ -9,6 +9,7 @@ import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
 import {InternalPageMessage} from "./Events/InternalPageMessage";
 import {InternalMessageSource} from "./APIs/InternalMessages/InternalMessageSource";
 import {RegisterChanged} from "./Events/RegisterChanged";
+import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct";
 
 export enum ToShopfront {
     READY                        = "READY",
@@ -24,6 +25,7 @@ export enum ToShopfront {
     UNSUPPORTED_EVENT            = "UNSUPPORTED_EVENT",
     NOT_LISTENING_TO_EVENT       = "NOT_LISTENING_TO_EVENT",
     REQUEST_LOCATION             = "REQUEST_LOCATION",
+    RESPONSE_FORMAT_PRODUCT      = "RESPONSE_FORMAT_PRODUCT",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -70,6 +72,7 @@ export interface FromShopfrontReturns {
         outlet: string | null;
         user: string | null;
     },
+    FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent,
 }
 
 export interface InternalPageMessageEvent {
@@ -85,6 +88,10 @@ export interface RegisterChangedEvent {
     user    : null | string;
 }
 
+export interface FormatIntegratedProductEvent {
+    product: FormattedSaleProduct;
+}
+
 export interface FromShopfrontCallbacks {
     READY                      : (event: RegisterChangedEvent) => Promise<FromShopfrontReturns["READY"]>,
     REQUEST_SETTINGS           : () => Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
@@ -94,6 +101,7 @@ export interface FromShopfrontCallbacks {
     INTERNAL_PAGE_MESSAGE      : (event: InternalPageMessageEvent) => Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
     REGISTER_CHANGED           : (event: RegisterChangedEvent) => Promise<FromShopfrontReturns["REGISTER_CHANGED"]>,
     CALLBACK                   : () => Promise<FromShopfrontReturns["CALLBACK"]>,
+    FORMAT_INTEGRATED_PRODUCT  : (event: FormatIntegratedProductEvent) => Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
 }
 
 export interface FromShopfront {
@@ -105,6 +113,7 @@ export interface FromShopfront {
     INTERNAL_PAGE_MESSAGE      : InternalPageMessage,
     REGISTER_CHANGED           : RegisterChanged,
     CALLBACK                   : Callback,
+    FORMAT_INTEGRATED_PRODUCT  : FormatIntegratedProduct,
 }
 
 export const directShopfrontEvents = [
