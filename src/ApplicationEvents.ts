@@ -10,6 +10,7 @@ import {InternalPageMessage} from "./Events/InternalPageMessage";
 import {InternalMessageSource} from "./APIs/InternalMessages/InternalMessageSource";
 import {RegisterChanged} from "./Events/RegisterChanged";
 import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct";
+import { MaybePromise } from "./Utilities/MiscTypes";
 
 export enum ToShopfront {
     READY                        = "READY",
@@ -93,15 +94,15 @@ export interface FormatIntegratedProductEvent {
 }
 
 export interface FromShopfrontCallbacks {
-    READY                      : (event: RegisterChangedEvent) => Promise<FromShopfrontReturns["READY"]>,
-    REQUEST_SETTINGS           : () => Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
-    REQUEST_BUTTONS            : () => Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
-    REQUEST_TABLE_COLUMNS      : () => Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
-    REQUEST_SELL_SCREEN_OPTIONS: () => Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
-    INTERNAL_PAGE_MESSAGE      : (event: InternalPageMessageEvent) => Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
-    REGISTER_CHANGED           : (event: RegisterChangedEvent) => Promise<FromShopfrontReturns["REGISTER_CHANGED"]>,
-    CALLBACK                   : () => Promise<FromShopfrontReturns["CALLBACK"]>,
-    FORMAT_INTEGRATED_PRODUCT  : (event: FormatIntegratedProductEvent) => Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
+    READY                      : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
+    REQUEST_SETTINGS           : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
+    REQUEST_BUTTONS            : () => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
+    REQUEST_TABLE_COLUMNS      : () => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
+    REQUEST_SELL_SCREEN_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
+    INTERNAL_PAGE_MESSAGE      : (event: InternalPageMessageEvent) => MaybePromise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
+    REGISTER_CHANGED           : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["REGISTER_CHANGED"]>,
+    CALLBACK                   : () => MaybePromise<FromShopfrontReturns["CALLBACK"]>,
+    FORMAT_INTEGRATED_PRODUCT  : (event: FormatIntegratedProductEvent) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
 }
 
 export interface FromShopfront {

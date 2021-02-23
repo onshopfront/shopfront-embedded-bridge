@@ -23,6 +23,7 @@ import {InternalPageMessage} from "./Events/InternalPageMessage";
 import {RegisterChanged} from "./Events/RegisterChanged";
 import {Database} from "./APIs/Database/Database";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
+import { MaybePromise } from "./Utilities/MiscTypes";
 
 export class Application {
     protected bridge   : Bridge;
@@ -179,6 +180,14 @@ export class Application {
         }
     }
 
+    public addEventListener<E extends keyof FromShopfrontCallbacks>(
+        event: E,
+        callback: FromShopfrontCallbacks[E]
+    ): void;
+    public addEventListener<D>(
+        event: DirectShopfrontEvent,
+        callback: (event: D) => MaybePromise<void>
+    ): void;
     public addEventListener(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, callback: Function) {
         if(directShopfrontEvents.includes(event as any)) {
             event = (event as DirectShopfrontEvent);
