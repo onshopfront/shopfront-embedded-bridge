@@ -120,7 +120,8 @@ export const directShopfrontEvents = [
     "SALE_ADD_PRODUCT",
     "SALE_REMOVE_PRODUCT",
     "SALE_ADD_CUSTOMER",
-    "SALE_REMOVE_CUSTOMER"
+    "SALE_REMOVE_CUSTOMER",
+    "SALE_CLEAR",
 ] as const;
 
 export type DirectShopfrontEvent = typeof directShopfrontEvents[number];
