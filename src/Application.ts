@@ -197,6 +197,8 @@ export class Application {
             }
 
             this.directListeners[event]!.add(callback as () => void);
+
+            return;
         }
 
         let c = null;
