@@ -24,7 +24,9 @@ import {RegisterChanged} from "./Events/RegisterChanged";
 import {Database} from "./APIs/Database/Database";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
+import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions";
 
+// noinspection JSUnusedGlobalSymbols
 export class Application {
     protected bridge   : Bridge;
     protected isReady  : boolean;
@@ -35,14 +37,15 @@ export class Application {
     protected listeners: {
         [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<Function, FromShopfront[key]>;
     } = {
-        READY                      : new Map(),
-        REQUEST_SETTINGS           : new Map(),
-        REQUEST_BUTTONS            : new Map(),
-        REQUEST_TABLE_COLUMNS      : new Map(),
-        REQUEST_SELL_SCREEN_OPTIONS: new Map(),
-        INTERNAL_PAGE_MESSAGE      : new Map(),
-        REGISTER_CHANGED           : new Map(),
-        FORMAT_INTEGRATED_PRODUCT  : new Map(),
+        READY                        : new Map(),
+        REQUEST_SETTINGS             : new Map(),
+        REQUEST_BUTTONS              : new Map(),
+        REQUEST_TABLE_COLUMNS        : new Map(),
+        REQUEST_SELL_SCREEN_OPTIONS  : new Map(),
+        INTERNAL_PAGE_MESSAGE        : new Map(),
+        REGISTER_CHANGED             : new Map(),
+        FORMAT_INTEGRATED_PRODUCT    : new Map(),
+        REQUEST_CUSTOMER_LIST_OPTIONS: new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -177,6 +180,11 @@ export class Application {
                     .then((res: Array<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>) => {
                         return FormatIntegratedProduct.respond(this.bridge, res.flat(), id);
                     });
+            case "REQUEST_CUSTOMER_LIST_OPTIONS":
+                results = results as Array<Promise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>>;
+
+                return Promise.all(results)
+                    .then(res => RequestCustomerListOptions.respond(this.bridge, res.flat(), id));
         }
     }
 
@@ -230,6 +238,14 @@ export class Application {
                 break;
             case "REGISTER_CHANGED":
                 c = new RegisterChanged(callback as FromShopfrontCallbacks["REGISTER_CHANGED"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "REQUEST_CUSTOMER_LIST_OPTIONS":
+                c = new RequestCustomerListOptions(callback as FromShopfrontCallbacks["REQUEST_CUSTOMER_LIST_OPTIONS"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FORMAT_INTEGRATED_PRODUCT":
+                c = new FormatIntegratedProduct(callback as FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]);
                 this.listeners[event].set(callback, c);
                 break;
         }

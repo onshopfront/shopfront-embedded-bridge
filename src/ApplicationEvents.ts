@@ -11,22 +11,24 @@ import {InternalMessageSource} from "./APIs/InternalMessages/InternalMessageSour
 import {RegisterChanged} from "./Events/RegisterChanged";
 import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
+import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions";
 
 export enum ToShopfront {
-    READY                        = "READY",
-    SERIALIZED                   = "SERIALIZED",
-    RESPONSE_BUTTONS             = "RESPONSE_BUTTONS",
-    RESPONSE_SETTINGS            = "RESPONSE_SETTINGS",
-    RESPONSE_TABLE_COLUMNS       = "RESPONSE_TABLE_COLUMNS",
-    RESPONSE_SELL_SCREEN_OPTIONS = "RESPONSE_SELL_SCREEN_OPTIONS",
-    DOWNLOAD                     = "DOWNLOAD",
-    LOAD                         = "LOAD",
-    REQUEST_CURRENT_SALE         = "REQUEST_CURRENT_SALE",
-    DATABASE_REQUEST             = "DATABASE_REQUEST",
-    UNSUPPORTED_EVENT            = "UNSUPPORTED_EVENT",
-    NOT_LISTENING_TO_EVENT       = "NOT_LISTENING_TO_EVENT",
-    REQUEST_LOCATION             = "REQUEST_LOCATION",
-    RESPONSE_FORMAT_PRODUCT      = "RESPONSE_FORMAT_PRODUCT",
+    READY                          = "READY",
+    SERIALIZED                     = "SERIALIZED",
+    RESPONSE_BUTTONS               = "RESPONSE_BUTTONS",
+    RESPONSE_SETTINGS              = "RESPONSE_SETTINGS",
+    RESPONSE_TABLE_COLUMNS         = "RESPONSE_TABLE_COLUMNS",
+    RESPONSE_SELL_SCREEN_OPTIONS   = "RESPONSE_SELL_SCREEN_OPTIONS",
+    DOWNLOAD                       = "DOWNLOAD",
+    LOAD                           = "LOAD",
+    REQUEST_CURRENT_SALE           = "REQUEST_CURRENT_SALE",
+    DATABASE_REQUEST               = "DATABASE_REQUEST",
+    UNSUPPORTED_EVENT              = "UNSUPPORTED_EVENT",
+    NOT_LISTENING_TO_EVENT         = "NOT_LISTENING_TO_EVENT",
+    REQUEST_LOCATION               = "REQUEST_LOCATION",
+    RESPONSE_FORMAT_PRODUCT        = "RESPONSE_FORMAT_PRODUCT",
+    RESPONSE_CUSTOMER_LIST_OPTIONS = "RESPONSE_CUSTOMER_LIST_OPTIONS",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -74,6 +76,7 @@ export interface FromShopfrontReturns {
         user: string | null;
     },
     FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent,
+    REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>,
 }
 
 export interface InternalPageMessageEvent {
@@ -94,27 +97,29 @@ export interface FormatIntegratedProductEvent {
 }
 
 export interface FromShopfrontCallbacks {
-    READY                      : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
-    REQUEST_SETTINGS           : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
-    REQUEST_BUTTONS            : () => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
-    REQUEST_TABLE_COLUMNS      : () => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
-    REQUEST_SELL_SCREEN_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
-    INTERNAL_PAGE_MESSAGE      : (event: InternalPageMessageEvent) => MaybePromise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
-    REGISTER_CHANGED           : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["REGISTER_CHANGED"]>,
-    CALLBACK                   : () => MaybePromise<FromShopfrontReturns["CALLBACK"]>,
-    FORMAT_INTEGRATED_PRODUCT  : (event: FormatIntegratedProductEvent) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
+    READY                        : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
+    REQUEST_SETTINGS             : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
+    REQUEST_BUTTONS              : () => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
+    REQUEST_TABLE_COLUMNS        : () => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
+    REQUEST_SELL_SCREEN_OPTIONS  : () => MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
+    INTERNAL_PAGE_MESSAGE        : (event: InternalPageMessageEvent) => MaybePromise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
+    REGISTER_CHANGED             : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["REGISTER_CHANGED"]>,
+    CALLBACK                     : () => MaybePromise<FromShopfrontReturns["CALLBACK"]>,
+    FORMAT_INTEGRATED_PRODUCT    : (event: FormatIntegratedProductEvent) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
+    REQUEST_CUSTOMER_LIST_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
 }
 
 export interface FromShopfront {
-    READY                      : Ready,
-    REQUEST_SETTINGS           : RequestSettings,
-    REQUEST_BUTTONS            : RequestButtons,
-    REQUEST_TABLE_COLUMNS      : RequestTableColumns,
-    REQUEST_SELL_SCREEN_OPTIONS: RequestSellScreenOptions,
-    INTERNAL_PAGE_MESSAGE      : InternalPageMessage,
-    REGISTER_CHANGED           : RegisterChanged,
-    CALLBACK                   : Callback,
-    FORMAT_INTEGRATED_PRODUCT  : FormatIntegratedProduct,
+    READY                        : Ready,
+    REQUEST_SETTINGS             : RequestSettings,
+    REQUEST_BUTTONS              : RequestButtons,
+    REQUEST_TABLE_COLUMNS        : RequestTableColumns,
+    REQUEST_SELL_SCREEN_OPTIONS  : RequestSellScreenOptions,
+    INTERNAL_PAGE_MESSAGE        : InternalPageMessage,
+    REGISTER_CHANGED             : RegisterChanged,
+    CALLBACK                     : Callback,
+    FORMAT_INTEGRATED_PRODUCT    : FormatIntegratedProduct,
+    REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions,
 }
 
 export const directShopfrontEvents = [
