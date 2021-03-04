@@ -18,6 +18,7 @@ export interface ShopfrontSaleProduct {
     products: Array<ShopfrontSaleProduct>,
     edited: boolean,
     caseQuantity: number,
+    metaData: Record<string, unknown>,
 }
 
 interface ShopfrontSaleCustomer {

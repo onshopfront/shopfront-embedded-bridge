@@ -12,6 +12,7 @@ export class SaleProduct {
     protected contains: Array<SaleProduct>;
     protected edited: boolean;
     protected caseQuantity?: number;
+    protected metaData: Record<string, unknown> = {};
 
     constructor(id: string, quantity: number, price?: number, indexAddress?: Array<number>) {
         this.id           = id;
@@ -65,6 +66,7 @@ export class SaleProduct {
         this.note          = data.note;
         this.edited        = data.edited;
         this.caseQuantity  = data.caseQuantity;
+        this.metaData      = data.metaData;
 
         for(let i = 0, l = data.products.length; i < l; i++) {
             this.appendProduct(SaleProduct.HydrateFromState(data.products[i], [
@@ -172,5 +174,23 @@ export class SaleProduct {
      */
     public getCaseQuantity() {
         return this.caseQuantity;
+    }
+
+    /**
+     * Get the meta data for the product.
+     *
+     * @returns {Record<string, unknown>}
+     */
+    public getMetaData() {
+        return this.metaData;
+    }
+
+    /**
+     * Set the metaData for a product
+     * @param key
+     * @param value
+     */
+    public setMetaData(key: string, value: unknown) {
+        this.metaData[key] = value;
     }
 }

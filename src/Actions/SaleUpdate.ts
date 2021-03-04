@@ -42,6 +42,11 @@ export interface SaleUpdateChanges {
     SALE_ORDER_REFERENCE: {
         reference: string,
     },
+    PRODUCT_UPDATE: {
+        id: string;
+        indexAddress: Array<number>;
+        metaData: Record<string, unknown>;
+    }
 }
 
 export class SaleUpdate<K extends keyof SaleUpdateChanges> extends BaseAction<SaleUpdate<K>> {

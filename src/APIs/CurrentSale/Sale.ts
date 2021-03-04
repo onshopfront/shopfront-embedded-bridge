@@ -288,4 +288,16 @@ export class Sale {
             reference,
         }));
     }
+
+    /**
+     * Update a product's details, currently this only updates the top-level meta data
+     * @param product
+     */
+    public updateProduct(product: SaleProduct): Promise<void> {
+        return this.sendSaleUpdate(new SaleUpdate("PRODUCT_UPDATE", {
+            id: product.getId(),
+            indexAddress: product.getIndexAddress(),
+            metaData: product.getMetaData(),
+        }));
+    }
 }
