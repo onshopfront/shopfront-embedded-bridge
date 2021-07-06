@@ -25,6 +25,7 @@ import {Database} from "./APIs/Database/Database";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
 import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions";
+import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -46,6 +47,7 @@ export class Application {
         REGISTER_CHANGED             : new Map(),
         FORMAT_INTEGRATED_PRODUCT    : new Map(),
         REQUEST_CUSTOMER_LIST_OPTIONS: new Map(),
+        REQUEST_SALE_KEYS            : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -185,6 +187,11 @@ export class Application {
 
                 return Promise.all(results)
                     .then(res => RequestCustomerListOptions.respond(this.bridge, res.flat(), id));
+            case "REQUEST_SALE_KEYS":
+                results = results as Array<Promise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>>;
+
+                return Promise.all(results)
+                    .then(res => RequestSaleKeys.respond(this.bridge, res.flat(), id));
         }
     }
 
@@ -246,6 +253,10 @@ export class Application {
                 break;
             case "FORMAT_INTEGRATED_PRODUCT":
                 c = new FormatIntegratedProduct(callback as FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "REQUEST_SALE_KEYS":
+                c = new RequestSaleKeys(callback as FromShopfrontCallbacks["REQUEST_SALE_KEYS"]);
                 this.listeners[event].set(callback, c);
                 break;
         }

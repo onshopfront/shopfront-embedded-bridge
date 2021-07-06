@@ -12,6 +12,8 @@ import {RegisterChanged} from "./Events/RegisterChanged";
 import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
 import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions";
+import { SaleKey } from "./Actions/SaleKey";
+import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -29,6 +31,7 @@ export enum ToShopfront {
     REQUEST_LOCATION               = "REQUEST_LOCATION",
     RESPONSE_FORMAT_PRODUCT        = "RESPONSE_FORMAT_PRODUCT",
     RESPONSE_CUSTOMER_LIST_OPTIONS = "RESPONSE_CUSTOMER_LIST_OPTIONS",
+    RESPONSE_SALE_KEYS             = "RESPONSE_SALE_KEYS",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -77,6 +80,7 @@ export interface FromShopfrontReturns {
     },
     FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent,
     REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>,
+    REQUEST_SALE_KEYS: Array<SaleKey>,
 }
 
 export interface InternalPageMessageEvent {
@@ -107,6 +111,7 @@ export interface FromShopfrontCallbacks {
     CALLBACK                     : () => MaybePromise<FromShopfrontReturns["CALLBACK"]>,
     FORMAT_INTEGRATED_PRODUCT    : (event: FormatIntegratedProductEvent) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
     REQUEST_CUSTOMER_LIST_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
+    REQUEST_SALE_KEYS            : () => MaybePromise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>,
 }
 
 export interface FromShopfront {
@@ -120,6 +125,7 @@ export interface FromShopfront {
     CALLBACK                     : Callback,
     FORMAT_INTEGRATED_PRODUCT    : FormatIntegratedProduct,
     REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions,
+    REQUEST_SALE_KEYS            : RequestSaleKeys,
 }
 
 export const directShopfrontEvents = [
