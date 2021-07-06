@@ -14,6 +14,7 @@ import { MaybePromise } from "./Utilities/MiscTypes";
 import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions";
 import { SaleKey } from "./Actions/SaleKey";
 import { RequestSaleKeys } from "./Events/RequestSaleKeys";
+import { CompletedSale, SaleComplete } from "./Events/SaleComplete";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -81,6 +82,7 @@ export interface FromShopfrontReturns {
     FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent,
     REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>,
     REQUEST_SALE_KEYS: Array<SaleKey>,
+    SALE_COMPLETE: void;
 }
 
 export interface InternalPageMessageEvent {
@@ -100,6 +102,10 @@ export interface FormatIntegratedProductEvent {
     product: FormattedSaleProduct;
 }
 
+export interface SaleCompletedEvent {
+    sale: CompletedSale;
+}
+
 export interface FromShopfrontCallbacks {
     READY                        : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
     REQUEST_SETTINGS             : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
@@ -112,6 +118,7 @@ export interface FromShopfrontCallbacks {
     FORMAT_INTEGRATED_PRODUCT    : (event: FormatIntegratedProductEvent) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
     REQUEST_CUSTOMER_LIST_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
     REQUEST_SALE_KEYS            : () => MaybePromise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>,
+    SALE_COMPLETE                : (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>,
 }
 
 export interface FromShopfront {
@@ -126,6 +133,7 @@ export interface FromShopfront {
     FORMAT_INTEGRATED_PRODUCT    : FormatIntegratedProduct,
     REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions,
     REQUEST_SALE_KEYS            : RequestSaleKeys,
+    SALE_COMPLETE                : SaleComplete,
 }
 
 export const directShopfrontEvents = [

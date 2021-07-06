@@ -26,6 +26,7 @@ import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
 import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions";
 import { RequestSaleKeys } from "./Events/RequestSaleKeys";
+import { SaleComplete } from "./Events/SaleComplete";
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -48,6 +49,7 @@ export class Application {
         FORMAT_INTEGRATED_PRODUCT    : new Map(),
         REQUEST_CUSTOMER_LIST_OPTIONS: new Map(),
         REQUEST_SALE_KEYS            : new Map(),
+        SALE_COMPLETE                : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -257,6 +259,10 @@ export class Application {
                 break;
             case "REQUEST_SALE_KEYS":
                 c = new RequestSaleKeys(callback as FromShopfrontCallbacks["REQUEST_SALE_KEYS"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "SALE_COMPLETE":
+                c = new SaleComplete(callback as FromShopfrontCallbacks["SALE_COMPLETE"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
