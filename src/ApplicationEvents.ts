@@ -139,6 +139,8 @@ export interface FromShopfront {
 export const directShopfrontEvents = [
     "SALE_ADD_PRODUCT",
     "SALE_REMOVE_PRODUCT",
+    "SALE_UPDATE_PRODUCTS",
+    "SALE_CHANGE_QUANTITY",
     "SALE_ADD_CUSTOMER",
     "SALE_REMOVE_CUSTOMER",
     "SALE_CLEAR",

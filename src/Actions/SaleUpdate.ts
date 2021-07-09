@@ -9,6 +9,7 @@ export interface SaleUpdateChanges {
         price?       : number,
         consolidate? : boolean,
         indexAddress?: Array<number>,
+        metaData     : Record<string, unknown>;
     },
     PRODUCT_REMOVE: {
         id          : string,

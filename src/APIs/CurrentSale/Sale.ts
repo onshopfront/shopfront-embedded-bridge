@@ -170,6 +170,7 @@ export class Sale {
             quantity: product.getQuantity(),
             price: product.getPrice(),
             indexAddress: product.getIndexAddress(),
+            metaData: product.getMetaData(),
         }));
     }
 
