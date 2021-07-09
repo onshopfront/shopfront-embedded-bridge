@@ -281,7 +281,10 @@ export class Application {
         }
     }
 
-    public removeEventListener(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, callback: () => void) {
+    public removeEventListener(
+        event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
+        callback: (...args: Array<any>) => MaybePromise<any>
+    ) {
         if(directShopfrontEvents.includes(event as any)) {
             this.directListeners[event as DirectShopfrontEvent]?.delete(callback);
             return;
