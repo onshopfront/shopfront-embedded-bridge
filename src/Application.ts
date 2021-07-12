@@ -433,4 +433,11 @@ export class Application {
             user    : location.user,
         };
     }
+
+    public printReceipt(content: string): void {
+        this.bridge.sendMessage(ToShopfront.PRINT_RECEIPT, {
+            content,
+            type: "text",
+        });
+    }
 }
