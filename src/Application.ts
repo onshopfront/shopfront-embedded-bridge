@@ -313,6 +313,13 @@ export class Application {
         this.bridge.sendMessage(ToShopfront.DOWNLOAD, file);
     }
 
+    public redirect(toLocation: string, externalRedirect = true): void {
+        this.bridge.sendMessage(ToShopfront.REDIRECT, {
+            to: toLocation,
+            external: externalRedirect,
+        });
+    }
+
     public load(): () => void {
         this.bridge.sendMessage(ToShopfront.LOAD, true);
 

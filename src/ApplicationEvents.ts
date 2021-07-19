@@ -34,6 +34,7 @@ export enum ToShopfront {
     RESPONSE_CUSTOMER_LIST_OPTIONS = "RESPONSE_CUSTOMER_LIST_OPTIONS",
     RESPONSE_SALE_KEYS             = "RESPONSE_SALE_KEYS",
     PRINT_RECEIPT                  = "PRINT_RECEIPT",
+    REDIRECT                       = "REDIRECT",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
