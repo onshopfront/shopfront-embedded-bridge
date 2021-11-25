@@ -102,7 +102,8 @@ export class Application {
         } else if(
             event === "RESPONSE_CURRENT_SALE" ||
             event === "RESPONSE_DATABASE_REQUEST" ||
-            event === "RESPONSE_LOCATION"
+            event === "RESPONSE_LOCATION" ||
+            event === "RESPONSE_OPTION"
         ) {
             // Handled elsewhere
             return;
@@ -446,5 +447,44 @@ export class Application {
             content,
             type: "text",
         });
+    }
+
+    public async getOption<TValueType>(option: string, defaultValue: TValueType): Promise<TValueType> {
+        const request = `OptionRequest-${Date.now().toString()}`;
+
+        const promise = new Promise<TValueType | undefined>(res => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
+                if(event !== "RESPONSE_OPTION") {
+                    return;
+                }
+
+                data = data as {
+                    requestId: string;
+                    option: string;
+                    value: TValueType | undefined;
+                };
+
+                if(data.requestId !== request) {
+                    return;
+                }
+
+                this.bridge.removeEventListener(listener);
+                res(data.value);
+            }
+
+            this.bridge.addEventListener(listener);
+        })
+
+        this.bridge.sendMessage(ToShopfront.GET_OPTION, {
+            requestId: request,
+            option,
+        });
+
+        const optionValue = await promise;
+        if(typeof optionValue === "undefined") {
+            return defaultValue;
+        }
+
+        return optionValue;
     }
 }

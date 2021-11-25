@@ -35,6 +35,7 @@ export enum ToShopfront {
     RESPONSE_SALE_KEYS             = "RESPONSE_SALE_KEYS",
     PRINT_RECEIPT                  = "PRINT_RECEIPT",
     REDIRECT                       = "REDIRECT",
+    GET_OPTION                     = "GET_OPTION",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -129,13 +130,13 @@ export interface FromShopfront {
     REQUEST_BUTTONS              : RequestButtons,
     REQUEST_TABLE_COLUMNS        : RequestTableColumns,
     REQUEST_SELL_SCREEN_OPTIONS  : RequestSellScreenOptions,
+    CALLBACK                     : Callback,
     INTERNAL_PAGE_MESSAGE        : InternalPageMessage,
     REGISTER_CHANGED             : RegisterChanged,
-    CALLBACK                     : Callback,
     FORMAT_INTEGRATED_PRODUCT    : FormatIntegratedProduct,
     REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions,
-    REQUEST_SALE_KEYS            : RequestSaleKeys,
     SALE_COMPLETE                : SaleComplete,
+    REQUEST_SALE_KEYS            : RequestSaleKeys,
 }
 
 export const directShopfrontEvents = [
@@ -156,4 +157,5 @@ export interface FromShopfrontInternal {
     RESPONSE_CURRENT_SALE    : "RESPONSE_CURRENT_SALE",
     RESPONSE_DATABASE_REQUEST: "RESPONSE_DATABASE_REQUEST",
     RESPONSE_LOCATION        : "RESPONSE_LOCATION",
+    RESPONSE_OPTION          : "RESPONSE_OPTION",
 }
