@@ -1,7 +1,7 @@
 import {BaseAction} from "./BaseAction";
 import {Serialized} from "../Common/Serializable";
 
-type ToastType = "success" | "error" | "information" | "warning";
+export type ToastType = "success" | "error" | "information" | "warning";
 
 export class Toast extends BaseAction<Toast> {
     protected supportedEvents = ["hide"];
@@ -17,7 +17,7 @@ export class Toast extends BaseAction<Toast> {
                     properties: [type, message],
                     events    : {},
                     type      : "Toast",
-                }
+                };
             } else {
                 return type;
             }
@@ -25,8 +25,8 @@ export class Toast extends BaseAction<Toast> {
 
         if(typeof message === "undefined") {
             type         = type as Serialized<Toast>;
-            this.type    = type.properties[0];
-            this.message = type.properties[1];
+            this.type    = type.properties[0] as ToastType;
+            this.message = type.properties[1] as string;
         } else {
             this.type    = type as ToastType;
             this.message = message;

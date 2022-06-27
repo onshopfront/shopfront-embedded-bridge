@@ -13,7 +13,7 @@ export class CustomerListOption extends BaseAction<CustomerListOption> {
                     properties: [contents],
                     events    : {},
                     type      : "CustomerListOption",
-                }
+                };
             }
 
             return contents;
@@ -22,7 +22,7 @@ export class CustomerListOption extends BaseAction<CustomerListOption> {
         if(typeof contents === "string") {
             this.contents = contents;
         } else {
-            this.contents = contents.properties[0];
+            this.contents = contents.properties[0] as string;
         }
     }
 }

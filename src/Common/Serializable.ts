@@ -1,10 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Serialized<T> {
-    properties: Array<any>,
+    properties: Array<unknown>;
     events: {
-        [event: string]: Array<string>,
-    },
+        [event: string]: Array<string>;
+    };
     //type: SerializableType<T>,
-    type: string,
+    type: string;
 }
 
 export interface SerializableType<T> {

@@ -10,6 +10,6 @@ export class RegisterChanged extends BaseEvent {
         outlet: string | null,
         register: string | null,
     }): Promise<FromShopfrontReturns["REGISTER_CHANGED"]> {
-        this.callback(data);
+        this.callback(data, undefined);
     }
 }

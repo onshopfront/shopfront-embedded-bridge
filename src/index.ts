@@ -1,7 +1,7 @@
 export { Bridge } from "./Bridge";
 export { Button } from "./Actions/Button";
 export { Redirect } from "./Actions/Redirect";
-export { Toast } from "./Actions/Toast";
+export { Toast, ToastType } from "./Actions/Toast";
 export { Dialog } from "./Actions/Dialog";
 export { SaleKey } from "./Actions/SaleKey";
 export { SellScreenOption } from "./EmitableEvents/SellScreenOption";

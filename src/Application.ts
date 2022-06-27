@@ -5,28 +5,30 @@ import {
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
-    FromShopfrontReturns, RegisterChangedEvent,
+    FromShopfrontReturns,
+    RegisterChangedEvent,
     ToShopfront
 } from "./ApplicationEvents";
-import {Ready} from "./Events/Ready";
-import {Serializable} from "./Common/Serializable";
-import {Button} from "./Actions/Button";
-import {RequestSettings} from "./Events/RequestSettings";
-import {RequestButtons} from "./Events/RequestButtons";
+import { Ready } from "./Events/Ready";
+import { Serializable } from "./Common/Serializable";
+import { Button } from "./Actions/Button";
+import { RequestSettings } from "./Events/RequestSettings";
+import { RequestButtons } from "./Events/RequestButtons";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
-import {RequestTableColumns} from "./Events/RequestTableColumns";
-import {RequestSellScreenOptions} from "./Events/RequestSellScreenOptions";
-import {BaseEmitableEvent} from "./EmitableEvents/BaseEmitableEvent";
-import {Sale} from "./APIs/CurrentSale";
-import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
-import {InternalPageMessage} from "./Events/InternalPageMessage";
-import {RegisterChanged} from "./Events/RegisterChanged";
-import {Database} from "./APIs/Database/Database";
+import { RequestTableColumns } from "./Events/RequestTableColumns";
+import { RequestSellScreenOptions } from "./Events/RequestSellScreenOptions";
+import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent";
+import { Sale } from "./APIs/CurrentSale";
+import { ShopfrontSaleState } from "./APIs/CurrentSale/ShopfrontSaleState";
+import { InternalPageMessage } from "./Events/InternalPageMessage";
+import { RegisterChanged } from "./Events/RegisterChanged";
+import { Database } from "./APIs/Database/Database";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
 import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions";
 import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 import { SaleComplete } from "./Events/SaleComplete";
+import { BaseEvent } from "./Events/BaseEvent";
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -37,7 +39,10 @@ export class Application {
     protected outlet   : string | null;
     protected user     : string | null;
     protected listeners: {
-        [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<Function, FromShopfront[key]>;
+        [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<
+            (...args: Array<unknown>) => void,
+            FromShopfront[key] & BaseEvent
+        >;
     } = {
         READY                        : new Map(),
         REQUEST_SETTINGS             : new Map(),
@@ -73,10 +78,14 @@ export class Application {
         this.bridge.destroy();
     }
 
-    protected handleEvent = (event: keyof FromShopfront | keyof FromShopfrontInternal, data: any, id: string) => {
+    protected handleEvent = (
+        event: keyof FromShopfront | keyof FromShopfrontInternal,
+        data: Record<string, unknown>,
+        id: string
+    ) => {
         if(event === "READY") {
             this.isReady = true;
-            this.key     = data.key;
+            this.key     = data.key as string;
             data = {
                 outlet  : data.outlet,
                 register: data.register,
@@ -84,7 +93,7 @@ export class Application {
         }
 
         if(event === "CALLBACK") {
-            this.handleEventCallback(data);
+            this.handleEventCallback(data as { id?: string; data: unknown });
             return;
         }
 
@@ -93,7 +102,7 @@ export class Application {
                 return;
             }
 
-            this.key = data.key;
+            this.key = data.key as string;
             return;
         } else if(event === "LOCATION_CHANGED") {
             // Unregister all serialized listeners as they're no longer displayed
@@ -112,7 +121,11 @@ export class Application {
         this.emit(event, data, id);
     };
 
-    protected emit(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, data: any = {}, id: string) {
+    protected emit(
+        event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
+        data: Record<string, unknown> = {},
+        id: string
+    ) {
         if(directShopfrontEvents.includes(event as unknown as DirectShopfrontEvent)) {
             event = (event as DirectShopfrontEvent);
 
@@ -144,7 +157,7 @@ export class Application {
             return this.bridge.sendMessage(ToShopfront.NOT_LISTENING_TO_EVENT, event, id);
         }
 
-        for(let e of this.listeners[event].values()) {
+        for(const e of this.listeners[event].values()) {
             results.push(e.emit(data) as Promise<FromShopfrontReturns[typeof event]>);
         }
 
@@ -206,20 +219,25 @@ export class Application {
         event: DirectShopfrontEvent,
         callback: (event: D) => MaybePromise<void>
     ): void;
-    public addEventListener(event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent, callback: Function) {
-        if(directShopfrontEvents.includes(event as any)) {
+    public addEventListener(
+        event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
+        callback: (...args: Array<unknown>) => void
+    ) {
+        if(directShopfrontEvents.includes(event as DirectShopfrontEvent)) {
             event = (event as DirectShopfrontEvent);
 
             if(typeof this.directListeners[event] === "undefined") {
                 this.directListeners[event] = new Set();
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.directListeners[event]!.add(callback as () => void);
 
             return;
         }
 
-        let c = null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let c: BaseEvent<any, any, any, any, any> | undefined;
 
         switch(event) {
             case "READY":
@@ -244,7 +262,7 @@ export class Application {
                 break;
             case "INTERNAL_PAGE_MESSAGE":
                 c = new InternalPageMessage(callback as FromShopfrontCallbacks["INTERNAL_PAGE_MESSAGE"], this);
-                this.listeners[event].set(callback, c);
+                this.listeners[event].set(callback, c as InternalPageMessage);
                 break;
             case "REGISTER_CHANGED":
                 c = new RegisterChanged(callback as FromShopfrontCallbacks["REGISTER_CHANGED"]);
@@ -260,7 +278,7 @@ export class Application {
                 break;
             case "REQUEST_SALE_KEYS":
                 c = new RequestSaleKeys(callback as FromShopfrontCallbacks["REQUEST_SALE_KEYS"]);
-                this.listeners[event].set(callback, c);
+                this.listeners[event].set(callback, c as RequestSaleKeys);
                 break;
             case "SALE_COMPLETE":
                 c = new SaleComplete(callback as FromShopfrontCallbacks["SALE_COMPLETE"]);
@@ -268,7 +286,7 @@ export class Application {
                 break;
         }
 
-        if(c === null) {
+        if(typeof c === "undefined") {
             throw new TypeError(`${event} has not been defined`);
         }
 
@@ -284,9 +302,9 @@ export class Application {
 
     public removeEventListener(
         event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
-        callback: (...args: Array<any>) => MaybePromise<any>
+        callback: (...args: Array<unknown>) => MaybePromise<void>
     ) {
-        if(directShopfrontEvents.includes(event as any)) {
+        if(directShopfrontEvents.includes(event as DirectShopfrontEvent)) {
             this.directListeners[event as DirectShopfrontEvent]?.delete(callback);
             return;
         }
@@ -294,9 +312,9 @@ export class Application {
         this.listeners[event as keyof Omit<FromShopfront, "CALLBACK">].delete(callback);
     }
 
-    public send(item: BaseEmitableEvent<any>): void;
-    public send(item: Serializable<any>): void;
-    public send(item: any): void {
+    public send(item: BaseEmitableEvent<unknown>): void;
+    public send(item: Serializable<unknown>): void;
+    public send(item: BaseEmitableEvent<unknown> | Serializable<unknown>): void {
         if(item instanceof Button) {
             throw new TypeError("You cannot send Buttons to Shopfront without Shopfront requesting them");
         }
@@ -327,12 +345,12 @@ export class Application {
         return () => this.bridge.sendMessage(ToShopfront.LOAD, false);
     }
 
-    protected handleEventCallback(data: {id?: string, data: any}) {
+    protected handleEventCallback(data: { id?: string, data: unknown }) {
         if(typeof data.id === "undefined") {
             return;
         }
 
-        let id = data.id;
+        const id = data.id;
 
         ActionEventRegistrar.fire(id, data.data);
     }
@@ -347,6 +365,10 @@ export class Application {
         return this.key;
     }
 
+    protected dataIsSaleEvent(data: Record<string, unknown>): data is { requestId: string; saleState: ShopfrontSaleState | false } {
+        return data.requestId === "string" && (data.saleState === false || typeof data.saleState === "object");
+    }
+
     /**
      * Get the current sale on the sell screen, if the current device is not a register
      * then this will return false.
@@ -357,15 +379,14 @@ export class Application {
         const saleRequest = `SaleRequest-${Date.now().toString()}`;
 
         const promise: Promise<ShopfrontSaleState | false> = new Promise(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
                 if(event !== "RESPONSE_CURRENT_SALE") {
                     return;
                 }
 
-                data = data as {
-                    requestId: string,
-                    saleState: ShopfrontSaleState | false,
-                };
+                if(!this.dataIsSaleEvent(data)) {
+                    return;
+                }
 
                 if(data.requestId !== saleRequest) {
                     return;
@@ -391,6 +412,18 @@ export class Application {
         return new Sale(this, saleState);
     }
 
+    protected dataIsLocation(data: Record<string, unknown>): data is {
+        requestId: string;
+        register: string | null;
+        outlet: string | null;
+        user: string | null;
+    } {
+        return typeof data.requestId === "string" &&
+            (typeof data.register === "string" || data.register === null) &&
+            (typeof data.outlet === "string" || data.outlet === null) &&
+            (typeof data.user === "string" || data.user === null);
+    }
+
     /**
      * Get the location from Shopfront
      */
@@ -406,17 +439,14 @@ export class Application {
             outlet  : string | null;
             user    : string | null;
         }>(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
                 if(event !== "RESPONSE_LOCATION") {
                     return;
                 }
 
-                data = data as {
-                    requestId: string;
-                    register: string | null;
-                    outlet: string | null;
-                    user: string | null;
-                };
+                if(!this.dataIsLocation(data)) {
+                    return;
+                }
 
                 if(data.requestId !== locationRequest) {
                     return;
@@ -449,20 +479,26 @@ export class Application {
         });
     }
 
+    protected dataIsOption<TValueType>(data: Record<string, unknown>): data is {
+        requestId: string;
+        option: string;
+        value: TValueType | undefined;
+    } {
+        return typeof data.requestId === "string" && typeof data.option === "string";
+    }
+
     public async getOption<TValueType>(option: string, defaultValue: TValueType): Promise<TValueType> {
         const request = `OptionRequest-${Date.now().toString()}`;
 
         const promise = new Promise<TValueType | undefined>(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
                 if(event !== "RESPONSE_OPTION") {
                     return;
                 }
 
-                data = data as {
-                    requestId: string;
-                    option: string;
-                    value: TValueType | undefined;
-                };
+                if(!this.dataIsOption<TValueType>(data)) {
+                    return;
+                }
 
                 if(data.requestId !== request) {
                     return;
@@ -470,10 +506,10 @@ export class Application {
 
                 this.bridge.removeEventListener(listener);
                 res(data.value);
-            }
+            };
 
             this.bridge.addEventListener(listener);
-        })
+        });
 
         this.bridge.sendMessage(ToShopfront.GET_OPTION, {
             requestId: request,

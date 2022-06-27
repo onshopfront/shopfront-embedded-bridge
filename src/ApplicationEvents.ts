@@ -1,14 +1,14 @@
-import {Ready} from "./Events/Ready";
-import {Button} from "./Actions/Button";
-import {RequestSettings} from "./Events/RequestSettings";
-import {RequestButtons} from "./Events/RequestButtons";
-import {Callback} from "./Events/Callback";
-import {RequestTableColumns} from "./Events/RequestTableColumns";
-import {RequestSellScreenOptions, SellScreenOption} from "./Events/RequestSellScreenOptions";
-import {ShopfrontSaleState} from "./APIs/CurrentSale/ShopfrontSaleState";
-import {InternalPageMessage} from "./Events/InternalPageMessage";
-import {InternalMessageSource} from "./APIs/InternalMessages/InternalMessageSource";
-import {RegisterChanged} from "./Events/RegisterChanged";
+import { Ready } from "./Events/Ready";
+import { Button } from "./Actions/Button";
+import { RequestSettings } from "./Events/RequestSettings";
+import { RequestButtons } from "./Events/RequestButtons";
+import { Callback } from "./Events/Callback";
+import { RequestTableColumns } from "./Events/RequestTableColumns";
+import { RequestSellScreenOptions, SellScreenOption } from "./Events/RequestSellScreenOptions";
+import { ShopfrontSaleState } from "./APIs/CurrentSale/ShopfrontSaleState";
+import { InternalPageMessage } from "./Events/InternalPageMessage";
+import { InternalMessageSource } from "./APIs/InternalMessages/InternalMessageSource";
+import { RegisterChanged } from "./Events/RegisterChanged";
 import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct";
 import { MaybePromise } from "./Utilities/MiscTypes";
 import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions";
@@ -41,10 +41,6 @@ export enum ToShopfront {
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
     INTERNAL_PAGE_MESSAGE     = "INTERNAL_PAGE_MESSAGE",
     TABLE_UPDATE              = "TABLE_UPDATE",
-}
-
-export enum WithinApplication {
-
 }
 
 export interface FromShopfrontReturns {
@@ -91,7 +87,7 @@ export interface FromShopfrontReturns {
 export interface InternalPageMessageEvent {
     method   : "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS" | "EXTERNAL_APPLICATION",
     url      : string,
-    message  : any,
+    message  : unknown,
     reference: InternalMessageSource,
 }
 

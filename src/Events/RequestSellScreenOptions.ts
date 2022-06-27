@@ -1,6 +1,7 @@
 import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
 import {Bridge} from "..";
 import {BaseEvent} from "./BaseEvent";
+import { MaybePromise } from "../Utilities/MiscTypes";
 
 export interface SellScreenOption {
     url  : string,
@@ -8,7 +9,11 @@ export interface SellScreenOption {
     id?  : string,
 }
 
-export class RequestSellScreenOptions extends BaseEvent {
+export class RequestSellScreenOptions extends BaseEvent<
+    undefined,
+    MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
+    FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]
+> {
     constructor(callback: FromShopfrontCallbacks["REQUEST_SELL_SCREEN_OPTIONS"]) {
         super(callback);
     }
@@ -30,8 +35,9 @@ export class RequestSellScreenOptions extends BaseEvent {
         }
     }
 
-    public async emit(data: {}): Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]> {
-        let result = await Promise.resolve(this.callback());
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]> {
+        let result = await this.callback(undefined, undefined);
 
         if(!Array.isArray(result)) {
             result = [result];

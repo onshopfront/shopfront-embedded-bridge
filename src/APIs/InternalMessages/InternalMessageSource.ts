@@ -15,7 +15,7 @@ export class InternalMessageSource {
         this.url = url;
     }
 
-    public send(message: any) {
+    public send(message: unknown) {
         this.application.send(new InternalMessage(this.method, this.url, message));
     }
 }

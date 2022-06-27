@@ -65,7 +65,7 @@ interface CompletedSaleProduct {
     requestPrice?: boolean;
     lockQuantity: boolean;
     metaData: {
-        [key: string]: any;
+        [key: string]: unknown;
     };
 }
 
@@ -122,6 +122,6 @@ export class SaleComplete extends BaseEvent {
     }
 
     async emit(data: CompletedSale): Promise<FromShopfrontReturns["SALE_COMPLETE"]> {
-        this.callback(data);
+        this.callback(data, undefined);
     }
 }

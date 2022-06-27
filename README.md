@@ -1,4 +1,5 @@
-#Shopfront Embedded Bridge
+# Shopfront Embedded Bridge
+
 This is the bridge library to use with the Shopfront Embedded API.
 
 For more information, check out the documentation on the 

@@ -1,6 +1,12 @@
 import { BaseEvent } from "./BaseEvent";
-import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents";
+import {
+    FormatIntegratedProductEvent,
+    FromShopfrontCallbacks,
+    FromShopfrontReturns,
+    ToShopfront
+} from "../ApplicationEvents";
 import { Bridge } from "../Bridge";
+import { MaybePromise } from "../Utilities/MiscTypes";
 
 export type FormattedSaleProductType =
     "Normal" |
@@ -71,11 +77,15 @@ export interface FormattedSaleProduct {
     requestPrice?: boolean;
     lockQuantity: boolean;
     metaData: {
-        [key: string]: any;
+        [key: string]: unknown;
     };
 }
 
-export class FormatIntegratedProduct extends BaseEvent {
+export class FormatIntegratedProduct extends BaseEvent<
+    FormatIntegratedProductEvent,
+    MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
+    FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]
+> {
     constructor(callback: FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]) {
         super(callback);
     }
@@ -83,7 +93,7 @@ export class FormatIntegratedProduct extends BaseEvent {
     public async emit(
         data: { product: FormattedSaleProduct }
     ): Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]> {
-        const result = await Promise.resolve(this.callback(data));
+        const result = await this.callback(data, undefined);
 
         if(typeof result !== "object" || result === null) {
             throw new TypeError("Callback must return an object");
@@ -98,7 +108,7 @@ export class FormatIntegratedProduct extends BaseEvent {
         id: string
     ) {
         if(data.length > 1) {
-            throw new Error("Multiple integrated product responses found, please ensure you are only subscribed to FORMAT_INTEGRATED_PRODUCT once")
+            throw new Error("Multiple integrated product responses found, please ensure you are only subscribed to FORMAT_INTEGRATED_PRODUCT once");
         }
 
         bridge.sendMessage(ToShopfront.RESPONSE_FORMAT_PRODUCT, data[0], id);

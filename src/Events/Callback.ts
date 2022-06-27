@@ -6,7 +6,7 @@ export class Callback extends BaseEvent {
         super(callback);
     }
 
-    async emit(data: {}): Promise<FromShopfrontReturns["CALLBACK"]> {
-        return this.callback();
+    async emit(): Promise<FromShopfrontReturns["CALLBACK"]> {
+        return this.callback(undefined, undefined);
     }
 }

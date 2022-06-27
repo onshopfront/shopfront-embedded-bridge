@@ -7,7 +7,7 @@ interface ApplicationOptions {
 }
 
 interface ApplicationEventListener {
-    (event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal, data: {}, id: string): void;
+    (event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal, data: Record<string, unknown>, id: string): void;
 }
 
 export class Bridge {
@@ -26,7 +26,7 @@ export class Bridge {
     protected key        : string;
     protected url        : URL;
     protected listeners  : Array<ApplicationEventListener> = [];
-    protected hasListener: boolean = false;
+    protected hasListener = false;
     protected target     : Window | null = null;
 
     constructor(key: string, url: string) {
@@ -159,7 +159,7 @@ export class Bridge {
     }
 
     public removeEventListener(listener: ApplicationEventListener) {
-        let index = this.listeners.indexOf(listener);
+        const index = this.listeners.indexOf(listener);
 
         if(index === -1) {
             return;

@@ -15,16 +15,15 @@ export class Button extends BaseAction<Button> {
                     properties: [label, icon],
                     events    : {},
                     type      : "Button"
-                }
+                };
             } else {
                 return label;
             }
         })(), Button);
 
         if(typeof icon === "undefined" && typeof label !== "string") {
-            label      = label as Serialized<Button>;
-            this.label = label.properties[0];
-            this.icon  = label.properties[1];
+            this.label = label.properties[0] as string;
+            this.icon  = label.properties[1] as string;
         } else {
             this.label = label as string;
 

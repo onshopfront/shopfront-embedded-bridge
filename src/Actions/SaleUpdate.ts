@@ -27,11 +27,11 @@ export interface SaleUpdateChanges {
         cashout?: number,
         status?: ShopfrontSalePaymentStatus,
     },
-    SALE_CANCEL : {},
+    SALE_CANCEL : Record<string, never>,
     CUSTOMER_ADD: {
         id: string,
     },
-    CUSTOMER_REMOVE   : {},
+    CUSTOMER_REMOVE   : Record<string, never>,
     SALE_EXTERNAL_NOTE: {
         note: string,
         append?: boolean,
@@ -64,16 +64,15 @@ export class SaleUpdate<K extends keyof SaleUpdateChanges> extends BaseAction<Sa
                     properties: [type, data],
                     events    : {},
                     type      : "SaleUpdate"
-                }
+                };
             } else {
                 return type;
             }
         })(), SaleUpdate);
 
         if(typeof data === "undefined" && typeof type !== "string") {
-            type      = type as Serialized<SaleUpdate<K>>;
-            this.type = type.properties[0];
-            this.data = type.properties[1];
+            this.type = type.properties[0] as K;
+            this.data = type.properties[1] as SaleUpdateChanges[K];
         } else {
             this.type = type as K;
 

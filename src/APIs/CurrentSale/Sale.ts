@@ -223,7 +223,7 @@ export class Sale {
             amount: payment.getAmount(),
             cashout: payment.getCashout(),
             status: payment.getStatus(),
-        }))
+        }));
     }
 
     /**
@@ -257,7 +257,7 @@ export class Sale {
      * @param {boolean} append Whether to append the note to the current sale note.
      * @returns {Promise<void>}
      */
-    public setExternalNote(note: string, append: boolean = false): Promise<void> {
+    public setExternalNote(note: string, append = false): Promise<void> {
         return this.sendSaleUpdate(new SaleUpdate("SALE_EXTERNAL_NOTE", {
             note,
             append,
@@ -271,7 +271,7 @@ export class Sale {
      * @param {boolean} append Whether to append the note to the current sale note.
      * @returns {Promise<void>}
      */
-    public setInternalNote(note: string, append: boolean = false): Promise<void> {
+    public setInternalNote(note: string, append = false): Promise<void> {
         return this.sendSaleUpdate(new SaleUpdate("SALE_INTERNAL_NOTE", {
             note,
             append,

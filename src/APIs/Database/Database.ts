@@ -12,8 +12,10 @@ export class Database {
         const databaseRequest = `DatabaseRequest-${Math.random()}-${Date.now()}`;
 
         const promise: Promise<ExpectedResult> = new Promise((res, rej) => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: any) => {
-                if(event !== "RESPONSE_DATABASE_REQUEST") {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+                if(
+                    event !== "RESPONSE_DATABASE_REQUEST"
+                ) {
                     return;
                 }
 
@@ -28,7 +30,7 @@ export class Database {
                     return;
                 }
 
-                res(data.results);
+                res(data.results as ExpectedResult);
             };
 
             this.bridge.addEventListener(listener);

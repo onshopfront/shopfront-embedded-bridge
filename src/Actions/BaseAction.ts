@@ -3,17 +3,22 @@ import {Serializable, SerializableStatic, Serialized} from "../Common/Serializab
 import {staticImplements} from "../Utilities/Static";
 import ActionEventRegistrar from "../Utilities/ActionEventRegistrar";
 
+interface BaseActionConstructor<T> {
+    new(...args: Array<never>): BaseAction<T>;
+    new(serialized: Serialized<T>): BaseAction<T>;
+}
+
 @staticImplements<SerializableStatic>()
 export class BaseAction<T> extends EventEmitter {
     protected target    : string;
-    protected events    : Array<{callback: Function, type: string, id: string}>;
-    protected properties: Array<any>;
+    protected events    : Array<{ callback: (...args: Array<unknown>) => void, type: string, id: string }>;
+    protected properties: Array<unknown>;
 
     public static serializedRegistry: {
-        [id: string]: any,
+        [id: string]: BaseActionConstructor<unknown>
     } = {};
 
-    constructor(serialized: Serialized<T>, type: any) {
+    constructor(serialized: Serialized<T>, type: BaseActionConstructor<T>) {
         if(new.target === BaseAction) {
             throw new TypeError("You cannot construct BaseAction instances directly");
         }
@@ -42,23 +47,24 @@ export class BaseAction<T> extends EventEmitter {
             properties: this.serializeProperties(this.properties),
             events    : events,
             type      : this.target,
-        }
+        };
     }
 
-    protected serializeProperties(properties: Array<any>): Array<any> {
-        const results: Array<any> = [];
+    protected serializeProperties(properties: Array<unknown>): Array<unknown> {
+        const results: Array<unknown> = [];
 
         // Loop through current layer of properties
         for (let i = 0, l = properties.length; i < l; i++) {
-            if (Array.isArray(properties[i])) {
+            const property = properties[i];
+            if (Array.isArray(property)) {
                 // Prepare to recurse through next layer of properties
-                results.push(this.serializeProperties(properties[i]));
-            } else if (properties[i] instanceof BaseAction) {
+                results.push(this.serializeProperties(property));
+            } else if (property instanceof BaseAction) {
                 // Serialize property
-                results.push(properties[i].serialize());
+                results.push(property.serialize());
             } else {
                 // Assume that the property is already serializable
-                results.push(properties[i]);
+                results.push(property);
             }
         }
 
@@ -66,10 +72,10 @@ export class BaseAction<T> extends EventEmitter {
     }
 
     public static deserialize<T extends Serializable<T>>(serialized: Serialized<T>): T {
-        return new BaseAction.serializedRegistry[serialized.type](serialized);
+        return new BaseAction.serializedRegistry[serialized.type](serialized) as unknown as T;
     }
 
-    public addEventListener(event: string, callback: Function): void {
+    public addEventListener(event: string, callback: (...args: Array<unknown>) => void): void {
         super.addEventListener(event, callback);
 
         const id = `${Date.now()}-${event}-${Math.random()}`;
@@ -82,7 +88,7 @@ export class BaseAction<T> extends EventEmitter {
         });
     }
 
-    public removeEventListener(event: string, callback: Function): void {
+    public removeEventListener(event: string, callback: (...args: Array<unknown>) => void): void {
         super.removeEventListener(event, callback);
 
         for(let i = 0, l = this.events.length; i < l; i++) {
@@ -107,7 +113,7 @@ export class BaseAction<T> extends EventEmitter {
         }
     }
 
-    public handleRegistrarEvent(id: string, data: any) {
+    public handleRegistrarEvent(id: string, data: unknown) {
         for(let i = 0, l = this.events.length; i < l; i++) {
             if(this.events[i].id !== id) {
                 continue;

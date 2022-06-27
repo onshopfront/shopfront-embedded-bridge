@@ -1,20 +1,27 @@
-import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
-import {Bridge} from "..";
-import {BaseEvent} from "./BaseEvent";
+import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents";
+import { Bridge } from "..";
+import { BaseEvent } from "./BaseEvent";
 import { CustomerListOption } from "../Actions/CustomerListOption";
+import { MaybePromise } from "../Utilities/MiscTypes";
 
 export interface SellScreenCustomerListOption {
     contents: string,
     onClick: () => void,
 }
 
-export class RequestCustomerListOptions extends BaseEvent {
+export class RequestCustomerListOptions extends BaseEvent<
+    Record<string, unknown>,
+    MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
+    FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"],
+    undefined
+> {
     constructor(callback: FromShopfrontCallbacks["REQUEST_CUSTOMER_LIST_OPTIONS"]) {
         super(callback);
     }
 
-    public async emit(data: {}): Promise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]> {
-        let result = await Promise.resolve(this.callback());
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public async emit(_: Record<string, unknown>): Promise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]> {
+        let result = await this.callback(undefined, undefined);
 
         if(!Array.isArray(result)) {
             result = [result];

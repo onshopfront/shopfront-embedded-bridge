@@ -1,14 +1,21 @@
 import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
 import {BaseEvent} from "./BaseEvent";
 import {Bridge} from "../Bridge";
+import { MaybePromise } from "../Utilities/MiscTypes";
 
-export class RequestTableColumns extends BaseEvent {
+export class RequestTableColumns extends BaseEvent<
+    { location: string; context: unknown },
+    MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
+    FromShopfrontReturns["REQUEST_TABLE_COLUMNS"],
+    string,
+    unknown
+> {
     constructor(callback: FromShopfrontCallbacks["REQUEST_TABLE_COLUMNS"]) {
         super(callback);
     }
 
-    async emit(data: {location: string, context: any}): Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]> {
-        const result = await Promise.resolve(this.callback(data.location, data.context));
+    async emit(data: { location: string, context: unknown }): Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]> {
+        const result = await this.callback(data.location, data.context);
 
         if(typeof result !== "object") {
             throw new TypeError("Callback must return an object");

@@ -1,7 +1,7 @@
-import {FromShopfrontCallbacks, FromShopfrontReturns} from "../ApplicationEvents";
+import { FromShopfrontCallbacks, FromShopfrontReturns, RegisterChangedEvent } from "../ApplicationEvents";
 import {BaseEvent} from "./BaseEvent";
 
-export class Ready extends BaseEvent {
+export class Ready extends BaseEvent<RegisterChangedEvent> {
     constructor(callback: FromShopfrontCallbacks["READY"]) {
         super(callback);
     }
@@ -15,6 +15,6 @@ export class Ready extends BaseEvent {
             outlet: data.outlet,
             register: data.register,
             user: data.user,
-        });
+        }, undefined);
     }
 }

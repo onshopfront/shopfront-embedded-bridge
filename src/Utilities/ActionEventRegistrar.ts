@@ -1,13 +1,13 @@
 import { BaseAction } from "../Actions/BaseAction";
 
 class ActionEventRegistrar {
-    events: { [id: string]: BaseAction<any> };
+    events: { [id: string]: BaseAction<undefined> };
 
     constructor() {
         this.events = {};
     }
 
-    public add(id: string, action: BaseAction<any>) {
+    public add(id: string, action: BaseAction<undefined>) {
         this.events[id] = action;
     }
 
@@ -15,7 +15,7 @@ class ActionEventRegistrar {
         delete this.events[id];
     }
 
-    public fire(id: string, data: any) {
+    public fire(id: string, data: unknown) {
         if(typeof this.events[id] === "undefined") {
             // The event must have stopped listening
             return;

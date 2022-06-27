@@ -27,7 +27,7 @@ export class Dialog extends BaseAction<Dialog> {
                     properties: [type, closeable, header, content, buttons],
                     events    : {},
                     type      : "Dialog",
-                }
+                };
             } else {
                 return type;
             }
@@ -35,11 +35,11 @@ export class Dialog extends BaseAction<Dialog> {
 
         if(typeof header === "undefined") {
             type           = type as Serialized<Dialog>;
-            this.type      = type.properties[0];
-            this.closeable = type.properties[1];
-            this.header    = type.properties[2];
-            this.content   = type.properties[3];
-            this.buttons   = type.properties[4]; // Note: This should be deserialized
+            this.type      = type.properties[0] as DialogType;
+            this.closeable = type.properties[1] as boolean;
+            this.header    = type.properties[2] as string;
+            this.content   = type.properties[3] as string;
+            this.buttons   = type.properties[4] as Array<Button>; // Note: This should be deserialized
         } else {
             this.type      = type as DialogType;
             this.closeable = closeable as boolean;

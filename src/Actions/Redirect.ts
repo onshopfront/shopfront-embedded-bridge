@@ -14,15 +14,14 @@ class InternalRedirect extends BaseAction<InternalRedirect> {
                     properties: [to],
                     events    : {},
                     type      : "InternalRedirect"
-                }
+                };
             } else {
                 return to;
             }
         })(), InternalRedirect);
 
         if(typeof to !== "string") {
-            to      = to as Serialized<InternalRedirect>;
-            this.to = to.properties[0];
+            this.to = to.properties[0] as string;
         } else {
             this.to = to;
         }
@@ -42,7 +41,7 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
                     properties: [to.href],
                     events    : {},
                     type      : "ExternalRedirect",
-                }
+                };
             } else {
                 return to;
             }
@@ -51,8 +50,7 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
         if(to instanceof URL) {
             this.to = to;
         } else {
-            to      = to as Serialized<ExternalRedirect>;
-            this.to = new URL(to.properties[0]);
+            this.to = new URL(to.properties[0] as string);
         }
     }
 }

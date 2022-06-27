@@ -1,10 +1,12 @@
+import { MaybePromise } from "../Utilities/MiscTypes";
+
 export class EventEmitter {
     protected supportedEvents: Array<string> = [];
     private listeners: {
-        [event: string]: Array<Function>
+        [event: string]: Array<(...args: Array<unknown>) => MaybePromise<unknown>>
     } = {};
 
-    public addEventListener(event: string, callback: Function): void {
+    public addEventListener(event: string, callback: (...args: Array<unknown>) => MaybePromise<unknown>): void {
         if(!this.supportedEvents.includes(event)) {
             throw new TypeError(`${event} is not a supported event`);
         }
@@ -16,7 +18,7 @@ export class EventEmitter {
         this.listeners[event].push(callback);
     }
 
-    public removeEventListener(event: string, callback: Function): void {
+    public removeEventListener(event: string, callback: (...args: Array<unknown>) => MaybePromise<unknown>): void {
         if(!this.supportedEvents.includes(event)) {
             throw new TypeError(`${event} is not a supported event`);
         }
@@ -37,12 +39,12 @@ export class EventEmitter {
         ];
     }
 
-    protected async emit(event: string, ...args: any[]): Promise<Array<any>> {
+    protected async emit(event: string, ...args: Array<unknown>): Promise<Array<unknown>> {
         if(typeof this.listeners[event] === "undefined") {
             return Promise.resolve([]);
         }
 
-        const events: Array<Promise<any>> = [];
+        const events: Array<MaybePromise<unknown>> = [];
 
         for(let i = 0, l = this.listeners[event].length; i < l; i++) {
             events.push(this.listeners[event][i](...args));
