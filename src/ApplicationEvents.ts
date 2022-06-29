@@ -15,6 +15,7 @@ import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Even
 import { SaleKey } from "./Actions/SaleKey";
 import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 import { CompletedSale, SaleComplete } from "./Events/SaleComplete";
+import { UIPipeline } from "./Events/UIPipeline";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -36,6 +37,7 @@ export enum ToShopfront {
     PRINT_RECEIPT                  = "PRINT_RECEIPT",
     REDIRECT                       = "REDIRECT",
     GET_OPTION                     = "GET_OPTION",
+    RESPONSE_UI_PIPELINE           = "RESPONSE_UI_PIPELINE",
 
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
@@ -82,6 +84,7 @@ export interface FromShopfrontReturns {
     REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>,
     REQUEST_SALE_KEYS: Array<SaleKey>,
     SALE_COMPLETE: void;
+    UI_PIPELINE: Array<UIPipelineResponse>;
 }
 
 export interface InternalPageMessageEvent {
@@ -105,6 +108,15 @@ export interface SaleCompletedEvent {
     sale: CompletedSale;
 }
 
+export type UIPipelineResponse = {
+    name: string;
+    content: string;
+};
+
+export interface UIPipelineContext {
+    location: string;
+}
+
 export interface FromShopfrontCallbacks {
     READY                        : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
     REQUEST_SETTINGS             : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
@@ -118,6 +130,7 @@ export interface FromShopfrontCallbacks {
     REQUEST_CUSTOMER_LIST_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
     REQUEST_SALE_KEYS            : () => MaybePromise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>,
     SALE_COMPLETE                : (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>,
+    UI_PIPELINE                  : (event: Array<UIPipelineResponse>, context: UIPipelineContext) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>,
 }
 
 export interface FromShopfront {
@@ -133,6 +146,7 @@ export interface FromShopfront {
     REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions,
     SALE_COMPLETE                : SaleComplete,
     REQUEST_SALE_KEYS            : RequestSaleKeys,
+    UI_PIPELINE                  : UIPipeline,
 }
 
 export const directShopfrontEvents = [

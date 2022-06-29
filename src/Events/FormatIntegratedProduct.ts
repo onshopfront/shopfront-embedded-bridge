@@ -1,6 +1,5 @@
 import { BaseEvent } from "./BaseEvent";
 import {
-    FormatIntegratedProductEvent,
     FromShopfrontCallbacks,
     FromShopfrontReturns,
     ToShopfront
@@ -82,18 +81,20 @@ export interface FormattedSaleProduct {
 }
 
 export class FormatIntegratedProduct extends BaseEvent<
-    FormatIntegratedProductEvent,
+    { data: { product: FormattedSaleProduct }, context: Record<string, never> },
     MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
-    FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]
+    FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"],
+    { product: FormattedSaleProduct },
+    Record<string, never>
 > {
     constructor(callback: FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]) {
         super(callback);
     }
 
     public async emit(
-        data: { product: FormattedSaleProduct }
+        data: { data: { product: FormattedSaleProduct }, context: Record<string, never> }
     ): Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]> {
-        const result = await this.callback(data, undefined);
+        const result = await this.callback(data.data, data.context);
 
         if(typeof result !== "object" || result === null) {
             throw new TypeError("Callback must return an object");

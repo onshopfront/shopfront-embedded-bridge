@@ -1,33 +1,33 @@
 {
-  "name": "@shopfront/bridge",
-  "version": "1.10.0",
-  "main": "./lib/index.js",
-  "license": "ISC",
-  "description": "The bridge used to embed your application within Shopfront",
-  "homepage": "https://developer.onshopfront.com/documentation/Embedded/Introduction",
-  "bugs": "https://bitbucket.org/sasonline/shopfront-embedded-bridge/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucket.org/sasonline/shopfront-embedded-bridge.git"
-  },
-  "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
-  "contributors": [
-    "Nicholas Clark",
-    "Adam Simpkins"
-  ],
-  "private": false,
-  "devDependencies": {
-    "typescript": "^4.7.4",
-    "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "@typescript-eslint/parser": "^5.29.0",
-    "eslint": "^8.18.0"
-  },
-  "scripts": {
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "yarn run type-check --watch",
-    "build": "npm run-script lint && tsc",
-    "watch": "tsc -w",
-    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --fix"
-  },
-  "dependencies": {}
+    "name": "@shopfront/bridge",
+    "version": "1.10.0",
+    "main": "./lib/index.js",
+    "license": "ISC",
+    "description": "The bridge used to embed your application within Shopfront",
+    "homepage": "https://developer.onshopfront.com/documentation/Embedded/Introduction",
+    "bugs": "https://bitbucket.org/sasonline/shopfront-embedded-bridge/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://bitbucket.org/sasonline/shopfront-embedded-bridge.git"
+    },
+    "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
+    "contributors": [
+        "Nicholas Clark",
+        "Adam Simpkins"
+    ],
+    "private": false,
+    "devDependencies": {
+        "typescript": "^4.7.4",
+        "@typescript-eslint/eslint-plugin": "^5.29.0",
+        "@typescript-eslint/parser": "^5.29.0",
+        "eslint": "^8.18.0"
+    },
+    "scripts": {
+        "type-check": "tsc --noEmit",
+        "type-check:watch": "yarn run type-check --watch",
+        "build": "npm run-script lint && tsc",
+        "watch": "tsc -w",
+        "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --fix"
+    },
+    "dependencies": {}
 }

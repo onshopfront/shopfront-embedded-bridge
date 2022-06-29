@@ -29,6 +29,7 @@ import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions"
 import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 import { SaleComplete } from "./Events/SaleComplete";
 import { BaseEvent } from "./Events/BaseEvent";
+import { UIPipeline } from "./Events/UIPipeline";
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -55,6 +56,7 @@ export class Application {
         REQUEST_CUSTOMER_LIST_OPTIONS: new Map(),
         REQUEST_SALE_KEYS            : new Map(),
         SALE_COMPLETE                : new Map(),
+        UI_PIPELINE                  : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -208,6 +210,13 @@ export class Application {
 
                 return Promise.all(results)
                     .then(res => RequestSaleKeys.respond(this.bridge, res.flat(), id));
+            case "UI_PIPELINE":
+                results = results as Array<Promise<FromShopfrontReturns["UI_PIPELINE"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return UIPipeline.respond(this.bridge, res.flat(), id);
+                    });
         }
     }
 
@@ -282,6 +291,10 @@ export class Application {
                 break;
             case "SALE_COMPLETE":
                 c = new SaleComplete(callback as FromShopfrontCallbacks["SALE_COMPLETE"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "UI_PIPELINE":
+                c = new UIPipeline(callback as FromShopfrontCallbacks["UI_PIPELINE"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
