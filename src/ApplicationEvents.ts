@@ -16,6 +16,7 @@ import { SaleKey } from "./Actions/SaleKey";
 import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 import { CompletedSale, SaleComplete } from "./Events/SaleComplete";
 import { UIPipeline } from "./Events/UIPipeline";
+import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -43,6 +44,7 @@ export enum ToShopfront {
     SELL_SCREEN_OPTION_CHANGE = "SELL_SCREEN_OPTION_CHANGE",
     INTERNAL_PAGE_MESSAGE     = "INTERNAL_PAGE_MESSAGE",
     TABLE_UPDATE              = "TABLE_UPDATE",
+    PIPELINE_TRIGGER          = "PIPELINE_TRIGGER",
 }
 
 export interface FromShopfrontReturns {
@@ -85,6 +87,7 @@ export interface FromShopfrontReturns {
     REQUEST_SALE_KEYS: Array<SaleKey>,
     SALE_COMPLETE: void;
     UI_PIPELINE: Array<UIPipelineResponse>;
+    PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>,
 }
 
 export interface InternalPageMessageEvent {
@@ -113,8 +116,39 @@ export type UIPipelineResponse = {
     content: string;
 };
 
-export interface UIPipelineContext {
+export interface UIPipelineBaseContext {
     location: string;
+}
+
+export interface UIPipelineContext extends UIPipelineBaseContext {
+    trigger?: () => void;
+}
+
+export interface SellScreenPaymentMethod {
+    uuid: string;
+    name: string;
+    type:
+        "global" |
+        "cash" |
+        "eftpos" |
+        "giftcard" |
+        "voucher" |
+        "cheque" |
+        "pc-eftpos" |
+        "linkly-vaa" |
+        "direct-deposit" |
+        "tyro" |
+        "custom";
+    default_pay_exact: boolean;
+    background_colour?: string;
+    text_colour?: string;
+}
+
+export interface PaymentMethodEnabledContext {
+    register: string;
+    customer: false | {
+        uuid: string;
+    };
 }
 
 export interface FromShopfrontCallbacks {
@@ -131,6 +165,7 @@ export interface FromShopfrontCallbacks {
     REQUEST_SALE_KEYS            : () => MaybePromise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>,
     SALE_COMPLETE                : (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>,
     UI_PIPELINE                  : (event: Array<UIPipelineResponse>, context: UIPipelineContext) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>,
+    PAYMENT_METHODS_ENABLED      : (event: Array<SellScreenPaymentMethod>, context: PaymentMethodEnabledContext) => MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>,
 }
 
 export interface FromShopfront {
@@ -147,6 +182,7 @@ export interface FromShopfront {
     SALE_COMPLETE                : SaleComplete,
     REQUEST_SALE_KEYS            : RequestSaleKeys,
     UI_PIPELINE                  : UIPipeline,
+    PAYMENT_METHODS_ENABLED      : PaymentMethodsEnabled,
 }
 
 export const directShopfrontEvents = [

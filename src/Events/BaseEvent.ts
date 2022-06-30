@@ -1,4 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { Bridge } from "../Bridge";
+
 export abstract class BaseEvent<TData = any, TCallbackReturn = void, TEmitReturn = any, TCallbackData = TData, TCallbackContext = undefined> {
     protected callback: (data: TCallbackData, context: TCallbackContext) => TCallbackReturn;
 
@@ -6,5 +8,5 @@ export abstract class BaseEvent<TData = any, TCallbackReturn = void, TEmitReturn
         this.callback = callback;
     }
 
-    public abstract emit(data: TData): Promise<TEmitReturn>;
+    public abstract emit(data: TData, bridge?: Bridge): Promise<TEmitReturn>;
 }

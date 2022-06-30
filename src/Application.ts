@@ -30,6 +30,7 @@ import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 import { SaleComplete } from "./Events/SaleComplete";
 import { BaseEvent } from "./Events/BaseEvent";
 import { UIPipeline } from "./Events/UIPipeline";
+import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -57,6 +58,7 @@ export class Application {
         REQUEST_SALE_KEYS            : new Map(),
         SALE_COMPLETE                : new Map(),
         UI_PIPELINE                  : new Map(),
+        PAYMENT_METHODS_ENABLED      : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -160,7 +162,7 @@ export class Application {
         }
 
         for(const e of this.listeners[event].values()) {
-            results.push(e.emit(data) as Promise<FromShopfrontReturns[typeof event]>);
+            results.push(e.emit(data, this.bridge) as Promise<FromShopfrontReturns[typeof event]>);
         }
 
         // Respond if necessary
@@ -217,6 +219,13 @@ export class Application {
                     .then(res => {
                         return UIPipeline.respond(this.bridge, res.flat(), id);
                     });
+            case "PAYMENT_METHODS_ENABLED":
+                results = results as Array<Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return PaymentMethodsEnabled.respond(this.bridge, res.flat(), id);
+                    });
         }
     }
 
@@ -247,6 +256,7 @@ export class Application {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let c: BaseEvent<any, any, any, any, any> | undefined;
+        event = (event as keyof Omit<FromShopfront, "CALLBACK">);
 
         switch(event) {
             case "READY":
@@ -295,6 +305,10 @@ export class Application {
                 break;
             case "UI_PIPELINE":
                 c = new UIPipeline(callback as FromShopfrontCallbacks["UI_PIPELINE"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "PAYMENT_METHODS_ENABLED":
+                c = new PaymentMethodsEnabled(callback as FromShopfrontCallbacks["PAYMENT_METHODS_ENABLED"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
@@ -379,7 +393,7 @@ export class Application {
     }
 
     protected dataIsSaleEvent(data: Record<string, unknown>): data is { requestId: string; saleState: ShopfrontSaleState | false } {
-        return data.requestId === "string" && (data.saleState === false || typeof data.saleState === "object");
+        return typeof data.requestId === "string" && (data.saleState === false || typeof data.saleState === "object");
     }
 
     /**
