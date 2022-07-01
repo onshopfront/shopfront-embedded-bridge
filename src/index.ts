@@ -6,6 +6,7 @@ export { Dialog } from "./Actions/Dialog";
 export { SaleKey } from "./Actions/SaleKey";
 export { SellScreenOption } from "./EmitableEvents/SellScreenOption";
 export { TableUpdate } from "./EmitableEvents/TableUpdate";
+export { SellScreenPromotionApplicable } from "./EmitableEvents/SellScreenPromotionApplicable";
 export { CompletedSale } from "./Events/SaleComplete";
 export { Application } from "./Application";
 export * as Sales from "./APIs/CurrentSale/index";
