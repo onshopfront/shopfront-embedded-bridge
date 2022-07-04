@@ -1,6 +1,6 @@
 {
     "name": "@shopfront/bridge",
-    "version": "1.10.0",
+    "version": "1.11.0",
     "main": "./lib/index.js",
     "license": "ISC",
     "description": "The bridge used to embed your application within Shopfront",
@@ -17,10 +17,10 @@
     ],
     "private": false,
     "devDependencies": {
-        "typescript": "^4.7.4",
         "@typescript-eslint/eslint-plugin": "^5.29.0",
         "@typescript-eslint/parser": "^5.29.0",
-        "eslint": "^8.18.0"
+        "eslint": "^8.18.0",
+        "typescript": "^4.7.4"
     },
     "scripts": {
         "type-check": "tsc --noEmit",
