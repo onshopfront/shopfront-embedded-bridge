@@ -43,6 +43,9 @@ export interface SaleUpdateChanges {
     SALE_ORDER_REFERENCE: {
         reference: string,
     },
+    SALE_META_DATA: {
+        metaData: Record<string, unknown>,
+    },
     PRODUCT_UPDATE: {
         id: string;
         indexAddress: Array<number>;

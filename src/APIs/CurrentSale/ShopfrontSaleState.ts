@@ -52,4 +52,5 @@ export interface ShopfrontSaleState {
     orderReference: string,
     refundReason: string,
     priceSet: string | null,
+    metaData: Record<string, unknown>,
 }

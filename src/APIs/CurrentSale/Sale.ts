@@ -149,6 +149,15 @@ export class Sale {
     }
 
     /**
+     * Get the current meta data for the sale
+     *
+     * @returns {Record<string, unknown>}
+     */
+    public getMetaData(): Record<string, unknown> {
+        return this.sale.metaData;
+    }
+
+    /**
      * Cancel the current sale in progress.
      *
      * @returns {Promise<void>}
@@ -287,6 +296,17 @@ export class Sale {
     public setOrderReference(reference: string): Promise<void> {
         return this.sendSaleUpdate(new SaleUpdate("SALE_ORDER_REFERENCE", {
             reference,
+        }));
+    }
+
+    /**
+     * Set the meta data of the sale, this will override the previous meta data.
+     *
+     * @param metaData
+     */
+    public setMetaData(metaData: Record<string, unknown>): Promise<void> {
+        return this.sendSaleUpdate(new SaleUpdate("SALE_META_DATA", {
+            metaData,
         }));
     }
 

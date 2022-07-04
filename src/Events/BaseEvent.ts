@@ -1,6 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { Bridge } from "../Bridge";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export abstract class BaseEvent<TData = any, TCallbackReturn = void, TEmitReturn = any, TCallbackData = TData, TCallbackContext = undefined> {
     protected callback: (data: TCallbackData, context: TCallbackContext) => TCallbackReturn;
 
