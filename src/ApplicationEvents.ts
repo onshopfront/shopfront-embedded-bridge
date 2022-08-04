@@ -17,6 +17,7 @@ import { RequestSaleKeys } from "./Events/RequestSaleKeys";
 import { CompletedSale, SaleComplete } from "./Events/SaleComplete";
 import { UIPipeline } from "./Events/UIPipeline";
 import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
+import { AudioPermissionChange } from "./Events/AudioPermissionChange";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -40,6 +41,11 @@ export enum ToShopfront {
     GET_OPTION                     = "GET_OPTION",
     RESPONSE_UI_PIPELINE           = "RESPONSE_UI_PIPELINE",
 
+    // Audio Events
+    AUDIO_REQUEST_PERMISSION = "AUDIO_REQUEST_PERMISSION",
+    AUDIO_PRELOAD            = "AUDIO_PRELOAD",
+    AUDIO_PLAY               = "AUDIO_PLAY",
+
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE        = "SELL_SCREEN_OPTION_CHANGE",
     INTERNAL_PAGE_MESSAGE            = "INTERNAL_PAGE_MESSAGE",
@@ -47,6 +53,8 @@ export enum ToShopfront {
     PIPELINE_TRIGGER                 = "PIPELINE_TRIGGER",
     SELL_SCREEN_PROMOTION_APPLICABLE = "SELL_SCREEN_PROMOTION_APPLICABLE",
 }
+
+export type SoundEvents = ToShopfront.AUDIO_REQUEST_PERMISSION | ToShopfront.AUDIO_PRELOAD | ToShopfront.AUDIO_PLAY;
 
 export interface FromShopfrontReturns {
     READY           : void,
@@ -83,12 +91,18 @@ export interface FromShopfrontReturns {
         outlet: string | null;
         user: string | null;
     },
+    RESPONSE_AUDIO_REQUEST: {
+        requestId: string;
+        success: boolean;
+        message?: string;
+    },
     FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent,
     REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>,
     REQUEST_SALE_KEYS: Array<SaleKey>,
     SALE_COMPLETE: void;
     UI_PIPELINE: Array<UIPipelineResponse>;
     PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>,
+    AUDIO_PERMISSION_CHANGE: void;
 }
 
 export interface InternalPageMessageEvent {
@@ -110,6 +124,10 @@ export interface FormatIntegratedProductEvent {
 
 export interface SaleCompletedEvent {
     sale: CompletedSale;
+}
+
+export interface AudioPermissionChangeEvent {
+    permitted: boolean;
 }
 
 export type UIPipelineResponse = {
@@ -167,6 +185,7 @@ export interface FromShopfrontCallbacks {
     SALE_COMPLETE                : (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>,
     UI_PIPELINE                  : (event: Array<UIPipelineResponse>, context: UIPipelineContext) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>,
     PAYMENT_METHODS_ENABLED      : (event: Array<SellScreenPaymentMethod>, context: PaymentMethodEnabledContext) => MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>,
+    AUDIO_PERMISSION_CHANGE      : (event: AudioPermissionChangeEvent) => MaybePromise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]>,
 }
 
 export interface FromShopfront {
@@ -184,6 +203,7 @@ export interface FromShopfront {
     REQUEST_SALE_KEYS            : RequestSaleKeys,
     UI_PIPELINE                  : UIPipeline,
     PAYMENT_METHODS_ENABLED      : PaymentMethodsEnabled,
+    AUDIO_PERMISSION_CHANGE      : AudioPermissionChange,
 }
 
 export const directShopfrontEvents = [
@@ -205,4 +225,5 @@ export interface FromShopfrontInternal {
     RESPONSE_DATABASE_REQUEST: "RESPONSE_DATABASE_REQUEST",
     RESPONSE_LOCATION        : "RESPONSE_LOCATION",
     RESPONSE_OPTION          : "RESPONSE_OPTION",
+    RESPONSE_AUDIO_REQUEST   : "RESPONSE_AUDIO_REQUEST",
 }

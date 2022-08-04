@@ -1,4 +1,4 @@
-import {Bridge} from "./Bridge";
+import { Bridge } from "./Bridge";
 import {
     DirectShopfrontEvent,
     directShopfrontEvents,
@@ -7,6 +7,7 @@ import {
     FromShopfrontInternal,
     FromShopfrontReturns,
     RegisterChangedEvent,
+    SoundEvents,
     ToShopfront
 } from "./ApplicationEvents";
 import { Ready } from "./Events/Ready";
@@ -31,6 +32,7 @@ import { SaleComplete } from "./Events/SaleComplete";
 import { BaseEvent } from "./Events/BaseEvent";
 import { UIPipeline } from "./Events/UIPipeline";
 import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
+import { AudioPermissionChange } from "./Events/AudioPermissionChange";
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -59,6 +61,7 @@ export class Application {
         SALE_COMPLETE                : new Map(),
         UI_PIPELINE                  : new Map(),
         PAYMENT_METHODS_ENABLED      : new Map(),
+        AUDIO_PERMISSION_CHANGE      : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -116,7 +119,8 @@ export class Application {
             event === "RESPONSE_CURRENT_SALE" ||
             event === "RESPONSE_DATABASE_REQUEST" ||
             event === "RESPONSE_LOCATION" ||
-            event === "RESPONSE_OPTION"
+            event === "RESPONSE_OPTION" ||
+            event === "RESPONSE_AUDIO_REQUEST"
         ) {
             // Handled elsewhere
             return;
@@ -309,6 +313,10 @@ export class Application {
                 break;
             case "PAYMENT_METHODS_ENABLED":
                 c = new PaymentMethodsEnabled(callback as FromShopfrontCallbacks["PAYMENT_METHODS_ENABLED"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "AUDIO_PERMISSION_CHANGE":
+                c = new AudioPermissionChange(callback as FromShopfrontCallbacks["AUDIO_PERMISSION_CHANGE"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
@@ -504,6 +512,85 @@ export class Application {
             content,
             type: "text",
         });
+    }
+
+    protected dataIsAudioResponse(data: Record<string, unknown>): data is { requestId: string; success: boolean; message?: string } {
+        return typeof data.requestId === "string" &&
+            typeof data.success === "boolean" && (
+                typeof data.message === "string" ||
+                typeof data.message === "undefined"
+            );
+    }
+
+    protected sendAudioRequest(
+        type: SoundEvents, data?: unknown,
+    ): Promise<{ success: boolean; message?: string }> {
+        const request = `AudioRequest-${type}-${Date.now().toString()}`;
+
+        const promise = new Promise<{ success: boolean; message?: string }>(res => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+                if(event !== "RESPONSE_AUDIO_REQUEST") {
+                    return;
+                }
+
+                if (!this.dataIsAudioResponse(data)) {
+                    return;
+                }
+
+                if(data.requestId !== request) {
+                    return;
+                }
+
+                this.bridge.removeEventListener(listener);
+
+                res({
+                    success: data.success,
+                    message: data.message,
+                });
+            };
+
+            this.bridge.addEventListener(listener);
+        });
+
+        this.bridge.sendMessage(type, {
+            requestId: request,
+            data,
+        });
+
+        return promise;
+    }
+
+    /**
+     * Requests permission from the user to be able to play audio
+     */
+    public requestAudioPermission(): Promise<{ success: boolean; message?: string }> {
+        return this.sendAudioRequest(ToShopfront.AUDIO_REQUEST_PERMISSION);
+    }
+
+    /**
+     * Requests shopfront to preload audio so that it can be pre-cached before being played
+     * @param url
+     */
+    public audioPreload(url: string): Promise<{ success: boolean; message?: string }> {
+        return this.sendAudioRequest(
+            ToShopfront.AUDIO_PRELOAD,
+            {
+                url
+            }
+        );
+    }
+
+    /**
+     * Requests the sound to be played
+     * @param url
+     */
+    public audioPlay(url: string): Promise<{ success: boolean; message?: string }> {
+        return this.sendAudioRequest(
+            ToShopfront.AUDIO_PLAY,
+            {
+                url
+            }
+        );
     }
 
     protected dataIsOption<TValueType>(data: Record<string, unknown>): data is {
