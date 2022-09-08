@@ -114,6 +114,7 @@ export interface CompletedSale {
     id: string;
     invoiceId: string;
     createdAt: string;
+    metaData: Record<string, unknown>;
 }
 
 export class SaleComplete extends BaseEvent {
