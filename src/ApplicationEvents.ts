@@ -173,8 +173,8 @@ export interface PaymentMethodEnabledContext {
 export interface FromShopfrontCallbacks {
     READY                        : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
     REQUEST_SETTINGS             : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
-    REQUEST_BUTTONS              : () => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
-    REQUEST_TABLE_COLUMNS        : () => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
+    REQUEST_BUTTONS              : (location: string, context: unknown) => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
+    REQUEST_TABLE_COLUMNS        : (location: string, data: unknown) => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
     REQUEST_SELL_SCREEN_OPTIONS  : () => MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
     INTERNAL_PAGE_MESSAGE        : (event: InternalPageMessageEvent) => MaybePromise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
     REGISTER_CHANGED             : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["REGISTER_CHANGED"]>,
