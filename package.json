@@ -1,6 +1,6 @@
 {
     "name": "@shopfront/bridge",
-    "version": "1.13.1",
+    "version": "1.14.0",
     "main": "./lib/index.js",
     "license": "ISC",
     "description": "The bridge used to embed your application within Shopfront",
@@ -13,7 +13,8 @@
     "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
     "contributors": [
         "Nicholas Clark",
-        "Adam Simpkins"
+        "Adam Simpkins",
+        "Zachary Stanford"
     ],
     "private": false,
     "devDependencies": {
