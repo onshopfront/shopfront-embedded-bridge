@@ -6,7 +6,7 @@ interface ApplicationOptions {
     vendor: string; // The Vendor's URL
 }
 
-interface ApplicationEventListener {
+export interface ApplicationEventListener {
     (event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal, data: Record<string, unknown>, id: string): void;
 }
 
@@ -23,8 +23,8 @@ export class Bridge {
         return new Application(new Bridge(options.id, options.vendor));
     }
 
-    protected key        : string;
-    protected url        : URL;
+    public key: string;
+    public url: URL;
     protected listeners  : Array<ApplicationEventListener> = [];
     protected hasListener = false;
     protected target     : Window | null = null;

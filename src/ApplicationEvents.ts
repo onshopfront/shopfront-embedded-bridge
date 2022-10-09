@@ -40,6 +40,8 @@ export enum ToShopfront {
     REDIRECT                       = "REDIRECT",
     GET_OPTION                     = "GET_OPTION",
     RESPONSE_UI_PIPELINE           = "RESPONSE_UI_PIPELINE",
+    REQUEST_SECURE_KEY             = "REQUEST_SECURE_KEY",
+    ROTATE_SIGNING_KEY             = "ROTATE_SIGNING_KEY",
 
     // Audio Events
     AUDIO_REQUEST_PERMISSION = "AUDIO_REQUEST_PERMISSION",
@@ -226,4 +228,5 @@ export interface FromShopfrontInternal {
     RESPONSE_LOCATION        : "RESPONSE_LOCATION",
     RESPONSE_OPTION          : "RESPONSE_OPTION",
     RESPONSE_AUDIO_REQUEST   : "RESPONSE_AUDIO_REQUEST",
+    RESPONSE_SECURE_KEY      : "RESPONSE_SECURE_KEY",
 }

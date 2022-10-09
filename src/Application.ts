@@ -1,4 +1,4 @@
-import { Bridge } from "./Bridge";
+import { ApplicationEventListener, Bridge } from "./Bridge";
 import {
     DirectShopfrontEvent,
     directShopfrontEvents,
@@ -34,6 +34,19 @@ import { UIPipeline } from "./Events/UIPipeline";
 import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
 import { AudioPermissionChange } from "./Events/AudioPermissionChange";
 
+export interface ShopfrontEmbeddedVerificationToken {
+    auth: string;
+    id: string;
+    app: string;
+    user: string;
+    url: {
+        raw: string;
+        loaded: string;
+    };
+}
+
+export class ShopfrontTokenDecodingError extends Error {}
+
 // noinspection JSUnusedGlobalSymbols
 export class Application {
     protected bridge   : Bridge;
@@ -42,6 +55,7 @@ export class Application {
     protected register : string | null;
     protected outlet   : string | null;
     protected user     : string | null;
+    protected signingKey: CryptoKeyPair | undefined;
     protected listeners: {
         [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<
             (...args: Array<unknown>) => void,
@@ -120,7 +134,8 @@ export class Application {
             event === "RESPONSE_DATABASE_REQUEST" ||
             event === "RESPONSE_LOCATION" ||
             event === "RESPONSE_OPTION" ||
-            event === "RESPONSE_AUDIO_REQUEST"
+            event === "RESPONSE_AUDIO_REQUEST" ||
+            event === "RESPONSE_SECURE_KEY"
         ) {
             // Handled elsewhere
             return;
@@ -636,5 +651,91 @@ export class Application {
         }
 
         return optionValue;
+    }
+
+    protected dataIsEmbeddedToken(data: Record<string, unknown>): data is {
+        requestId: string;
+        data: BufferSource;
+        signature: BufferSource;
+    } {
+        return typeof data.requestId === "string" && typeof data.data === "object" && data.data !== null;
+    }
+
+    protected async generateSigningKey(): Promise<void> {
+        if(typeof this.signingKey !== "undefined") {
+            return;
+        }
+
+        this.signingKey = await crypto.subtle.generateKey({
+            name      : "ECDSA",
+            namedCurve: "P-384",
+        }, true, ["sign", "verify"]);
+
+        this.bridge.sendMessage(ToShopfront.ROTATE_SIGNING_KEY, await crypto.subtle.exportKey(
+            "jwk",
+            this.signingKey.privateKey
+        ));
+    }
+
+    protected async decodeToken(signature: BufferSource, data: BufferSource): Promise<ShopfrontEmbeddedVerificationToken> {
+        if(typeof this.signingKey === "undefined") {
+            // Not possible to decode
+            throw new Error("Unable to decode token due to a missing signing key");
+        }
+
+        if(!(
+            await crypto.subtle.verify({
+                name: "ECDSA",
+                hash: {
+                    name: "SHA-384",
+                },
+            }, this.signingKey.publicKey, signature, data)
+        )) {
+            throw new ShopfrontTokenDecodingError();
+        }
+
+        const decoded = JSON.parse(new TextDecoder().decode(data)) as ShopfrontEmbeddedVerificationToken;
+
+        if(decoded.app !== this.bridge.key) {
+            throw new ShopfrontTokenDecodingError();
+        }
+
+        if(decoded.url.loaded !== location.href) {
+            throw new ShopfrontTokenDecodingError();
+        }
+
+        return decoded;
+    }
+
+    public async getToken(): Promise<ShopfrontEmbeddedVerificationToken> {
+        await this.generateSigningKey();
+
+        const request = `TokenRequest-${Date.now().toString()}`;
+        const promise = new Promise<[BufferSource, BufferSource]>(res => {
+            const listener: ApplicationEventListener = (event, data) => {
+                if(event !== "RESPONSE_SECURE_KEY") {
+                    return;
+                }
+
+                if(!this.dataIsEmbeddedToken(data)) {
+                    return;
+                }
+
+                if(data.requestId !== request) {
+                    return;
+                }
+
+                this.bridge.removeEventListener(listener);
+                res([data.signature, data.data]);
+            };
+
+            this.bridge.addEventListener(listener);
+        });
+
+        this.bridge.sendMessage(ToShopfront.REQUEST_SECURE_KEY, {
+            requestId: request,
+        });
+
+        return this.decodeToken(...(await promise));
     }
 }
