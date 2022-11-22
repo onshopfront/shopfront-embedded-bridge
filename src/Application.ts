@@ -677,7 +677,11 @@ export class Application {
         ));
     }
 
-    protected async decodeToken(signature: BufferSource, data: BufferSource): Promise<ShopfrontEmbeddedVerificationToken> {
+    protected async decodeToken(
+        signature: BufferSource,
+        data: BufferSource,
+        returnTokenObject?: boolean
+    ): Promise<ShopfrontEmbeddedVerificationToken | string> {
         if(typeof this.signingKey === "undefined") {
             // Not possible to decode
             throw new Error("Unable to decode token due to a missing signing key");
@@ -704,10 +708,16 @@ export class Application {
             throw new ShopfrontTokenDecodingError();
         }
 
-        return decoded;
+        if(returnTokenObject) {
+            return decoded;
+        }
+
+        return decoded.auth;
     }
 
-    public async getToken(): Promise<ShopfrontEmbeddedVerificationToken> {
+    public getToken(returnTokenObject: true): Promise<ShopfrontEmbeddedVerificationToken>;
+    public getToken(returnTokenObject?: false): Promise<string>;
+    public async getToken(returnTokenObject?: boolean): Promise<string | ShopfrontEmbeddedVerificationToken> {
         await this.generateSigningKey();
 
         const request = `TokenRequest-${Date.now().toString()}`;
@@ -736,6 +746,6 @@ export class Application {
             requestId: request,
         });
 
-        return this.decodeToken(...(await promise));
+        return this.decodeToken(...(await promise), returnTokenObject);
     }
 }
