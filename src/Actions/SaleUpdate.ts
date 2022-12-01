@@ -1,6 +1,6 @@
 import {BaseAction} from "./BaseAction";
 import {Serialized} from "../Common/Serializable";
-import {ShopfrontSalePaymentStatus} from "../APIs/CurrentSale/ShopfrontSaleState";
+import {ShopfrontSalePaymentStatus} from "../APIs/Sale";
 
 export interface SaleUpdateChanges {
     PRODUCT_ADD: {

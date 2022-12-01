@@ -1,14 +1,15 @@
-import {Application} from "../../Application";
-import {ShopfrontSaleState} from "./ShopfrontSaleState";
-import {SaleUpdate, SaleUpdateChanges} from "../../Actions/SaleUpdate";
-import {SaleProduct} from "./SaleProduct";
-import {SalePayment} from "./SalePayment";
-import {SaleCustomer} from "./SaleCustomer";
-import {InvalidSaleDeviceError, SaleCancelledError} from "./Exceptions";
+import { BaseSale } from "./BaseSale";
+import { ShopfrontSaleState } from "./ShopfrontSaleState";
+import { SalePayment } from "./SalePayment";
+import { SaleProduct } from "./SaleProduct";
+import { SaleCustomer } from "./SaleCustomer";
+import { Application } from "../../Application";
+import { SaleUpdate, SaleUpdateChanges } from "../../Actions/SaleUpdate";
+import { InvalidSaleDeviceError, SaleCancelledError } from "./Exceptions";
+import { Sale } from "./Sale";
 
-export class Sale {
+export class CurrentSale extends BaseSale {
     protected application: Application;
-    protected sale: ShopfrontSaleState;
     protected cancelled: boolean;
 
     /**
@@ -16,23 +17,13 @@ export class Sale {
      * It's highly recommend to not construct a sale manually, instead use application.getCurrentSale().
      *
      * @param {Application} application
-     * @param {ShopfrontSaleState} sale
+     * @param {ShopfrontSaleState} saleState
      */
-    constructor(application: Application, sale: ShopfrontSaleState) {
-        this.application = application;
-        this.sale        = sale;
-        this.cancelled   = false;
-    }
+    constructor(application: Application, saleState: ShopfrontSaleState) {
+        super(Sale.buildSaleData(saleState));
 
-    /**
-     * Get the raw state of the sale, it is highly recommend that you DO NOT use this method as the
-     * returned data may be quite volatile.
-     *
-     * @internal
-     * @returns {ShopfrontSaleState}
-     */
-    public getRawState(): ShopfrontSaleState {
-        return this.sale;
+        this.application = application;
+        this.cancelled   = false;
     }
 
     /**
@@ -49,7 +40,7 @@ export class Sale {
             throw new InvalidSaleDeviceError();
         }
 
-        this.sale = newSale.getRawState();
+        this.hydrate(newSale);
     }
 
     /**
@@ -74,87 +65,6 @@ export class Sale {
         this.checkIfCancelled();
         this.application.send(update);
         return this.refreshSale();
-    }
-
-    /**
-     * Get the products that are currently on the sale.
-     *
-     * @returns {Array<SaleProduct>}
-     */
-    public getProducts(): Array<SaleProduct> {
-        const products = [];
-
-        for(let i = 0, l = this.sale.products.length; i < l; i++) {
-            // The hydration method loops through child products so we don't have to
-            // worry about that here.
-            products.push(SaleProduct.HydrateFromState(this.sale.products[i], [i]));
-        }
-
-        return products;
-    }
-
-    /**
-     * Get the payments that are currently on the sale.
-     *
-     * @returns {Array<SalePayment>}
-     */
-    public getPayments(): Array<SalePayment> {
-        const payments = [];
-
-        for(let i = 0, l = this.sale.payments.length; i < l; i++) {
-            payments.push(SalePayment.HydrateFromState(this.sale.payments[i]));
-        }
-
-        return payments;
-    }
-
-    /**
-     * Get the current customer on the sale.
-     *
-     * @returns {SaleCustomer | null}
-     */
-    public getCustomer(): null | SaleCustomer {
-        if(this.sale.customer === false) {
-            return null;
-        }
-
-        return new SaleCustomer(this.sale.customer.uuid);
-    }
-
-    /**
-     * Get the external sale note (visible to the customer).
-     *
-     * @returns {string}
-     */
-    public getExternalNote(): string {
-        return this.sale.notes.sale;
-    }
-
-    /**
-     * Get the internal sale note.
-     *
-     * @returns {string}
-     */
-    public getInternalNote(): string {
-        return this.sale.notes.internal;
-    }
-
-    /**
-     * Get the order reference (visible to the customer).
-     *
-     * @returns {string}
-     */
-    public getOrderReference(): string {
-        return this.sale.orderReference;
-    }
-
-    /**
-     * Get the current meta data for the sale
-     *
-     * @returns {Record<string, unknown>}
-     */
-    public getMetaData(): Record<string, unknown> {
-        return this.sale.metaData;
     }
 
     /**

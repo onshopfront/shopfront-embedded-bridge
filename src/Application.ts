@@ -19,8 +19,7 @@ import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
 import { RequestTableColumns } from "./Events/RequestTableColumns";
 import { RequestSellScreenOptions } from "./Events/RequestSellScreenOptions";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent";
-import { Sale } from "./APIs/CurrentSale";
-import { ShopfrontSaleState } from "./APIs/CurrentSale/ShopfrontSaleState";
+import { ShopfrontSaleState } from "./APIs/Sale";
 import { InternalPageMessage } from "./Events/InternalPageMessage";
 import { RegisterChanged } from "./Events/RegisterChanged";
 import { Database } from "./APIs/Database/Database";
@@ -33,6 +32,15 @@ import { BaseEvent } from "./Events/BaseEvent";
 import { UIPipeline } from "./Events/UIPipeline";
 import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
 import { AudioPermissionChange } from "./Events/AudioPermissionChange";
+import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder";
+import { FulfilmentVoidOrder } from "./Events/FulfilmentVoidOrder";
+import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder";
+import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval";
+import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
+import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
+import { CurrentSale } from "./APIs/Sale/CurrentSale";
+import { Sale } from "./APIs/Sale";
+import { buildSaleData } from "./Utilities/SaleCreate";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -76,6 +84,12 @@ export class Application {
         UI_PIPELINE                  : new Map(),
         PAYMENT_METHODS_ENABLED      : new Map(),
         AUDIO_PERMISSION_CHANGE      : new Map(),
+        FULFILMENT_GET_ORDER         : new Map(),
+        FULFILMENT_PROCESS_ORDER     : new Map(),
+        FULFILMENT_VOID_ORDER        : new Map(),
+        FULFILMENT_ORDER_APPROVAL    : new Map(),
+        FULFILMENT_ORDER_COLLECTED   : new Map(),
+        FULFILMENT_ORDER_COMPLETED   : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -135,7 +149,8 @@ export class Application {
             event === "RESPONSE_LOCATION" ||
             event === "RESPONSE_OPTION" ||
             event === "RESPONSE_AUDIO_REQUEST" ||
-            event === "RESPONSE_SECURE_KEY"
+            event === "RESPONSE_SECURE_KEY" ||
+            event === "RESPONSE_CREATE_SALE"
         ) {
             // Handled elsewhere
             return;
@@ -245,6 +260,13 @@ export class Application {
                     .then(res => {
                         return PaymentMethodsEnabled.respond(this.bridge, res.flat(), id);
                     });
+            case "FULFILMENT_GET_ORDER":
+                results = results as Array<Promise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return FulfilmentGetOrder.respond(this.bridge, res[0], id);
+                    });
         }
     }
 
@@ -332,6 +354,34 @@ export class Application {
                 break;
             case "AUDIO_PERMISSION_CHANGE":
                 c = new AudioPermissionChange(callback as FromShopfrontCallbacks["AUDIO_PERMISSION_CHANGE"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_GET_ORDER":
+                if (this.listeners[event].size !== 0) {
+                    throw new TypeError("Application already has 'FULFILMENT_GET_ORDER' event listener registered.");
+                }
+
+                c = new FulfilmentGetOrder(callback as FromShopfrontCallbacks["FULFILMENT_GET_ORDER"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_VOID_ORDER":
+                c = new FulfilmentVoidOrder(callback as FromShopfrontCallbacks["FULFILMENT_VOID_ORDER"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_PROCESS_ORDER":
+                c = new FulfilmentProcessOrder(callback as FromShopfrontCallbacks["FULFILMENT_PROCESS_ORDER"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_ORDER_APPROVAL":
+                c = new FulfilmentOrderApproval(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_APPROVAL"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_ORDER_COLLECTED":
+                c = new FulfilmentCollectOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COLLECTED"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_ORDER_COMPLETED":
+                c = new FulfilmentCompleteOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COMPLETED"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
@@ -423,9 +473,9 @@ export class Application {
      * Get the current sale on the sell screen, if the current device is not a register
      * then this will return false.
      *
-     * @returns {Promise<Sale | boolean>}
+     * @returns {Promise<CurrentSale | boolean>}
      */
-    public async getCurrentSale(): Promise<Sale | false> {
+    public async getCurrentSale(): Promise<CurrentSale | false> {
         const saleRequest = `SaleRequest-${Date.now().toString()}`;
 
         const promise: Promise<ShopfrontSaleState | false> = new Promise(res => {
@@ -459,7 +509,61 @@ export class Application {
             return saleState;
         }
 
-        return new Sale(this, saleState);
+        return new CurrentSale(this, saleState);
+    }
+
+    protected dataIsCreateEvent(data: Record<string, unknown>): data is { requestId: string; success: boolean; message?: string } {
+        return typeof data.requestId === "string" &&
+            typeof data.success === "boolean" && (
+                typeof data.message === "undefined" ||
+                typeof data.message === "string"
+            );
+    }
+
+    /**
+     * Send the sale to be created on shopfront.
+     *
+     * @param sale
+     */
+    public async createSale(sale: Sale): Promise<{
+        success: boolean;
+        message?: string;
+    }> {
+        const createSaleRequest = `CreateSaleRequest-${Date.now().toString()}`;
+
+        const promise: Promise<{
+            success: boolean;
+            message?: string;
+        }> = new Promise(res => {
+            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+                if (event !== "RESPONSE_CREATE_SALE") {
+                    return;
+                }
+
+                if (!this.dataIsCreateEvent(data)) {
+                    return;
+                }
+
+                if (data.requestId !== createSaleRequest) {
+                    return;
+                }
+
+                this.bridge.removeEventListener(listener);
+                res({
+                    success: data.success,
+                    message: data.message,
+                });
+            };
+
+            this.bridge.addEventListener(listener);
+        });
+
+        this.bridge.sendMessage(ToShopfront.CREATE_SALE, {
+            requestId: createSaleRequest,
+            sale: buildSaleData(sale),
+        });
+
+        return promise;
     }
 
     protected dataIsLocation(data: Record<string, unknown>): data is {

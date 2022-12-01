@@ -19,6 +19,7 @@ export interface ShopfrontSaleProduct {
     edited: boolean,
     caseQuantity: number,
     metaData: Record<string, unknown>,
+    mapped?: string,
 }
 
 interface ShopfrontSaleCustomer {
@@ -35,6 +36,8 @@ export interface ShopfrontSalePayment {
 }
 
 export interface ShopfrontSaleState {
+    clientId?: string,
+    register?: string,
     products: Array<ShopfrontSaleProduct>,
     customer: false | ShopfrontSaleCustomer,
     payments: Array<ShopfrontSalePayment>,

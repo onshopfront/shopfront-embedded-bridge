@@ -1,6 +1,9 @@
-import {ShopfrontSaleProduct, ShopfrontSaleProductType} from "./ShopfrontSaleState";
+import { ShopfrontSaleProduct, ShopfrontSaleProductType } from "./ShopfrontSaleState";
+import UUID from "../../Utilities/UUID";
 
 export class SaleProduct {
+    public readonly internalId: string;
+
     protected id: string;
     protected quantity: number;
     protected price?: number;
@@ -13,8 +16,11 @@ export class SaleProduct {
     protected edited: boolean;
     protected caseQuantity?: number;
     protected metaData: Record<string, unknown> = {};
+    protected mapped?: string;
 
     constructor(id: string, quantity: number, price?: number, indexAddress?: Array<number>) {
+        this.internalId = UUID.generate();
+
         this.id           = id;
         this.quantity     = quantity;
         this.price        = price;
@@ -67,6 +73,7 @@ export class SaleProduct {
         this.edited        = data.edited;
         this.caseQuantity  = data.caseQuantity;
         this.metaData      = data.metaData;
+        this.mapped        = data.mapped;
 
         for(let i = 0, l = data.products.length; i < l; i++) {
             this.appendProduct(SaleProduct.HydrateFromState(data.products[i], [
@@ -82,6 +89,15 @@ export class SaleProduct {
      */
     public getId() {
         return this.id;
+    }
+
+    /**
+     * Gets the mapped id for the product.
+     * Used when the product goes through the fulfilment process mapping
+     * @returns {string | undefined}
+     */
+    public getMapped() {
+        return this.mapped;
     }
 
     /**

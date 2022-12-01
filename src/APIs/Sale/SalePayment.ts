@@ -1,4 +1,5 @@
-import {ShopfrontSalePayment} from "./ShopfrontSaleState";
+import { ShopfrontSalePayment } from "./ShopfrontSaleState";
+import UUID from "../../Utilities/UUID";
 
 export enum SalePaymentStatus {
     APPROVED  = "completed",
@@ -7,6 +8,8 @@ export enum SalePaymentStatus {
 }
 
 export class SalePayment {
+    public readonly internalId: string;
+
     protected id: string;
     protected type?: string;
     protected status?: SalePaymentStatus;
@@ -15,6 +18,8 @@ export class SalePayment {
     protected rounding?: number;
 
     constructor(id: string, amount: number, cashout?: number, status?: SalePaymentStatus) {
+        this.internalId = UUID.generate();
+
         this.id      = id;
         this.amount  = amount;
         this.cashout = cashout;

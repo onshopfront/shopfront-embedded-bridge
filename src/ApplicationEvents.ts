@@ -5,7 +5,7 @@ import { RequestButtons } from "./Events/RequestButtons";
 import { Callback } from "./Events/Callback";
 import { RequestTableColumns } from "./Events/RequestTableColumns";
 import { RequestSellScreenOptions, SellScreenOption } from "./Events/RequestSellScreenOptions";
-import { ShopfrontSaleState } from "./APIs/CurrentSale/ShopfrontSaleState";
+import { ShopfrontSaleState } from "./APIs/Sale";
 import { InternalPageMessage } from "./Events/InternalPageMessage";
 import { InternalMessageSource } from "./APIs/InternalMessages/InternalMessageSource";
 import { RegisterChanged } from "./Events/RegisterChanged";
@@ -18,6 +18,14 @@ import { CompletedSale, SaleComplete } from "./Events/SaleComplete";
 import { UIPipeline } from "./Events/UIPipeline";
 import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
 import { AudioPermissionChange } from "./Events/AudioPermissionChange";
+import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder";
+import { FulfilmentVoidOrder } from "./Events/FulfilmentVoidOrder";
+import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder";
+import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval";
+import { OrderDetails } from "./APIs/Fulfilment/FulfilmentTypes";
+import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
+import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
+import { Sale } from "./APIs/Sale";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -54,6 +62,20 @@ export enum ToShopfront {
     TABLE_UPDATE                     = "TABLE_UPDATE",
     PIPELINE_TRIGGER                 = "PIPELINE_TRIGGER",
     SELL_SCREEN_PROMOTION_APPLICABLE = "SELL_SCREEN_PROMOTION_APPLICABLE",
+
+    // Fulfilment Emitable Events
+    FULFILMENT_OPT_IN        = "FULFILMENT_OPT_IN",
+    FULFILMENT_OPTIONS       = "FULFILMENT_OPTIONS",
+    FULFILMENT_ORDERS_SYNC   = "FULFILMENT_ORDERS_SYNC",
+    FULFILMENT_ORDERS_CREATE = "FULFILMENT_ORDERS_CREATE",
+    FULFILMENT_ORDERS_UPDATE = "FULFILMENT_ORDERS_UPDATE",
+    FULFILMENT_ORDERS_CANCEL = "FULFILMENT_ORDERS_CANCEL",
+
+    // Sale API events
+    CREATE_SALE   = "CREATE_SALE",
+
+    // Fulfilment Response Events
+    FULFILMENT_GET_ORDER = "FULFILMENT_GET_ORDER",
 }
 
 export type SoundEvents = ToShopfront.AUDIO_REQUEST_PERMISSION | ToShopfront.AUDIO_PRELOAD | ToShopfront.AUDIO_PLAY;
@@ -105,6 +127,17 @@ export interface FromShopfrontReturns {
     UI_PIPELINE: Array<UIPipelineResponse>;
     PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>,
     AUDIO_PERMISSION_CHANGE: void;
+    FULFILMENT_GET_ORDER: OrderDetails;
+    FULFILMENT_VOID_ORDER: void;
+    FULFILMENT_PROCESS_ORDER: void;
+    FULFILMENT_ORDER_APPROVAL: void;
+    FULFILMENT_ORDER_COLLECTED: void;
+    FULFILMENT_ORDER_COMPLETED: void;
+    RESPONSE_CREATE_SALE: {
+        requestId: string;
+        success: boolean;
+        message?: string;
+    };
 }
 
 export interface InternalPageMessageEvent {
@@ -130,6 +163,16 @@ export interface SaleCompletedEvent {
 
 export interface AudioPermissionChangeEvent {
     permitted: boolean;
+}
+
+export interface FulfilmentProcessEvent {
+    id: string;
+    sale: Sale;
+}
+
+export interface FulfilmentApprovalEvent {
+    id: string;
+    approved: boolean;
 }
 
 export type UIPipelineResponse = {
@@ -188,6 +231,12 @@ export interface FromShopfrontCallbacks {
     UI_PIPELINE                  : (event: Array<UIPipelineResponse>, context: UIPipelineContext) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>,
     PAYMENT_METHODS_ENABLED      : (event: Array<SellScreenPaymentMethod>, context: PaymentMethodEnabledContext) => MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>,
     AUDIO_PERMISSION_CHANGE      : (event: AudioPermissionChangeEvent) => MaybePromise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]>,
+    FULFILMENT_GET_ORDER         : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>,
+    FULFILMENT_VOID_ORDER        : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_VOID_ORDER"]>,
+    FULFILMENT_PROCESS_ORDER     : (event: FulfilmentProcessEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]>,
+    FULFILMENT_ORDER_APPROVAL    : (event: FulfilmentApprovalEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]>,
+    FULFILMENT_ORDER_COLLECTED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]>,
+    FULFILMENT_ORDER_COMPLETED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COMPLETED"]>,
 }
 
 export interface FromShopfront {
@@ -206,6 +255,12 @@ export interface FromShopfront {
     UI_PIPELINE                  : UIPipeline,
     PAYMENT_METHODS_ENABLED      : PaymentMethodsEnabled,
     AUDIO_PERMISSION_CHANGE      : AudioPermissionChange,
+    FULFILMENT_GET_ORDER         : FulfilmentGetOrder,
+    FULFILMENT_VOID_ORDER        : FulfilmentVoidOrder,
+    FULFILMENT_PROCESS_ORDER     : FulfilmentProcessOrder,
+    FULFILMENT_ORDER_APPROVAL    : FulfilmentOrderApproval,
+    FULFILMENT_ORDER_COLLECTED   : FulfilmentCollectOrder,
+    FULFILMENT_ORDER_COMPLETED   : FulfilmentCompleteOrder,
 }
 
 export const directShopfrontEvents = [
@@ -229,4 +284,5 @@ export interface FromShopfrontInternal {
     RESPONSE_OPTION          : "RESPONSE_OPTION",
     RESPONSE_AUDIO_REQUEST   : "RESPONSE_AUDIO_REQUEST",
     RESPONSE_SECURE_KEY      : "RESPONSE_SECURE_KEY",
+    RESPONSE_CREATE_SALE     : "RESPONSE_CREATE_SALE",
 }
