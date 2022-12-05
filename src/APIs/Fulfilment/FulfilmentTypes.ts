@@ -1,4 +1,4 @@
-type OrderStatus = "PENDING_APPROVAL" | "WAITING_FOR_PACKING" | "PACKED" | "COLLECTED" | "COMPLETED";
+export type OrderStatus = "PENDING_APPROVAL" | "WAITING_FOR_PACKING" | "PACKED" | "COLLECTED" | "COMPLETED";
 
 export interface OrderSummaryDetails {
     id: string;
@@ -11,6 +11,7 @@ export interface OrderSummaryDetails {
         name: string;
         phone: string;
     };
+    comment?: string;
     totalPrice: number;
     expiry?: string | Date;
     status: OrderStatus;
@@ -31,6 +32,7 @@ export interface OrderItem {
     quantity: number;
     packSize: number;
     price: number;
+    comment?: string;
     match?: OrderItemMatch;
 }
 
