@@ -400,6 +400,14 @@ export class Application {
         }
     }
 
+    public removeEventListener<E extends keyof FromShopfrontCallbacks>(
+        event: E,
+        callback: FromShopfrontCallbacks[E]
+    ): void;
+    public removeEventListener<D>(
+        event: DirectShopfrontEvent,
+        callback: (event: D) => MaybePromise<void>
+    ): void;
     public removeEventListener(
         event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
         callback: (...args: Array<unknown>) => MaybePromise<void>
