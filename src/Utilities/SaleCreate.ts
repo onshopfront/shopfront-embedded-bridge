@@ -18,6 +18,7 @@ export interface SalePaymentData {
     status: undefined | ShopfrontSalePaymentStatus;
     rounding: number;
     cashout: number;
+    metaData: Record<string, unknown>;
 }
 
 export interface SaleData extends BaseSaleData {
@@ -78,6 +79,7 @@ export function buildSaleData(sale: Sale): SaleData {
             status: payment.getStatus(),
             rounding: payment.getRounding() || 0,
             cashout: payment.getCashout() || 0,
+            metaData: payment.getMetaData()
         })),
     };
 }

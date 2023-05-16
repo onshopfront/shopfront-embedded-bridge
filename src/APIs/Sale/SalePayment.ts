@@ -16,6 +16,7 @@ export class SalePayment {
     protected amount: number;
     protected cashout?: number;
     protected rounding?: number;
+    protected metaData: Record<string, unknown> = {};
 
     constructor(id: string, amount: number, cashout?: number, status?: SalePaymentStatus) {
         this.internalId = UUID.generate();
@@ -61,6 +62,7 @@ export class SalePayment {
     public setInternal(data: ShopfrontSalePayment) {
         this.type     = data.type;
         this.rounding = data.rounding;
+        this.metaData = JSON.parse(data.metadata);
     }
 
     /**
@@ -115,5 +117,14 @@ export class SalePayment {
      */
     public getRounding() {
         return this.rounding;
+    }
+
+    /**
+     * Get the metadata attached to this payment method
+     *
+     * @returns {Record<string, unknown>}
+     */
+    public getMetaData() {
+        return this.metaData;
     }
 }

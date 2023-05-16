@@ -33,6 +33,7 @@ export interface ShopfrontSalePayment {
     amount: number,
     cashout: number,
     rounding: number,
+    metadata: string;
 }
 
 export interface ShopfrontSaleState {
