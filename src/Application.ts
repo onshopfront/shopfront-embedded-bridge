@@ -53,7 +53,14 @@ export interface ShopfrontEmbeddedVerificationToken {
     };
 }
 
+export interface ShopfrontEmbeddedTokenError {
+    error: boolean;
+    type: string;
+}
+
 export class ShopfrontTokenDecodingError extends Error {}
+
+export class ShopfrontTokenRequestError extends Error {}
 
 // noinspection JSUnusedGlobalSymbols
 export class Application {
@@ -827,6 +834,14 @@ export class Application {
         return decoded.auth;
     }
 
+    protected tokenDataContainsErrors(data: unknown): data is ShopfrontEmbeddedTokenError {
+        if (!data || typeof data !== "object") {
+            return false;
+        }
+
+        return "error" in data && "type" in data;
+    }
+
     public getToken(returnTokenObject: true): Promise<ShopfrontEmbeddedVerificationToken>;
     public getToken(returnTokenObject?: false): Promise<string>;
     public async getToken(returnTokenObject?: boolean): Promise<string | ShopfrontEmbeddedVerificationToken> {
@@ -858,6 +873,13 @@ export class Application {
             requestId: request,
         });
 
-        return this.decodeToken(...(await promise), returnTokenObject);
+        const [signature, data] = await promise;
+
+        // Throw the error if there is one
+        if (this.tokenDataContainsErrors(data)) {
+            throw new ShopfrontTokenRequestError(data.type);
+        }
+
+        return this.decodeToken(signature, data, returnTokenObject);
     }
 }
