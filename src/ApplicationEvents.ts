@@ -26,6 +26,7 @@ import { OrderDetails } from "./APIs/Fulfilment/FulfilmentTypes";
 import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
 import { Sale } from "./APIs/Sale";
+import { AudioReady } from "./Events/AudioReady";
 
 export enum ToShopfront {
     READY                          = "READY",
@@ -126,6 +127,7 @@ export interface FromShopfrontReturns {
     SALE_COMPLETE: void;
     UI_PIPELINE: Array<UIPipelineResponse>;
     PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>,
+    AUDIO_READY: void;
     AUDIO_PERMISSION_CHANGE: void;
     FULFILMENT_GET_ORDER: OrderDetails;
     FULFILMENT_VOID_ORDER: void;
@@ -230,6 +232,7 @@ export interface FromShopfrontCallbacks {
     SALE_COMPLETE                : (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>,
     UI_PIPELINE                  : (event: Array<UIPipelineResponse>, context: UIPipelineContext) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>,
     PAYMENT_METHODS_ENABLED      : (event: Array<SellScreenPaymentMethod>, context: PaymentMethodEnabledContext) => MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>,
+    AUDIO_READY                  : () => MaybePromise<FromShopfrontReturns["AUDIO_READY"]>,
     AUDIO_PERMISSION_CHANGE      : (event: AudioPermissionChangeEvent) => MaybePromise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]>,
     FULFILMENT_GET_ORDER         : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>,
     FULFILMENT_VOID_ORDER        : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_VOID_ORDER"]>,
@@ -254,6 +257,7 @@ export interface FromShopfront {
     REQUEST_SALE_KEYS            : RequestSaleKeys,
     UI_PIPELINE                  : UIPipeline,
     PAYMENT_METHODS_ENABLED      : PaymentMethodsEnabled,
+    AUDIO_READY                  : AudioReady,
     AUDIO_PERMISSION_CHANGE      : AudioPermissionChange,
     FULFILMENT_GET_ORDER         : FulfilmentGetOrder,
     FULFILMENT_VOID_ORDER        : FulfilmentVoidOrder,

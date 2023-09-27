@@ -41,6 +41,7 @@ import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
 import { CurrentSale } from "./APIs/Sale/CurrentSale";
 import { Sale } from "./APIs/Sale";
 import { buildSaleData } from "./Utilities/SaleCreate";
+import { AudioReady } from "./Events/AudioReady";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -91,6 +92,7 @@ export class Application {
         UI_PIPELINE                  : new Map(),
         PAYMENT_METHODS_ENABLED      : new Map(),
         AUDIO_PERMISSION_CHANGE      : new Map(),
+        AUDIO_READY                  : new Map(),
         FULFILMENT_GET_ORDER         : new Map(),
         FULFILMENT_PROCESS_ORDER     : new Map(),
         FULFILMENT_VOID_ORDER        : new Map(),
@@ -358,6 +360,10 @@ export class Application {
             case "PAYMENT_METHODS_ENABLED":
                 c = new PaymentMethodsEnabled(callback as FromShopfrontCallbacks["PAYMENT_METHODS_ENABLED"]);
                 this.listeners[event].set(callback, c);
+                break;
+            case "AUDIO_READY":
+                c = new AudioReady(callback as FromShopfrontCallbacks["AUDIO_READY"]);
+                this.listeners[event].set(callback, c as AudioReady);
                 break;
             case "AUDIO_PERMISSION_CHANGE":
                 c = new AudioPermissionChange(callback as FromShopfrontCallbacks["AUDIO_PERMISSION_CHANGE"]);
