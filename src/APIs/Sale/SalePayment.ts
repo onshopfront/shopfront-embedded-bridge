@@ -62,7 +62,7 @@ export class SalePayment {
     public setInternal(data: ShopfrontSalePayment) {
         this.type     = data.type;
         this.rounding = data.rounding;
-        this.metaData = JSON.parse(data.metadata);
+        this.metaData = JSON.parse(data?.metadata ?? '{}');
     }
 
     /**
