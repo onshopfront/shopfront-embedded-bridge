@@ -57,6 +57,10 @@ export enum ToShopfront {
     AUDIO_PRELOAD            = "AUDIO_PRELOAD",
     AUDIO_PLAY               = "AUDIO_PLAY",
 
+    // Sell Screen Events
+    CHANGE_SELL_SCREEN_ACTION_MODE  = "CHANGE_SELL_SCREEN_ACTION_MODE",
+    CHANGE_SELL_SCREEN_SUMMARY_MODE = "CHANGE_SELL_SCREEN_SUMMARY_MODE",
+
     // Emitable Events
     SELL_SCREEN_OPTION_CHANGE        = "SELL_SCREEN_OPTION_CHANGE",
     INTERNAL_PAGE_MESSAGE            = "INTERNAL_PAGE_MESSAGE",
@@ -290,3 +294,15 @@ export interface FromShopfrontInternal {
     RESPONSE_SECURE_KEY      : "RESPONSE_SECURE_KEY",
     RESPONSE_CREATE_SALE     : "RESPONSE_CREATE_SALE",
 }
+
+export type SellScreenActionMode =
+    "search" |
+    "keys" |
+    "held-sales" |
+    "payment" |
+    "customers" |
+    "promotions" |
+    "show-backorders" |
+    "fulfilment-orders";
+
+export type SellScreenSummaryMode = "transaction" | "payments" | "receipts";

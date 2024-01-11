@@ -7,6 +7,8 @@ import {
     FromShopfrontInternal,
     FromShopfrontReturns,
     RegisterChangedEvent,
+    SellScreenActionMode,
+    SellScreenSummaryMode,
     SoundEvents,
     ToShopfront
 } from "./ApplicationEvents";
@@ -651,6 +653,18 @@ export class Application {
         this.bridge.sendMessage(ToShopfront.PRINT_RECEIPT, {
             content,
             type: "text",
+        });
+    }
+
+    public changeSellScreenActionMode(mode: SellScreenActionMode) {
+        this.bridge.sendMessage(ToShopfront.CHANGE_SELL_SCREEN_ACTION_MODE, {
+            mode
+        });
+    }
+
+    public changeSellScreenSummaryMode(mode: SellScreenSummaryMode) {
+        this.bridge.sendMessage(ToShopfront.CHANGE_SELL_SCREEN_SUMMARY_MODE, {
+            mode
         });
     }
 
