@@ -1,4 +1,8 @@
-import { ShopfrontSaleProduct, ShopfrontSaleProductType } from "./ShopfrontSaleState";
+import {
+    ShopfrontSaleProduct,
+    ShopfrontSaleProductPromotions,
+    ShopfrontSaleProductType
+} from "./ShopfrontSaleState";
 import UUID from "../../Utilities/UUID";
 
 export class SaleProduct {
@@ -15,6 +19,7 @@ export class SaleProduct {
     protected contains: Array<SaleProduct>;
     protected edited: boolean;
     protected caseQuantity?: number;
+    protected promotions: ShopfrontSaleProductPromotions = {};
     protected metaData: Record<string, unknown> = {};
     protected mapped?: string;
 
@@ -72,6 +77,7 @@ export class SaleProduct {
         this.note          = data.note;
         this.edited        = data.edited;
         this.caseQuantity  = data.caseQuantity;
+        this.promotions    = data.promotions;
         this.metaData      = data.metaData;
         this.mapped        = data.mapped;
 
@@ -190,6 +196,15 @@ export class SaleProduct {
      */
     public getCaseQuantity() {
         return this.caseQuantity;
+    }
+
+    /**
+     * Get the current active promotions for the product.
+     *
+     * @returns {ShopfrontSaleProductPromotions}
+     */
+    public getPromotions() {
+        return this.promotions;
     }
 
     /**

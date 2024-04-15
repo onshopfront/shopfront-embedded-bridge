@@ -1,6 +1,14 @@
 export type ShopfrontSalePaymentStatus = "completed" | "cancelled" | "failed";
 export type ShopfrontSaleProductType = "Normal" | "Basket" | "Package" | "Component" | "Voucher";
 
+export interface ShopfrontSaleProductPromotions {
+    [id: string]: {
+        name: string;
+        active: boolean;
+        quantity: number;
+    };
+}
+
 export interface ShopfrontSaleProduct {
     uuid: string,
     type: ShopfrontSaleProductType,
@@ -16,6 +24,7 @@ export interface ShopfrontSaleProduct {
     },
     note: string,
     products: Array<ShopfrontSaleProduct>,
+    promotions: ShopfrontSaleProductPromotions;
     edited: boolean,
     caseQuantity: number,
     metaData: Record<string, unknown>,
