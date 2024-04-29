@@ -22,6 +22,9 @@ export class SaleProduct {
     protected promotions: ShopfrontSaleProductPromotions = {};
     protected metaData: Record<string, unknown> = {};
     protected mapped?: string;
+    protected quantityModified: boolean;
+    protected priceModified: boolean;
+    protected metaDataModified: boolean;
 
     constructor(id: string, quantity: number, price?: number, indexAddress?: Array<number>) {
         this.internalId = UUID.generate();
@@ -34,6 +37,10 @@ export class SaleProduct {
         this.contains = [];
         this.edited   = typeof price !== "undefined";
         this.note     = "";
+
+        this.quantityModified = false;
+        this.priceModified = false;
+        this.metaDataModified = false;
     }
 
     /**
@@ -115,11 +122,27 @@ export class SaleProduct {
     }
 
     /**
+     * Sets the current sale quantity of the product
+     */
+    public setQuantity(quantity: number) {
+        this.quantity = quantity;
+        this.quantityModified = true;
+    }
+
+    /**
      * Get the current price of the product.
      * @returns {number | undefined}
      */
     public getPrice() {
         return this.price;
+    }
+
+    /**
+     * Sets the current price of the product
+     */
+    public setPrice(price: number) {
+        this.price = price;
+        this.priceModified = true;
     }
 
     /**
@@ -223,5 +246,44 @@ export class SaleProduct {
      */
     public setMetaData(key: string, value: unknown) {
         this.metaData[key] = value;
+        this.metaDataModified = true;
+    }
+
+    /**
+     * Returns whether the product's quantity was modified externally
+     *
+     * @internal
+     */
+    public wasQuantityModified() {
+        return this.quantityModified;
+    }
+
+    /**
+     * Returns whether the product's price was modified externally
+     *
+     * @internal
+     */
+    public wasPriceModified() {
+        return this.priceModified;
+    }
+
+    /**
+     * Returns whether the product's metaData was modified externally
+     *
+     * @internal
+     */
+    public wasMetaDataModified(){
+        return this.metaDataModified;
+    }
+
+    /**
+     * Sets a product's modification flags to false
+     *
+     * @internal
+     */
+    public clearModificationFlags() {
+        this.quantityModified = false;
+        this.priceModified = false;
+        this.metaDataModified = false;
     }
 }

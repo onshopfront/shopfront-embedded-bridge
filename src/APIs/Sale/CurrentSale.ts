@@ -221,14 +221,29 @@ export class CurrentSale extends BaseSale {
     }
 
     /**
-     * Update a product's details, currently this only updates the top-level meta data
+     * Update a product's details, currently this can update quantity, price and metadata
      * @param product
      */
     public updateProduct(product: SaleProduct): Promise<void> {
-        return this.sendSaleUpdate(new SaleUpdate("PRODUCT_UPDATE", {
+        const updateData: SaleUpdateChanges["PRODUCT_UPDATE"] = {
             id: product.getId(),
-            indexAddress: product.getIndexAddress(),
-            metaData: product.getMetaData(),
-        }));
+            indexAddress: product.getIndexAddress()
+        };
+
+        if (product.wasQuantityModified()) {
+            updateData.quantity = product.getQuantity();
+        }
+
+        if (product.wasPriceModified()) {
+            updateData.price = product.getPrice();
+        }
+
+        if (product.wasMetaDataModified()) {
+            updateData.metaData = product.getMetaData();
+        }
+
+        product.clearModificationFlags();
+
+        return this.sendSaleUpdate(new SaleUpdate("PRODUCT_UPDATE", updateData));
     }
 }

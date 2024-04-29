@@ -49,7 +49,9 @@ export interface SaleUpdateChanges {
     PRODUCT_UPDATE: {
         id: string;
         indexAddress: Array<number>;
-        metaData: Record<string, unknown>;
+        quantity?: number;
+        price?: number;
+        metaData?: Record<string, unknown>;
     }
 }
 
