@@ -34,7 +34,7 @@ export interface OrderItem {
         id?: number;
         barcode?: "auto" | number;
         mdbId?: number;
-        supplierCodes?: number;
+        supplierCode?: number;
         defaultTo: number;
     };
     price: number;
