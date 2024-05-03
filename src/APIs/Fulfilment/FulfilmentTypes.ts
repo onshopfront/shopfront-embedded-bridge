@@ -30,7 +30,13 @@ export interface OrderItem {
     image?: string;
     name: string;
     quantity: number;
-    packSize: number;
+    packSize: number | {
+        id?: number;
+        barcode?: "auto" | number;
+        mdbId?: number;
+        supplierCodes?: number;
+        defaultTo: number;
+    };
     price: number;
     comment?: string;
     match?: OrderItemMatch;
