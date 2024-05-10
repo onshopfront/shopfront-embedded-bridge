@@ -5,10 +5,10 @@
     "license": "ISC",
     "description": "The bridge used to embed your application within Shopfront",
     "homepage": "https://developer.onshopfront.com/documentation/Embedded/Introduction",
-    "bugs": "https://bitbucket.org/sasonline/shopfront-embedded-bridge/issues",
+    "bugs": "https://github.com/onshopfront/shopfront-embedded-bridge/issues",
     "repository": {
         "type": "git",
-        "url": "https://bitbucket.org/sasonline/shopfront-embedded-bridge.git"
+        "url": "https://github.com/onshopfront/shopfront-embedded-bridge.git"
     },
     "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
     "contributors": [
