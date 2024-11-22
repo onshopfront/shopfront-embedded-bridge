@@ -44,6 +44,7 @@ import { CurrentSale } from "./APIs/Sale/CurrentSale";
 import { Sale } from "./APIs/Sale";
 import { buildSaleData } from "./Utilities/SaleCreate";
 import { AudioReady } from "./Events/AudioReady";
+import {CheckGiftCardCollision} from "./Events/CheckGiftCardCollision";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -101,6 +102,7 @@ export class Application {
         FULFILMENT_ORDER_APPROVAL    : new Map(),
         FULFILMENT_ORDER_COLLECTED   : new Map(),
         FULFILMENT_ORDER_COMPLETED   : new Map(),
+        CHECK_GIFT_CODE_COLLISION    : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -264,6 +266,13 @@ export class Application {
                     .then(res => {
                         return UIPipeline.respond(this.bridge, res.flat(), id);
                     });
+            case "CHECK_GIFT_CODE_COLLISION":
+                results = results as Array<Promise<FromShopfrontReturns["CHECK_GIFT_CODE_COLLISION"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return CheckGiftCardCollision.respond(this.bridge, res[0], id);
+                    });
             case "PAYMENT_METHODS_ENABLED":
                 results = results as Array<Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>>;
 
@@ -397,6 +406,10 @@ export class Application {
                 break;
             case "FULFILMENT_ORDER_COMPLETED":
                 c = new FulfilmentCompleteOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COMPLETED"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "CHECK_GIFT_CODE_COLLISION":
+                c = new CheckGiftCardCollision(callback as FromShopfrontCallbacks["CHECK_GIFT_CODE_COLLISION"]);
                 this.listeners[event].set(callback, c);
                 break;
         }

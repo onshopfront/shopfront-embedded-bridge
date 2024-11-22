@@ -27,30 +27,32 @@ import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
 import { Sale } from "./APIs/Sale";
 import { AudioReady } from "./Events/AudioReady";
+import {CheckGiftCardCollision} from "./Events/CheckGiftCardCollision";
 
 export enum ToShopfront {
-    READY                          = "READY",
-    SERIALIZED                     = "SERIALIZED",
-    RESPONSE_BUTTONS               = "RESPONSE_BUTTONS",
-    RESPONSE_SETTINGS              = "RESPONSE_SETTINGS",
-    RESPONSE_TABLE_COLUMNS         = "RESPONSE_TABLE_COLUMNS",
-    RESPONSE_SELL_SCREEN_OPTIONS   = "RESPONSE_SELL_SCREEN_OPTIONS",
-    DOWNLOAD                       = "DOWNLOAD",
-    LOAD                           = "LOAD",
-    REQUEST_CURRENT_SALE           = "REQUEST_CURRENT_SALE",
-    DATABASE_REQUEST               = "DATABASE_REQUEST",
-    UNSUPPORTED_EVENT              = "UNSUPPORTED_EVENT",
-    NOT_LISTENING_TO_EVENT         = "NOT_LISTENING_TO_EVENT",
-    REQUEST_LOCATION               = "REQUEST_LOCATION",
-    RESPONSE_FORMAT_PRODUCT        = "RESPONSE_FORMAT_PRODUCT",
-    RESPONSE_CUSTOMER_LIST_OPTIONS = "RESPONSE_CUSTOMER_LIST_OPTIONS",
-    RESPONSE_SALE_KEYS             = "RESPONSE_SALE_KEYS",
-    PRINT_RECEIPT                  = "PRINT_RECEIPT",
-    REDIRECT                       = "REDIRECT",
-    GET_OPTION                     = "GET_OPTION",
-    RESPONSE_UI_PIPELINE           = "RESPONSE_UI_PIPELINE",
-    REQUEST_SECURE_KEY             = "REQUEST_SECURE_KEY",
-    ROTATE_SIGNING_KEY             = "ROTATE_SIGNING_KEY",
+    READY                              = "READY",
+    SERIALIZED                         = "SERIALIZED",
+    RESPONSE_BUTTONS                   = "RESPONSE_BUTTONS",
+    RESPONSE_SETTINGS                  = "RESPONSE_SETTINGS",
+    RESPONSE_TABLE_COLUMNS             = "RESPONSE_TABLE_COLUMNS",
+    RESPONSE_SELL_SCREEN_OPTIONS       = "RESPONSE_SELL_SCREEN_OPTIONS",
+    DOWNLOAD                           = "DOWNLOAD",
+    LOAD                               = "LOAD",
+    REQUEST_CURRENT_SALE               = "REQUEST_CURRENT_SALE",
+    DATABASE_REQUEST                   = "DATABASE_REQUEST",
+    UNSUPPORTED_EVENT                  = "UNSUPPORTED_EVENT",
+    NOT_LISTENING_TO_EVENT             = "NOT_LISTENING_TO_EVENT",
+    REQUEST_LOCATION                   = "REQUEST_LOCATION",
+    RESPONSE_FORMAT_PRODUCT            = "RESPONSE_FORMAT_PRODUCT",
+    RESPONSE_CUSTOMER_LIST_OPTIONS     = "RESPONSE_CUSTOMER_LIST_OPTIONS",
+    RESPONSE_SALE_KEYS                 = "RESPONSE_SALE_KEYS",
+    PRINT_RECEIPT                      = "PRINT_RECEIPT",
+    REDIRECT                           = "REDIRECT",
+    GET_OPTION                         = "GET_OPTION",
+    RESPONSE_UI_PIPELINE               = "RESPONSE_UI_PIPELINE",
+    RESPONSE_CHECK_GIFT_CODE_COLLISION = "RESPONSE_CHECK_GIFT_CODE_COLLISION",
+    REQUEST_SECURE_KEY                 = "REQUEST_SECURE_KEY",
+    ROTATE_SIGNING_KEY                 = "ROTATE_SIGNING_KEY",
 
     // Audio Events
     AUDIO_REQUEST_PERMISSION = "AUDIO_REQUEST_PERMISSION",
@@ -144,6 +146,11 @@ export interface FromShopfrontReturns {
         success: boolean;
         message?: string;
     };
+    CHECK_GIFT_CODE_COLLISION: {
+        code: string,
+        collision: boolean,
+        application: string
+    };
 }
 
 export interface InternalPageMessageEvent {
@@ -157,6 +164,12 @@ export interface RegisterChangedEvent {
     register: null | string;
     outlet  : null | string;
     user    : null | string;
+}
+
+export interface CheckGiftCardCodeCollisionEvent {
+    code: string,
+    collision: boolean,
+    application: string
 }
 
 export interface FormatIntegratedProductEvent {
@@ -244,6 +257,7 @@ export interface FromShopfrontCallbacks {
     FULFILMENT_ORDER_APPROVAL    : (event: FulfilmentApprovalEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]>,
     FULFILMENT_ORDER_COLLECTED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]>,
     FULFILMENT_ORDER_COMPLETED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COMPLETED"]>,
+    CHECK_GIFT_CODE_COLLISION    : (event: CheckGiftCardCodeCollisionEvent, context: unknown) => MaybePromise<FromShopfrontReturns["CHECK_GIFT_CODE_COLLISION"]>,
 }
 
 export interface FromShopfront {
@@ -269,6 +283,7 @@ export interface FromShopfront {
     FULFILMENT_ORDER_APPROVAL    : FulfilmentOrderApproval,
     FULFILMENT_ORDER_COLLECTED   : FulfilmentCollectOrder,
     FULFILMENT_ORDER_COMPLETED   : FulfilmentCompleteOrder,
+    CHECK_GIFT_CODE_COLLISION    : CheckGiftCardCollision,
 }
 
 export const directShopfrontEvents = [
