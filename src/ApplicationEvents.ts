@@ -257,7 +257,7 @@ export interface FromShopfrontCallbacks {
     FULFILMENT_ORDER_APPROVAL    : (event: FulfilmentApprovalEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]>,
     FULFILMENT_ORDER_COLLECTED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]>,
     FULFILMENT_ORDER_COMPLETED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COMPLETED"]>,
-    GIFT_CARD_CODE_CHECK    : (event: GiftCardCodeCheckEvent, context: unknown) => MaybePromise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>,
+    GIFT_CARD_CODE_CHECK         : (event: GiftCardCodeCheckEvent, context: unknown) => MaybePromise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>,
 }
 
 export interface FromShopfront {
@@ -283,7 +283,7 @@ export interface FromShopfront {
     FULFILMENT_ORDER_APPROVAL    : FulfilmentOrderApproval,
     FULFILMENT_ORDER_COLLECTED   : FulfilmentCollectOrder,
     FULFILMENT_ORDER_COMPLETED   : FulfilmentCompleteOrder,
-    GIFT_CARD_CODE_CHECK    : GiftCardCodeCheck,
+    GIFT_CARD_CODE_CHECK         : GiftCardCodeCheck,
 }
 
 export const directShopfrontEvents = [
