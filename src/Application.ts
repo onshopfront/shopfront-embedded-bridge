@@ -44,7 +44,7 @@ import { CurrentSale } from "./APIs/Sale/CurrentSale";
 import { Sale } from "./APIs/Sale";
 import { buildSaleData } from "./Utilities/SaleCreate";
 import { AudioReady } from "./Events/AudioReady";
-import {CheckGiftCardCollision} from "./Events/CheckGiftCardCollision";
+import {GiftCardCodeCheck} from "./Events/GiftCardCodeCheck";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -102,7 +102,7 @@ export class Application {
         FULFILMENT_ORDER_APPROVAL    : new Map(),
         FULFILMENT_ORDER_COLLECTED   : new Map(),
         FULFILMENT_ORDER_COMPLETED   : new Map(),
-        CHECK_GIFT_CODE_COLLISION    : new Map(),
+        GIFT_CARD_CODE_CHECK    : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -266,12 +266,12 @@ export class Application {
                     .then(res => {
                         return UIPipeline.respond(this.bridge, res.flat(), id);
                     });
-            case "CHECK_GIFT_CODE_COLLISION":
-                results = results as Array<Promise<FromShopfrontReturns["CHECK_GIFT_CODE_COLLISION"]>>;
+            case "GIFT_CARD_CODE_CHECK":
+                results = results as Array<Promise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>>;
 
                 return Promise.all(results)
                     .then(res => {
-                        return CheckGiftCardCollision.respond(this.bridge, res[0], id);
+                        return GiftCardCodeCheck.respond(this.bridge, res[0], id);
                     });
             case "PAYMENT_METHODS_ENABLED":
                 results = results as Array<Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>>;
@@ -408,8 +408,8 @@ export class Application {
                 c = new FulfilmentCompleteOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COMPLETED"]);
                 this.listeners[event].set(callback, c);
                 break;
-            case "CHECK_GIFT_CODE_COLLISION":
-                c = new CheckGiftCardCollision(callback as FromShopfrontCallbacks["CHECK_GIFT_CODE_COLLISION"]);
+            case "GIFT_CARD_CODE_CHECK":
+                c = new GiftCardCodeCheck(callback as FromShopfrontCallbacks["GIFT_CARD_CODE_CHECK"]);
                 this.listeners[event].set(callback, c);
                 break;
         }

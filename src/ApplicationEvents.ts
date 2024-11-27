@@ -27,7 +27,7 @@ import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
 import { Sale } from "./APIs/Sale";
 import { AudioReady } from "./Events/AudioReady";
-import {CheckGiftCardCollision} from "./Events/CheckGiftCardCollision";
+import {GiftCardCodeCheck} from "./Events/GiftCardCodeCheck";
 
 export enum ToShopfront {
     READY                              = "READY",
@@ -50,7 +50,7 @@ export enum ToShopfront {
     REDIRECT                           = "REDIRECT",
     GET_OPTION                         = "GET_OPTION",
     RESPONSE_UI_PIPELINE               = "RESPONSE_UI_PIPELINE",
-    RESPONSE_CHECK_GIFT_CODE_COLLISION = "RESPONSE_CHECK_GIFT_CODE_COLLISION",
+    RESPONSE_GIFT_CARD_CODE_CHECK      = "RESPONSE_GIFT_CARD_CODE_CHECK",
     REQUEST_SECURE_KEY                 = "REQUEST_SECURE_KEY",
     ROTATE_SIGNING_KEY                 = "ROTATE_SIGNING_KEY",
 
@@ -146,7 +146,7 @@ export interface FromShopfrontReturns {
         success: boolean;
         message?: string;
     };
-    CHECK_GIFT_CODE_COLLISION: {
+    GIFT_CARD_CODE_CHECK: {
         code: string,
         collision: boolean,
         application: string
@@ -166,7 +166,7 @@ export interface RegisterChangedEvent {
     user    : null | string;
 }
 
-export interface CheckGiftCardCodeCollisionEvent {
+export interface GiftCardCodeCheckEvent {
     code: string,
     collision: boolean,
     application: string
@@ -257,7 +257,7 @@ export interface FromShopfrontCallbacks {
     FULFILMENT_ORDER_APPROVAL    : (event: FulfilmentApprovalEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]>,
     FULFILMENT_ORDER_COLLECTED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]>,
     FULFILMENT_ORDER_COMPLETED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COMPLETED"]>,
-    CHECK_GIFT_CODE_COLLISION    : (event: CheckGiftCardCodeCollisionEvent, context: unknown) => MaybePromise<FromShopfrontReturns["CHECK_GIFT_CODE_COLLISION"]>,
+    GIFT_CARD_CODE_CHECK    : (event: GiftCardCodeCheckEvent, context: unknown) => MaybePromise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>,
 }
 
 export interface FromShopfront {
@@ -283,7 +283,7 @@ export interface FromShopfront {
     FULFILMENT_ORDER_APPROVAL    : FulfilmentOrderApproval,
     FULFILMENT_ORDER_COLLECTED   : FulfilmentCollectOrder,
     FULFILMENT_ORDER_COMPLETED   : FulfilmentCompleteOrder,
-    CHECK_GIFT_CODE_COLLISION    : CheckGiftCardCollision,
+    GIFT_CARD_CODE_CHECK    : GiftCardCodeCheck,
 }
 
 export const directShopfrontEvents = [
