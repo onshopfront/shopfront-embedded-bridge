@@ -20,9 +20,7 @@ export class GiftCardCodeCheck extends BaseEvent<
     public async emit(
         data: { data: GiftCardCodeCheckEvent, context: undefined }
     ): Promise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]> {
-        console.log("About to start Emit in Bridge" + Date.now());
         const result = await this.callback(data.data, data.context);
-        console.log("Finished Emit" + Date.now());
 
         if(typeof result !== "object") {
             throw new TypeError("Callback must return an object");
@@ -36,8 +34,6 @@ export class GiftCardCodeCheck extends BaseEvent<
         data: FromShopfrontReturns["GIFT_CARD_CODE_CHECK"],
         id: string
     ) {
-        console.log("About to start Response in Bridge" + Date.now());
         bridge.sendMessage(ToShopfront.RESPONSE_GIFT_CARD_CODE_CHECK, data, id);
-        console.log("Finished Response" + Date.now());
     }
 }
