@@ -44,7 +44,7 @@ import { CurrentSale } from "./APIs/Sale/CurrentSale";
 import { Sale } from "./APIs/Sale";
 import { buildSaleData } from "./Utilities/SaleCreate";
 import { AudioReady } from "./Events/AudioReady";
-import {GiftCardCodeCheck} from "./Events/GiftCardCodeCheck";
+import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -102,7 +102,7 @@ export class Application {
         FULFILMENT_ORDER_APPROVAL    : new Map(),
         FULFILMENT_ORDER_COLLECTED   : new Map(),
         FULFILMENT_ORDER_COMPLETED   : new Map(),
-        GIFT_CARD_CODE_CHECK    : new Map(),
+        GIFT_CARD_CODE_CHECK         : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;

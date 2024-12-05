@@ -27,7 +27,7 @@ import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
 import { Sale } from "./APIs/Sale";
 import { AudioReady } from "./Events/AudioReady";
-import {GiftCardCodeCheck} from "./Events/GiftCardCodeCheck";
+import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck";
 
 export enum ToShopfront {
     READY                              = "READY",
@@ -148,8 +148,7 @@ export interface FromShopfrontReturns {
     };
     GIFT_CARD_CODE_CHECK: {
         code: string,
-        collision: boolean,
-        application: string
+        errMessage: string|null
     };
 }
 
@@ -168,8 +167,7 @@ export interface RegisterChangedEvent {
 
 export interface GiftCardCodeCheckEvent {
     code: string,
-    collision: boolean,
-    application: string
+    errMessage: string|null,
 }
 
 export interface FormatIntegratedProductEvent {
