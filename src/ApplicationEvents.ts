@@ -148,7 +148,7 @@ export interface FromShopfrontReturns {
     };
     GIFT_CARD_CODE_CHECK: {
         code: string,
-        errMessage: string|null
+        message: string|null
     };
 }
 
@@ -167,7 +167,7 @@ export interface RegisterChangedEvent {
 
 export interface GiftCardCodeCheckEvent {
     code: string,
-    errMessage: string|null,
+    message: string|null,
 }
 
 export interface FormatIntegratedProductEvent {
