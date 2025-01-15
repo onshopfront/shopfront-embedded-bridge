@@ -44,6 +44,7 @@ import { CurrentSale } from "./APIs/Sale/CurrentSale";
 import { Sale } from "./APIs/Sale";
 import { buildSaleData } from "./Utilities/SaleCreate";
 import { AudioReady } from "./Events/AudioReady";
+import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -101,6 +102,7 @@ export class Application {
         FULFILMENT_ORDER_APPROVAL    : new Map(),
         FULFILMENT_ORDER_COLLECTED   : new Map(),
         FULFILMENT_ORDER_COMPLETED   : new Map(),
+        GIFT_CARD_CODE_CHECK         : new Map(),
     };
     protected directListeners: {
         [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
@@ -264,6 +266,13 @@ export class Application {
                     .then(res => {
                         return UIPipeline.respond(this.bridge, res.flat(), id);
                     });
+            case "GIFT_CARD_CODE_CHECK":
+                results = results as Array<Promise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return GiftCardCodeCheck.respond(this.bridge, res[0], id);
+                    });
             case "PAYMENT_METHODS_ENABLED":
                 results = results as Array<Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>>;
 
@@ -397,6 +406,10 @@ export class Application {
                 break;
             case "FULFILMENT_ORDER_COMPLETED":
                 c = new FulfilmentCompleteOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COMPLETED"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "GIFT_CARD_CODE_CHECK":
+                c = new GiftCardCodeCheck(callback as FromShopfrontCallbacks["GIFT_CARD_CODE_CHECK"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
