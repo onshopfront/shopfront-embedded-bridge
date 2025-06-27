@@ -105,6 +105,6 @@ interface BasePromotionRepository extends BaseRepository<
      * TODO: Remove this one?
      */
     mapToCache(): Promise<void>;
-};
+}
 
 export default BasePromotionRepository;

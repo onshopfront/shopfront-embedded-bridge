@@ -21,6 +21,6 @@ interface BaseStocktakeAccumulatedRepository extends BaseRepository<
      * @param changes
      */
     update(uuid: string, changes: Partial<LocalDatabaseStocktakeAccumulated>): Promise<void>;
-};
+}
 
 export default BaseStocktakeAccumulatedRepository;

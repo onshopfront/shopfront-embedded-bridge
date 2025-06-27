@@ -184,6 +184,6 @@ interface BaseProductRepository extends BaseRepository<
      * Clear the local product data cache
      */
     clearCache(): void;
-};
+}
 
 export default BaseProductRepository;
