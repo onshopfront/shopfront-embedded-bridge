@@ -4,7 +4,6 @@ import { BaseEvent } from "./BaseEvent.js";
 interface RegisterChangedData {
     outlet: string | null;
     register: string | null;
-    // TODO: Double check this
     user: string | null;
 }
 

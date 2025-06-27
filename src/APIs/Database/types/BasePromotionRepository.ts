@@ -88,23 +88,10 @@ interface BasePromotionRepository extends BaseRepository<
     filter(filter: (promotion: LocalDatabasePromotion) => boolean): Promise<Array<LocalDatabasePromotion>>;
 
     /**
-     * Simulates a promotion
-     * TODO: Should this be removed?
-     * @param originalId
-     * @param promotion
-     */
-    simulate(originalId: null | string, promotion: null | LocalDatabasePromotion): Promise<void>;
-
-    /**
      * Retrieve all promotions with the specified IDs
      * @param ids
      */
     getBulk(ids: Array<string>): Promise<Array<LocalDatabasePromotion>>;
-
-    /**
-     * TODO: Remove this one?
-     */
-    mapToCache(): Promise<void>;
 }
 
 export default BasePromotionRepository;
