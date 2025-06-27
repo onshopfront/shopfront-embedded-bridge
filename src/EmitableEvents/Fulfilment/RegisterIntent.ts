@@ -1,6 +1,6 @@
-import { BaseEmitableEvent } from "../BaseEmitableEvent";
-import { ToShopfront } from "../../ApplicationEvents";
-import { FulfilmentOptions } from "./Options";
+import { ToShopfront } from "../../ApplicationEvents.js";
+import { BaseEmitableEvent } from "../BaseEmitableEvent.js";
+import { FulfilmentOptions } from "./Options.js";
 
 /**
  * Registers intent from the application to use the Fulfilment API

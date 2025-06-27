@@ -1,8 +1,8 @@
-import {BaseAction} from "./BaseAction";
-import {Serialized} from "../Common/Serializable";
+import { Serialized } from "../Common/Serializable.js";
+import { BaseAction } from "./BaseAction.js";
 
 export class SaleKey extends BaseAction<SaleKey> {
-    protected supportedEvents = ["click"];
+    protected supportedEvents = [ "click" ];
 
     protected id: string;
     protected name: string;
@@ -12,9 +12,9 @@ export class SaleKey extends BaseAction<SaleKey> {
         super((() => {
             if(typeof id === "string") {
                 return {
-                    properties: [id, name],
+                    properties: [ id, name ],
                     events    : {},
-                    type      : "Button"
+                    type      : "Button",
                 };
             } else {
                 return id;

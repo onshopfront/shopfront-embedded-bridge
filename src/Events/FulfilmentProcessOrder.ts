@@ -1,21 +1,33 @@
-import { BaseEvent } from "./BaseEvent";
-import { FromShopfrontCallbacks, FromShopfrontReturns, FulfilmentProcessEvent } from "../ApplicationEvents";
-import { Sale, ShopfrontSaleState } from "../APIs/Sale";
-import { MaybePromise } from "../Utilities/MiscTypes";
+import { Sale, ShopfrontSaleState } from "../APIs/Sale/index.js";
+import { FromShopfrontCallbacks, FromShopfrontReturns, FulfilmentProcessEvent } from "../ApplicationEvents.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
+
+interface FulfilmentProcessOrderData {
+    id: string;
+    sale: ShopfrontSaleState;
+}
 
 export class FulfilmentProcessOrder extends BaseEvent<
-    { id: string; sale: ShopfrontSaleState },
+    FulfilmentProcessOrderData,
     MaybePromise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]>,
     MaybePromise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]>,
     FulfilmentProcessEvent
 > {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["FULFILMENT_PROCESS_ORDER"]) {
         super(callback);
     }
 
-    public async emit(data: { id: string; sale: ShopfrontSaleState }): Promise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]> {
+    /**
+     * @inheritDoc
+     * @param data
+     */
+    public async emit(
+        data: FulfilmentProcessOrderData
+    ): Promise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]> {
         return this.callback({
-            id: data.id,
+            id  : data.id,
             sale: new Sale(Sale.buildSaleData(data.sale)),
         }, undefined);
     }

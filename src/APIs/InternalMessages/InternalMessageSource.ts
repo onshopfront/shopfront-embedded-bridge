@@ -1,6 +1,6 @@
-import {Application} from "../../Application";
-import {InternalMessage} from "../../EmitableEvents/InternalMessage";
-import {FromShopfront} from "../../ApplicationEvents";
+import { Application } from "../../Application.js";
+import { FromShopfront } from "../../ApplicationEvents.js";
+import { InternalMessage } from "../../EmitableEvents/InternalMessage.js";
 
 export type InternalPageMessageMethod = keyof FromShopfront | "EXTERNAL_APPLICATION";
 
@@ -15,7 +15,10 @@ export class InternalMessageSource {
         this.url = url;
     }
 
-    public send(message: unknown) {
+    /**
+     * Sends an internal message to Shopfront
+     */
+    public send(message: unknown): void {
         this.application.send(new InternalMessage(this.method, this.url, message));
     }
 }

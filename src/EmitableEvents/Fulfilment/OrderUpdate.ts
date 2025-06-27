@@ -1,6 +1,6 @@
-import { BaseEmitableEvent } from "../BaseEmitableEvent";
-import { ToShopfront } from "../../ApplicationEvents";
-import { OrderSummaryDetails } from "../../APIs/Fulfilment/FulfilmentTypes";
+import { OrderSummaryDetails } from "../../APIs/Fulfilment/FulfilmentTypes.js";
+import { ToShopfront } from "../../ApplicationEvents.js";
+import { BaseEmitableEvent } from "../BaseEmitableEvent.js";
 
 export class OrderUpdate extends BaseEmitableEvent<{
     order: OrderSummaryDetails;

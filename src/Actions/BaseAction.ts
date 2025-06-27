@@ -1,7 +1,7 @@
-import {EventEmitter} from "../Common/EventEmitter";
-import {Serializable, SerializableStatic, Serialized} from "../Common/Serializable";
-import {staticImplements} from "../Utilities/Static";
-import ActionEventRegistrar from "../Utilities/ActionEventRegistrar";
+import { EventEmitter } from "../Common/EventEmitter.js";
+import { Serializable, SerializableStatic, Serialized } from "../Common/Serializable.js";
+import ActionEventRegistrar from "../Utilities/ActionEventRegistrar.js";
+import { staticImplements } from "../Utilities/Static.js";
 
 interface BaseActionConstructor<T> {
     new(...args: Array<never>): BaseAction<T>;
@@ -10,13 +10,14 @@ interface BaseActionConstructor<T> {
 
 @staticImplements<SerializableStatic>()
 export class BaseAction<T> extends EventEmitter {
-    protected target    : string;
-    protected events    : Array<{ callback: (...args: Array<unknown>) => void, type: string, id: string }>;
+    protected target: string;
+    protected events: Array<{
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        callback: (...args: Array<unknown>) => void; type: string; id: string;
+    }>;
     protected properties: Array<unknown>;
 
-    public static serializedRegistry: {
-        [id: string]: BaseActionConstructor<unknown>
-    } = {};
+    public static serializedRegistry: Record<string, BaseActionConstructor<unknown>> = {};
 
     constructor(serialized: Serialized<T>, type: BaseActionConstructor<T>) {
         if(new.target === BaseAction) {
@@ -33,8 +34,12 @@ export class BaseAction<T> extends EventEmitter {
         BaseAction.serializedRegistry[this.target] = type;
     }
 
+    /**
+     * Serializes the registered action event data (excluding callbacks) and properties
+     */
     public serialize(): Serialized<T> {
-        const events: {[event: string]: Array<string>} = {};
+        const events: Record<string, Array<string>> = {};
+
         for(let i = 0, l = this.events.length; i < l; i++) {
             if(typeof events[this.events[i].type] === "undefined") {
                 events[this.events[i].type] = [];
@@ -50,16 +55,21 @@ export class BaseAction<T> extends EventEmitter {
         };
     }
 
+    /**
+     * Recursively serializes the action properties
+     * @param properties
+     */
     protected serializeProperties(properties: Array<unknown>): Array<unknown> {
         const results: Array<unknown> = [];
 
         // Loop through current layer of properties
-        for (let i = 0, l = properties.length; i < l; i++) {
+        for(let i = 0, l = properties.length; i < l; i++) {
             const property = properties[i];
-            if (Array.isArray(property)) {
+
+            if(Array.isArray(property)) {
                 // Prepare to recurse through next layer of properties
                 results.push(this.serializeProperties(property));
-            } else if (property instanceof BaseAction) {
+            } else if(property instanceof BaseAction) {
                 // Serialize property
                 results.push(property.serialize());
             } else {
@@ -71,14 +81,24 @@ export class BaseAction<T> extends EventEmitter {
         return results;
     }
 
+    /**
+     * Deserializes the action data
+     * @param serialized
+     */
     public static deserialize<T extends Serializable<T>>(serialized: Serialized<T>): T {
         return new BaseAction.serializedRegistry[serialized.type](serialized) as unknown as T;
     }
 
+    /**
+     * Registers an action event listener
+     * @param event
+     * @param callback
+     */
     public addEventListener(event: string, callback: (...args: Array<unknown>) => void): void {
         super.addEventListener(event, callback);
 
         const id = `${Date.now()}-${event}-${Math.random()}`;
+
         ActionEventRegistrar.add(id, this);
 
         this.events.push({
@@ -88,6 +108,11 @@ export class BaseAction<T> extends EventEmitter {
         });
     }
 
+    /**
+     * Unregisters an action event listener
+     * @param event
+     * @param callback
+     */
     public removeEventListener(event: string, callback: (...args: Array<unknown>) => void): void {
         super.removeEventListener(event, callback);
 
@@ -113,7 +138,12 @@ export class BaseAction<T> extends EventEmitter {
         }
     }
 
-    public handleRegistrarEvent(id: string, data: unknown) {
+    /**
+     * Fires the callback for the registered action event
+     * @param id
+     * @param data
+     */
+    public handleRegistrarEvent(id: string, data: unknown): void {
         for(let i = 0, l = this.events.length; i < l; i++) {
             if(this.events[i].id !== id) {
                 continue;

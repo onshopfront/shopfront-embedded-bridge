@@ -1,12 +1,12 @@
-import {BaseAction} from "./BaseAction";
-import {Serialized} from "../Common/Serializable";
+import { Serialized } from "../Common/Serializable.js";
+import { BaseAction } from "./BaseAction.js";
 
 export type ToastType = "success" | "error" | "information" | "warning";
 
 export class Toast extends BaseAction<Toast> {
-    protected supportedEvents = ["hide"];
+    protected supportedEvents = [ "hide" ];
 
-    protected type   : ToastType;
+    protected type: ToastType;
     protected message: string;
 
     constructor(type: Serialized<Toast> | ToastType, message?: string) {
@@ -14,7 +14,7 @@ export class Toast extends BaseAction<Toast> {
         super((() => {
             if(typeof type === "string") {
                 return {
-                    properties: [type, message],
+                    properties: [ type, message ],
                     events    : {},
                     type      : "Toast",
                 };

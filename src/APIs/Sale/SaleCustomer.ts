@@ -7,10 +7,8 @@ export class SaleCustomer {
 
     /**
      * Get the ID of the customer.
-     *
-     * @returns {string}
      */
-    getId() {
+    public getId(): string {
         return this.id;
     }
 }

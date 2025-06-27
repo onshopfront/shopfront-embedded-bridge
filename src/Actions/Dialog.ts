@@ -1,17 +1,17 @@
-import {BaseAction} from "./BaseAction";
-import {Serialized} from "../Common/Serializable";
-import {Button} from "./Button";
+import { Serialized } from "../Common/Serializable.js";
+import { BaseAction } from "./BaseAction.js";
+import { Button } from "./Button.js";
 
 type DialogType = "success" | "information" | "question" | "danger" | "warning" | "error" | "edit" | "frame";
 
 export class Dialog extends BaseAction<Dialog> {
-    protected supportedEvents = ["close"];
+    protected supportedEvents = [ "close" ];
 
-    protected type     : DialogType;
+    protected type: DialogType;
     protected closeable: boolean;
-    protected header   : string;
-    protected content  : string;
-    protected buttons  : Array<Button>;
+    protected header: string;
+    protected content: string;
+    protected buttons: Array<Button>;
 
     constructor(
         type: Serialized<Dialog> | DialogType,
@@ -24,7 +24,7 @@ export class Dialog extends BaseAction<Dialog> {
         super((() => {
             if(typeof type === "string") {
                 return {
-                    properties: [type, closeable, header, content, buttons],
+                    properties: [ type, closeable, header, content, buttons ],
                     events    : {},
                     type      : "Dialog",
                 };

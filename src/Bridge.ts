@@ -1,17 +1,54 @@
-import {Application} from "./Application";
-import * as ApplicationEvents from "./ApplicationEvents";
+import { Application } from "./Application.js";
+import * as ApplicationEvents from "./ApplicationEvents.js";
+import { MockApplication } from "./Mocks/MockApplication.js";
+import { MockBridge } from "./Mocks/MockBridge.js";
 
 interface ApplicationOptions {
-    id    : string; // The Client ID
+    id: string; // The Client ID
     vendor: string; // The Vendor's URL
 }
 
-export interface ApplicationEventListener {
-    (event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal, data: Record<string, unknown>, id: string): void;
+export type ApplicationEventListener = (
+    event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+    data: Record<string, unknown>,
+    id: string
+) => void;
+
+export interface BridgeInterface {
+    /**
+     * Destroys the Bridge by unregistering all listeners
+     */
+    destroy(): void;
+    /**
+     * Sends an event to Shopfront
+     */
+    sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void;
+    /**
+     * Adds a listener for a Shopfront event
+     */
+    addEventListener(listener: ApplicationEventListener): void;
+    /**
+     * Removes a listener for a Shopfront event
+     */
+    removeEventListener(listener: ApplicationEventListener): void;
 }
 
-export class Bridge {
-    public static createApplication(options: ApplicationOptions): Application {
+export class Bridge implements BridgeInterface {
+    /**
+     * A static method for instantiating an Application
+     */
+    public static createApplication(options: ApplicationOptions): Application;
+    /**
+     * A static method for instantiating an Application
+     */
+    public static createApplication(options: ApplicationOptions, mock: true): MockApplication;
+    /**
+     * A static method for instantiating an Application
+     */
+    public static createApplication(
+        options: ApplicationOptions,
+        mock?: boolean
+    ): Application | MockApplication {
         if(typeof options.id === "undefined") {
             throw new TypeError("You must specify the ID for the application");
         }
@@ -20,14 +57,18 @@ export class Bridge {
             throw new TypeError("You must specify the Vendor for the application");
         }
 
+        if(mock) {
+            return new MockApplication(new MockBridge(options.id, options.vendor));
+        }
+
         return new Application(new Bridge(options.id, options.vendor));
     }
 
     public key: string;
     public url: URL;
-    protected listeners  : Array<ApplicationEventListener> = [];
+    protected listeners: Array<ApplicationEventListener> = [];
     protected hasListener = false;
-    protected target     : Window | null = null;
+    protected target: Window | null = null;
 
     constructor(key: string, url: string) {
         if(window.parent === window) {
@@ -36,7 +77,7 @@ export class Bridge {
 
         this.key = key;
 
-        if(url.split('.').length === 1) {
+        if(url.split(".").length === 1) {
             this.url = new URL(`https://${url}.onshopfront.com`);
         } else {
             this.url = new URL(url);
@@ -46,20 +87,32 @@ export class Bridge {
         this.sendMessage(ApplicationEvents.ToShopfront.READY);
     }
 
-    public destroy() {
+    /**
+     * @inheritDoc
+     */
+    public destroy(): void {
         this.unregisterListeners();
         this.listeners = [];
     }
 
-    protected registerListeners() {
+    /**
+     * @inheritDoc
+     */
+    protected registerListeners(): void {
         window.addEventListener("message", this.handleMessage, false);
     }
 
-    protected unregisterListeners() {
+    /**
+     * @inheritDoc
+     */
+    protected unregisterListeners(): void {
         window.removeEventListener("message", this.handleMessage);
     }
 
-    protected handleMessage = (event: MessageEvent) => {
+    /**
+     * @inheritDoc
+     */
+    protected handleMessage = (event: MessageEvent): void => {
         if(event.origin !== this.url.origin) {
             return;
         }
@@ -102,12 +155,16 @@ export class Bridge {
 
         // Emit the event
         const listeners = this.listeners;
+
         for(let i = 0, l = listeners.length; i < l; i++) {
             listeners[i](event.data.type, event.data.data, event.data.id);
         }
     };
 
-    public sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string) {
+    /**
+     * @inheritDoc
+     */
+    public sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
         if(type === ApplicationEvents.ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
@@ -124,7 +181,7 @@ export class Bridge {
                     from: window.location.origin,
                 },
                 key: this.key,
-            }, /* can't use this because of sandbox: this.url.origin */ '*');
+            }, /* can't use this because of sandbox: this.url.origin */ "*");
 
             return;
         }
@@ -142,10 +199,13 @@ export class Bridge {
             key: this.key,
             id,
             data,
-        }, '*' /* can't use this because of sandbox: this.url.origin */);
+        }, "*" /* can't use this because of sandbox: this.url.origin */);
     }
 
-    public addEventListener(listener: ApplicationEventListener) {
+    /**
+     * @inheritDoc
+     */
+    public addEventListener(listener: ApplicationEventListener): void {
         if(this.listeners.includes(listener)) {
             throw new Error("The listener provided is already registered");
         }
@@ -158,7 +218,10 @@ export class Bridge {
         }
     }
 
-    public removeEventListener(listener: ApplicationEventListener) {
+    /**
+     * @inheritDoc
+     */
+    public removeEventListener(listener: ApplicationEventListener): void {
         const index = this.listeners.indexOf(listener);
 
         if(index === -1) {

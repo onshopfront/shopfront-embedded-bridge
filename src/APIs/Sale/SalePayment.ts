@@ -1,10 +1,10 @@
-import { ShopfrontSalePayment } from "./ShopfrontSaleState";
-import UUID from "../../Utilities/UUID";
+import UUID from "../../Utilities/UUID.js";
+import { ShopfrontSalePayment } from "./ShopfrontSaleState.js";
 
 export enum SalePaymentStatus {
     APPROVED  = "completed",
     DECLINED  = "failed",
-    CANCELLED = "cancelled"
+    CANCELLED = "cancelled",
 }
 
 export class SalePayment {
@@ -29,14 +29,12 @@ export class SalePayment {
 
     /**
      * Hydrate a sale payment from the SaleState.
-     *
      * @internal
-     * @param {ShopfrontSalePayment} payment
-     * @returns {SalePayment}
-     * @constructor
+     * @param payment
      */
     public static HydrateFromState(payment: ShopfrontSalePayment): SalePayment {
         let status = SalePaymentStatus.APPROVED;
+
         switch(payment.status) {
             case "failed":
                 status = SalePaymentStatus.DECLINED;
@@ -47,6 +45,7 @@ export class SalePayment {
         }
 
         const hydrated = new SalePayment(payment.method, payment.amount, payment.cashout, status);
+
         hydrated.setInternal(payment);
 
         return hydrated;
@@ -54,12 +53,12 @@ export class SalePayment {
 
     /**
      * Set the internal data for the payment.
-     * This method is for hydration of the payment from Shopfront, it's highly recommend that you DO NOT use this method.
-     *
+     * This method is for hydration of the payment from Shopfront,
+     * it's highly recommend that you DO NOT use this method.
      * @internal
-     * @param {ShopfrontSalePayment} data
+     * @param data
      */
-    public setInternal(data: ShopfrontSalePayment) {
+    public setInternal(data: ShopfrontSalePayment): void {
         this.type     = data.type;
         this.rounding = data.rounding;
         this.metaData = JSON.parse(data.metadata);
@@ -67,64 +66,50 @@ export class SalePayment {
 
     /**
      * Get the ID of the sale payment method.
-     *
-     * @returns {string}
      */
-    public getId() {
+    public getId(): string {
         return this.id;
     }
 
     /**
      * Get the type of payment method this is.
-     *
-     * @returns {string | undefined}
      */
-    public getType() {
+    public getType(): string | undefined {
         return this.type;
     }
 
     /**
      * Get the status of this payment method.
-     *
-     * @returns {SalePaymentStatus | undefined}
      */
-    public getStatus() {
+    public getStatus(): SalePaymentStatus | undefined {
         return this.status;
     }
 
     /**
      * Get the value of this payment method.
-     *
-     * @returns {number}
      */
-    public getAmount() {
+    public getAmount(): number {
         return this.amount;
     }
 
     /**
      * Get the cashout amount paid for on this payment method.
-     *
-     * @returns {number | undefined}
      */
-    public getCashout() {
+    public getCashout(): number | undefined {
         return this.cashout;
     }
 
     /**
      * Get the amount of rounding applied to this payment method.
-     *
-     * @returns {number | undefined}
      */
-    public getRounding() {
+    public getRounding(): number | undefined {
         return this.rounding;
     }
 
     /**
      * Get the metadata attached to this payment method
-     *
-     * @returns {Record<string, unknown>}
      */
-    public getMetaData() {
+    public getMetaData(): Record<string, unknown> {
         return this.metaData;
     }
 }

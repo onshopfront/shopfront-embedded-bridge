@@ -1,12 +1,12 @@
-import {BaseEvent} from "./BaseEvent";
+import { InternalMessageSource } from "../APIs/InternalMessages/InternalMessageSource.js";
+import { Application } from "../Application.js";
 import {
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontReturns,
-    InternalPageMessageEvent
-} from "../ApplicationEvents";
-import {InternalMessageSource} from "../APIs/InternalMessages/InternalMessageSource";
-import {Application} from "../Application";
+    InternalPageMessageEvent,
+} from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
     protected application: Application;
@@ -17,7 +17,15 @@ export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
         this.application = application;
     }
 
-    protected createReference(method: keyof FromShopfront | "EXTERNAL_APPLICATION", url: string) {
+    /**
+     * Creates and returns a new internal message source
+     * @param method
+     * @param url
+     */
+    protected createReference(
+        method: keyof FromShopfront | "EXTERNAL_APPLICATION",
+        url: string
+    ): InternalMessageSource {
         return new InternalMessageSource(
             this.application,
             method,
@@ -25,12 +33,16 @@ export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
         );
     }
 
-    async emit(data: InternalPageMessageEvent): Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]> {
+    /**
+     * @inheritDoc
+     * @param data
+     */
+    public async emit(data: InternalPageMessageEvent): Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]> {
         this.callback({
-            method: data.method,
-            url: data.url,
-            message: data.message,
-            reference: this.createReference(data.method, data.url)
+            method   : data.method,
+            url      : data.url,
+            message  : data.message,
+            reference: this.createReference(data.method, data.url),
         }, undefined);
     }
 }

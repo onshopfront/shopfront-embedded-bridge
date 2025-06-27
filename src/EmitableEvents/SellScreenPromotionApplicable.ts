@@ -1,5 +1,5 @@
-import {BaseEmitableEvent} from "./BaseEmitableEvent";
-import {ToShopfront} from "../ApplicationEvents";
+import { ToShopfront } from "../ApplicationEvents.js";
+import { BaseEmitableEvent } from "./BaseEmitableEvent.js";
 
 export interface PromotionApplicableData {
     enable: boolean;

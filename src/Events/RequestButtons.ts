@@ -1,24 +1,36 @@
-import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
-import {Bridge, Button} from "..";
-import {BaseEvent} from "./BaseEvent";
-import { MaybePromise } from "../Utilities/MiscTypes";
+import { Button } from "../Actions/Button.js";
+import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import { Bridge } from "../Bridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
+
+interface RequestButtonsData {
+    location: string;
+    id: string;
+    context: unknown;
+}
 
 export class RequestButtons extends BaseEvent<
-    { location: string; id: string; context: unknown },
+    RequestButtonsData,
     MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
     MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
     string,
     unknown
 > {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_BUTTONS"]) {
         super(callback);
     }
 
-    public async emit(data: { location: string, id: string, context: unknown }): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
+    /**
+     * @inheritDoc
+     * @param data
+     */
+    public async emit(data: RequestButtonsData): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
         let result = await this.callback(data.location, data.context);
 
         if(!Array.isArray(result)) {
-            result = [result];
+            result = [ result ];
         }
 
         for(let i = 0, l = result.length; i < l; i++) {
@@ -30,8 +42,15 @@ export class RequestButtons extends BaseEvent<
         return result;
     }
 
+    /**
+     * Sends the response data to Shopfront
+     * @param bridge
+     * @param buttons
+     * @param id
+     */
     public static async respond(bridge: Bridge, buttons: Array<Button>, id: string): Promise<void> {
         const response = [];
+
         for(let i = 0, l = buttons.length; i < l; i++) {
             if(!(buttons[i] instanceof Button)) {
                 throw new TypeError("Invalid response returned, expected button");

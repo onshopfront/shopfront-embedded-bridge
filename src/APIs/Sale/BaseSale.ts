@@ -1,6 +1,6 @@
-import { SaleCustomer } from "./SaleCustomer";
-import { SalePayment } from "./SalePayment";
-import { SaleProduct } from "./SaleProduct";
+import { SaleCustomer } from "./SaleCustomer.js";
+import { SalePayment } from "./SalePayment.js";
+import { SaleProduct } from "./SaleProduct.js";
 
 export interface BaseSaleData {
     register: string | undefined;
@@ -43,9 +43,7 @@ export abstract class BaseSale {
 
     /**
      * Updates the sale data to be inline with the new sale
-     *
-     * @param {BaseSale} sale
-     * @protected
+     * @param sale
      */
     protected hydrate(sale: BaseSale): void {
         this.sale = sale.sale;
@@ -56,8 +54,6 @@ export abstract class BaseSale {
 
     /**
      * Get the products that are currently on the sale.
-     *
-     * @returns {Array<SaleProduct>}
      */
     public getProducts(): Array<SaleProduct> {
         return this.products;
@@ -65,8 +61,6 @@ export abstract class BaseSale {
 
     /**
      * Get the payments that are currently on the sale.
-     *
-     * @returns {Array<SalePayment>}
      */
     public getPayments(): Array<SalePayment> {
         return this.payments;
@@ -74,8 +68,6 @@ export abstract class BaseSale {
 
     /**
      * Get the current customer on the sale.
-     *
-     * @returns {SaleCustomer | null}
      */
     public getCustomer(): null | SaleCustomer {
         return this.customer;
@@ -83,8 +75,6 @@ export abstract class BaseSale {
 
     /**
      * Get the register.
-     *
-     * @returns {string | undefined}
      */
     public getRegister(): string | undefined {
         return this.sale.register;
@@ -92,8 +82,6 @@ export abstract class BaseSale {
 
     /**
      * Get the client id.
-     *
-     * @returns {string | null}
      */
     public getClientId(): string | undefined {
         return this.sale.clientId;
@@ -101,8 +89,6 @@ export abstract class BaseSale {
 
     /**
      * Get the current sale total on the sale.
-     *
-     * @returns {number}
      */
     public getSaleTotal(): number {
         return this.sale.totals.sale;
@@ -110,8 +96,6 @@ export abstract class BaseSale {
 
     /**
      * Get the current paid total on the sale.
-     *
-     * @returns {number}
      */
     public getPaidTotal(): number {
         return this.sale.totals.paid;
@@ -119,8 +103,6 @@ export abstract class BaseSale {
 
     /**
      * Get the current savings total on the sale.
-     *
-     * @returns {number}
      */
     public getSavingsTotal(): number {
         return this.sale.totals.savings;
@@ -128,8 +110,6 @@ export abstract class BaseSale {
 
     /**
      * Get the current discount total on the sale.
-     *
-     * @returns {number}
      */
     public getDiscountTotal(): number {
         return this.sale.totals.discount;
@@ -137,8 +117,6 @@ export abstract class BaseSale {
 
     /**
      * Get the linked to value on the sale.
-     *
-     * @returns {string}
      */
     public getLinkedTo(): string {
         return this.sale.linkedTo;
@@ -146,8 +124,6 @@ export abstract class BaseSale {
 
     /**
      * Get the refund reason on the sale.
-     *
-     * @returns {string}
      */
     public getRefundReason(): string {
         return this.sale.refundReason;
@@ -155,8 +131,6 @@ export abstract class BaseSale {
 
     /**
      * Get the price set on the sale.
-     *
-     * @returns {string | null}
      */
     public getPriceSet(): string | null {
         return this.sale.priceSet;
@@ -164,8 +138,6 @@ export abstract class BaseSale {
 
     /**
      * Get the external sale note (visible to the customer).
-     *
-     * @returns {string}
      */
     public getExternalNote(): string {
         return this.sale.notes.sale;
@@ -173,8 +145,6 @@ export abstract class BaseSale {
 
     /**
      * Get the internal sale note.
-     *
-     * @returns {string}
      */
     public getInternalNote(): string {
         return this.sale.notes.internal;
@@ -182,8 +152,6 @@ export abstract class BaseSale {
 
     /**
      * Get the order reference (visible to the customer).
-     *
-     * @returns {string}
      */
     public getOrderReference(): string {
         return this.sale.orderReference;
@@ -191,8 +159,6 @@ export abstract class BaseSale {
 
     /**
      * Get the current meta data for the sale
-     *
-     * @returns {Record<string, unknown>}
      */
     public getMetaData(): Record<string, unknown> {
         return this.sale.metaData;

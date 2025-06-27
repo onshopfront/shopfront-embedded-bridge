@@ -1,8 +1,8 @@
-import { BaseAction } from "./BaseAction";
-import { Serialized } from "../Common/Serializable";
+import { Serialized } from "../Common/Serializable.js";
+import { BaseAction } from "./BaseAction.js";
 
 export class CustomerListOption extends BaseAction<CustomerListOption> {
-    protected supportedEvents = ["click"];
+    protected supportedEvents = [ "click" ];
 
     protected contents: string;
 
@@ -10,7 +10,7 @@ export class CustomerListOption extends BaseAction<CustomerListOption> {
         super((() => {
             if(typeof contents === "string") {
                 return {
-                    properties: [contents],
+                    properties: [ contents ],
                     events    : {},
                     type      : "CustomerListOption",
                 };

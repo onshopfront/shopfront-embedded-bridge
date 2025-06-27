@@ -3,6 +3,7 @@
  */
 export type MaybePromise<P> = P | Promise<P>;
 
-export interface ConstructorClass<T> {
-    new(...args: Array<unknown>): T
-}
+export type ConstructorClass<T> = new(...args: Array<unknown>) => T;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type _Infer = any;

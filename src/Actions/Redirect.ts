@@ -1,8 +1,8 @@
-import {BaseAction} from "./BaseAction";
-import {Serialized} from "../Common/Serializable";
+import { Serialized } from "../Common/Serializable.js";
+import { BaseAction } from "./BaseAction.js";
 
 class InternalRedirect extends BaseAction<InternalRedirect> {
-    protected supportedEvents = ["click"];
+    protected supportedEvents = [ "click" ];
 
     protected to: string;
 
@@ -11,9 +11,9 @@ class InternalRedirect extends BaseAction<InternalRedirect> {
         super((() => {
             if(typeof to === "string") {
                 return {
-                    properties: [to],
+                    properties: [ to ],
                     events    : {},
-                    type      : "InternalRedirect"
+                    type      : "InternalRedirect",
                 };
             } else {
                 return to;
@@ -29,7 +29,7 @@ class InternalRedirect extends BaseAction<InternalRedirect> {
 }
 
 class ExternalRedirect extends BaseAction<ExternalRedirect> {
-    protected supportedEvents = ["click"];
+    protected supportedEvents = [ "click" ];
 
     protected to: URL;
 
@@ -38,7 +38,7 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
         super((() => {
             if(to instanceof URL) {
                 return {
-                    properties: [to.href],
+                    properties: [ to.href ],
                     events    : {},
                     type      : "ExternalRedirect",
                 };
@@ -55,7 +55,8 @@ class ExternalRedirect extends BaseAction<ExternalRedirect> {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const Redirect = {
     InternalRedirect,
-    ExternalRedirect
+    ExternalRedirect,
 };

@@ -1,15 +1,24 @@
-import {BaseEvent} from "./BaseEvent";
-import {FromShopfrontCallbacks, FromShopfrontReturns} from "../ApplicationEvents";
+import { FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
+
+interface RegisterChangedData {
+    outlet: string | null;
+    register: string | null;
+    // TODO: Double check this
+    user: string | null;
+}
 
 export class RegisterChanged extends BaseEvent {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REGISTER_CHANGED"]) {
         super(callback);
     }
 
-    async emit(data: {
-        outlet: string | null,
-        register: string | null,
-    }): Promise<FromShopfrontReturns["REGISTER_CHANGED"]> {
+    /**
+     * @inheritDoc
+     * @param data
+     */
+    public async emit(data: RegisterChangedData): Promise<FromShopfrontReturns["REGISTER_CHANGED"]> {
         this.callback(data, undefined);
     }
 }

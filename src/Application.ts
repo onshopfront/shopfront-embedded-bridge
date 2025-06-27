@@ -1,50 +1,52 @@
-import { ApplicationEventListener, Bridge } from "./Bridge";
+import { Button } from "./Actions/Button.js";
+import { Database } from "./APIs/Database/Database.js";
+import { CurrentSale } from "./APIs/Sale/CurrentSale.js";
+import { Sale, ShopfrontSaleState } from "./APIs/Sale/index.js";
 import {
     DirectShopfrontEvent,
-    directShopfrontEvents,
+    DirectShopfrontEventCallback,
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
     FromShopfrontReturns,
+    isDirectShopfrontEvent,
+    ListenableFromShopfrontEvents,
     RegisterChangedEvent,
     SellScreenActionMode,
     SellScreenSummaryMode,
     SoundEvents,
-    ToShopfront
-} from "./ApplicationEvents";
-import { Ready } from "./Events/Ready";
-import { Serializable } from "./Common/Serializable";
-import { Button } from "./Actions/Button";
-import { RequestSettings } from "./Events/RequestSettings";
-import { RequestButtons } from "./Events/RequestButtons";
-import ActionEventRegistrar from "./Utilities/ActionEventRegistrar";
-import { RequestTableColumns } from "./Events/RequestTableColumns";
-import { RequestSellScreenOptions } from "./Events/RequestSellScreenOptions";
-import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent";
-import { ShopfrontSaleState } from "./APIs/Sale";
-import { InternalPageMessage } from "./Events/InternalPageMessage";
-import { RegisterChanged } from "./Events/RegisterChanged";
-import { Database } from "./APIs/Database/Database";
-import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct";
-import { MaybePromise } from "./Utilities/MiscTypes";
-import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions";
-import { RequestSaleKeys } from "./Events/RequestSaleKeys";
-import { SaleComplete } from "./Events/SaleComplete";
-import { BaseEvent } from "./Events/BaseEvent";
-import { UIPipeline } from "./Events/UIPipeline";
-import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
-import { AudioPermissionChange } from "./Events/AudioPermissionChange";
-import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder";
-import { FulfilmentVoidOrder } from "./Events/FulfilmentVoidOrder";
-import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder";
-import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval";
-import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
-import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
-import { CurrentSale } from "./APIs/Sale/CurrentSale";
-import { Sale } from "./APIs/Sale";
-import { buildSaleData } from "./Utilities/SaleCreate";
-import { AudioReady } from "./Events/AudioReady";
-import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck";
+    ToShopfront,
+} from "./ApplicationEvents.js";
+import { ApplicationEventListener, Bridge } from "./Bridge.js";
+import { Serializable } from "./Common/Serializable.js";
+import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
+import { AudioPermissionChange } from "./Events/AudioPermissionChange.js";
+import { AudioReady } from "./Events/AudioReady.js";
+import { BaseEvent } from "./Events/BaseEvent.js";
+import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";
+import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder.js";
+import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder.js";
+import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder.js";
+import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval.js";
+import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder.js";
+import { FulfilmentVoidOrder } from "./Events/FulfilmentVoidOrder.js";
+import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck.js";
+import { InternalPageMessage } from "./Events/InternalPageMessage.js";
+import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled.js";
+import { Ready } from "./Events/Ready.js";
+import { RegisterChanged } from "./Events/RegisterChanged.js";
+import { RequestButtons } from "./Events/RequestButtons.js";
+import { RequestCustomerListOptions } from "./Events/RequestCustomerListOptions.js";
+import { RequestSaleKeys } from "./Events/RequestSaleKeys.js";
+import { RequestSellScreenOptions } from "./Events/RequestSellScreenOptions.js";
+import { RequestSettings } from "./Events/RequestSettings.js";
+import { RequestTableColumns } from "./Events/RequestTableColumns.js";
+import { SaleComplete } from "./Events/SaleComplete.js";
+import { UIPipeline } from "./Events/UIPipeline.js";
+import { MockedCurrentSale } from "./Mocks/APIs/Sale/CurrentSale.js";
+import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
+import { MaybePromise } from "./Utilities/MiscTypes.js";
+import { buildSaleData } from "./Utilities/SaleCreate.js";
 
 export interface ShopfrontEmbeddedVerificationToken {
     auth: string;
@@ -66,17 +68,140 @@ export class ShopfrontTokenDecodingError extends Error {}
 
 export class ShopfrontTokenRequestError extends Error {}
 
+export interface ApplicationInterface {
+    /**
+     * Destroy the bridge instance
+     */
+    destroy(): void;
+    /**
+     * Register a listener for a Shopfront event
+     */
+    addEventListener<E extends keyof FromShopfrontCallbacks>(
+        event: E,
+        callback: FromShopfrontCallbacks[E]
+    ): void;
+    /**
+     * Register a listener for a Shopfront event
+     */
+    addEventListener<D>(
+        event: DirectShopfrontEvent,
+        callback: (event: D) => MaybePromise<void>
+    ): void;
+    /**
+     * Removed a registered listener for a Shopfront event
+     */
+    removeEventListener<E extends keyof FromShopfrontCallbacks>(
+        event: E,
+        callback: FromShopfrontCallbacks[E]
+    ): void;
+    /**
+     * Removed a registered listener for a Shopfront event
+     */
+    removeEventListener<D>(
+        event: DirectShopfrontEvent,
+        callback: (event: D) => MaybePromise<void>
+    ): void;
+    /**
+     * Removed a registered listener for a Shopfront event
+     */
+    removeEventListener(
+        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
+        callback: (...args: Array<unknown>) => MaybePromise<void>
+    ): void;
+    /**
+     * Send data to Shopfront
+     */
+    send(item: BaseEmitableEvent<unknown> | Serializable<unknown>): void;
+    /**
+     * Requests permission from the user to download the specified file
+     */
+    download(file: string): void;
+    /**
+     * Redirects the user to the specified location.
+     * If `externalRedirect` is `true`, the user is prompted to confirm the redirect.
+     */
+    redirect(toLocation: string, externalRedirect: boolean): void;
+    /**
+     * Shows a loading screen in Shopfront
+     */
+    load(): () => void;
+    /**
+     * Retrieves the cached authentication key
+     */
+    getAuthenticationKey(): string;
+    /**
+     * Get the current sale on the sell screen, if the current device is not a register
+     * then this will return false.
+     */
+    getCurrentSale(): Promise<(CurrentSale | MockedCurrentSale) | false>;
+    /**
+     * Send the sale to be created on shopfront.
+     */
+    createSale(sale: Sale): Promise<{
+        success: boolean;
+        message?: string;
+    }>;
+    /**
+     * Retrieves the current location data from Shopfront
+     */
+    getLocation(): Promise<{
+        register: string | null;
+        outlet: string | null;
+        user: string | null;
+    }>;
+    /**
+     * Prints the provided content as a receipt
+     */
+    printReceipt(content: string): void;
+    /**
+     * Changes the display mode of the sell screen's `action` container
+     */
+    changeSellScreenActionMode(mode: SellScreenActionMode): void;
+    /**
+     * Changes the display mode of the sell screen's 'summary' container
+     */
+    changeSellScreenSummaryMode(mode: SellScreenSummaryMode): void;
+    /**
+     * Requests permission from the user to be able to play audio
+     */
+    requestAudioPermission(): Promise<{ success: boolean; message?: string; }>;
+    /**
+     * Requests Shopfront to preload audio so that it can be pre-cached before being played
+     */
+    audioPreload(url: string): Promise<{ success: boolean; message?: string; }>;
+    /**
+     * Attempts to play the provided audio in Shopfront
+     */
+    audioPlay(url: string): Promise<{ success: boolean; message?: string; }>;
+    /**
+     * Retrieve the value of the specified option from Shopfront
+     */
+    getOption<TValueType>(option: string, defaultValue: TValueType): Promise<TValueType>;
+    /**
+     * Retrieves an embedded token from Shopfront that can be used to validate server requests
+     */
+    getToken(returnTokenObject: true): Promise<ShopfrontEmbeddedVerificationToken>;
+    /**
+     * Retrieves an embedded token from Shopfront that can be used to validate server requests
+     */
+    getToken(returnTokenObject?: false): Promise<string>;
+    /**
+     * Retrieves an embedded token from Shopfront that can be used to validate server requests
+     */
+    getToken(returnTokenObject?: boolean): Promise<string | ShopfrontEmbeddedVerificationToken>;
+}
+
 // noinspection JSUnusedGlobalSymbols
-export class Application {
-    protected bridge   : Bridge;
-    protected isReady  : boolean;
-    protected key      : string;
-    protected register : string | null;
-    protected outlet   : string | null;
-    protected user     : string | null;
+export class Application implements ApplicationInterface {
+    protected bridge: Bridge;
+    protected isReady: boolean;
+    protected key: string;
+    protected register: string | null;
+    protected outlet: string | null;
+    protected user: string | null;
     protected signingKey: CryptoKeyPair | undefined;
     protected listeners: {
-        [key in keyof Omit<FromShopfront, "CALLBACK">]: Map<
+        [key in ListenableFromShopfrontEvents]: Map<
             (...args: Array<unknown>) => void,
             FromShopfront[key] & BaseEvent
         >;
@@ -104,15 +229,13 @@ export class Application {
         FULFILMENT_ORDER_COMPLETED   : new Map(),
         GIFT_CARD_CODE_CHECK         : new Map(),
     };
-    protected directListeners: {
-        [K in DirectShopfrontEvent]?: Set<(data: unknown) => void | Promise<void>>;
-    } = {};
+    protected directListeners: Partial<Record<DirectShopfrontEvent, Set<DirectShopfrontEventCallback>>> = {};
     public database: Database;
 
     constructor(bridge: Bridge) {
         this.bridge   = bridge;
         this.isReady  = false;
-        this.key      = '';
+        this.key      = "";
         this.register = null;
         this.outlet   = null;
         this.user     = null;
@@ -122,18 +245,27 @@ export class Application {
         this.addEventListener("REGISTER_CHANGED", this.handleLocationChanged);
     }
 
-    public destroy() {
+    /**
+     * @inheritDoc
+     */
+    public destroy(): void {
         this.bridge.destroy();
     }
 
+    /**
+     * Handles an application event
+     */
     protected handleEvent = (
         event: keyof FromShopfront | keyof FromShopfrontInternal,
         data: Record<string, unknown>,
         id: string
-    ) => {
+    ): void => {
         if(event === "READY") {
             this.isReady = true;
             this.key     = data.key as string;
+            this.outlet  = data.outlet as string;
+            this.register = data.register as string;
+
             data = {
                 outlet  : data.outlet,
                 register: data.register,
@@ -141,7 +273,8 @@ export class Application {
         }
 
         if(event === "CALLBACK") {
-            this.handleEventCallback(data as { id?: string; data: unknown });
+            this.handleEventCallback(data as { id?: string; data: unknown; });
+
             return;
         }
 
@@ -151,10 +284,12 @@ export class Application {
             }
 
             this.key = data.key as string;
+
             return;
         } else if(event === "LOCATION_CHANGED") {
             // Unregister all serialized listeners as they're no longer displayed
             ActionEventRegistrar.clear();
+
             return;
         } else if(
             event === "RESPONSE_CURRENT_SALE" ||
@@ -172,22 +307,25 @@ export class Application {
         this.emit(event, data, id);
     };
 
+    /**
+     * Calls any registered listeners for the received event
+     */
     protected emit(
-        event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
+        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
         data: Record<string, unknown> = {},
         id: string
-    ) {
-        if(directShopfrontEvents.includes(event as unknown as DirectShopfrontEvent)) {
-            event = (event as DirectShopfrontEvent);
-
+    ): MaybePromise<void> {
+        if(isDirectShopfrontEvent(event)) {
             const listeners = this.directListeners[event];
+
             if(typeof listeners === "undefined") {
                 return this.bridge.sendMessage(ToShopfront.NOT_LISTENING_TO_EVENT);
             }
 
             const results = [];
+
             for(const e of listeners.values()) {
-                results.push(e(data));
+                results.push(e());
             }
 
             return Promise.all(results)
@@ -195,8 +333,6 @@ export class Application {
                     // Ensure void is returned
                 });
         }
-
-        event = (event as keyof Omit<FromShopfront, "CALLBACK">);
 
         let results = [];
 
@@ -290,34 +426,40 @@ export class Application {
         }
     }
 
-    public addEventListener<E extends keyof FromShopfrontCallbacks>(
+    /**
+     * @inheritDoc
+     */
+    public addEventListener<E extends ListenableFromShopfrontEvents>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
-    public addEventListener<D>(
-        event: DirectShopfrontEvent,
-        callback: (event: D) => MaybePromise<void>
-    ): void;
+    /**
+     * @inheritDoc
+     */
     public addEventListener(
-        event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
+        event: DirectShopfrontEvent,
+        callback: DirectShopfrontEventCallback
+    ): void;
+    /**
+     * @inheritDoc
+     */
+    public addEventListener(
+        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
         callback: (...args: Array<unknown>) => void
-    ) {
-        if(directShopfrontEvents.includes(event as DirectShopfrontEvent)) {
-            event = (event as DirectShopfrontEvent);
-
+    ): void {
+        if(isDirectShopfrontEvent(event)) {
             if(typeof this.directListeners[event] === "undefined") {
                 this.directListeners[event] = new Set();
             }
 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.directListeners[event]!.add(callback as () => void);
+            this.directListeners[event]!.add(callback);
 
             return;
         }
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let c: BaseEvent<any, any, any, any, any> | undefined;
-        event = (event as keyof Omit<FromShopfront, "CALLBACK">);
 
         switch(event) {
             case "READY":
@@ -381,7 +523,7 @@ export class Application {
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_GET_ORDER":
-                if (this.listeners[event].size !== 0) {
+                if(this.listeners[event].size !== 0) {
                     throw new TypeError("Application already has 'FULFILMENT_GET_ORDER' event listener registered.");
                 }
 
@@ -421,35 +563,46 @@ export class Application {
         if(event === "READY" && this.isReady) {
             c = c as Ready;
             c.emit({
-                outlet: this.outlet,
+                outlet  : this.outlet,
                 register: this.register,
-                user: this.user,
+                user    : this.user,
             });
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public removeEventListener<E extends keyof FromShopfrontCallbacks>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
+    /**
+     * @inheritDoc
+     */
     public removeEventListener<D>(
         event: DirectShopfrontEvent,
         callback: (event: D) => MaybePromise<void>
     ): void;
+    /**
+     * @inheritDoc
+     */
     public removeEventListener(
-        event: keyof Omit<FromShopfront, "CALLBACK"> | DirectShopfrontEvent,
+        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
         callback: (...args: Array<unknown>) => MaybePromise<void>
-    ) {
-        if(directShopfrontEvents.includes(event as DirectShopfrontEvent)) {
-            this.directListeners[event as DirectShopfrontEvent]?.delete(callback);
+    ): void {
+        if(isDirectShopfrontEvent(event)) {
+            this.directListeners[event]?.delete(callback);
+
             return;
         }
 
-        this.listeners[event as keyof Omit<FromShopfront, "CALLBACK">].delete(callback);
+        this.listeners[event].delete(callback);
     }
 
-    public send(item: BaseEmitableEvent<unknown>): void;
-    public send(item: Serializable<unknown>): void;
+    /**
+     * @inheritDoc
+     */
     public send(item: BaseEmitableEvent<unknown> | Serializable<unknown>): void {
         if(item instanceof Button) {
             throw new TypeError("You cannot send Buttons to Shopfront without Shopfront requesting them");
@@ -464,24 +617,36 @@ export class Application {
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public download(file: string): void {
         this.bridge.sendMessage(ToShopfront.DOWNLOAD, file);
     }
 
+    /**
+     * @inheritDoc
+     */
     public redirect(toLocation: string, externalRedirect = true): void {
         this.bridge.sendMessage(ToShopfront.REDIRECT, {
-            to: toLocation,
+            to      : toLocation,
             external: externalRedirect,
         });
     }
 
+    /**
+     * @inheritDoc
+     */
     public load(): () => void {
         this.bridge.sendMessage(ToShopfront.LOAD, true);
 
         return () => this.bridge.sendMessage(ToShopfront.LOAD, false);
     }
 
-    protected handleEventCallback(data: { id?: string, data: unknown }) {
+    /**
+     * Handles an event callback via the `ActionEventRegistrar`
+     */
+    protected handleEventCallback(data: { id?: string; data: unknown; }): void {
         if(typeof data.id === "undefined") {
             return;
         }
@@ -491,31 +656,44 @@ export class Application {
         ActionEventRegistrar.fire(id, data.data);
     }
 
-    protected handleLocationChanged(data: RegisterChangedEvent) {
+    /**
+     * Updates the cached location data
+     */
+    protected handleLocationChanged(data: RegisterChangedEvent): undefined {
         this.register = data.register;
         this.outlet = data.outlet;
         this.user = data.user;
     }
 
+    /**
+     * @inheritDoc
+     */
     public getAuthenticationKey(): string {
         return this.key;
     }
 
-    protected dataIsSaleEvent(data: Record<string, unknown>): data is { requestId: string; saleState: ShopfrontSaleState | false } {
+    /**
+     * Checks whether `data` is formatted as a sale event
+     */
+    protected dataIsSaleEvent(data: Record<string, unknown>): data is {
+        requestId: string;
+        saleState: ShopfrontSaleState | false;
+    } {
         return typeof data.requestId === "string" && (data.saleState === false || typeof data.saleState === "object");
     }
 
     /**
-     * Get the current sale on the sell screen, if the current device is not a register
-     * then this will return false.
-     *
-     * @returns {Promise<CurrentSale | boolean>}
+     * @inheritDoc
      */
     public async getCurrentSale(): Promise<CurrentSale | false> {
         const saleRequest = `SaleRequest-${Date.now().toString()}`;
 
-        const promise: Promise<ShopfrontSaleState | false> = new Promise(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+        const promise = new Promise<ShopfrontSaleState | false>(res => {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const listener = (
+                event: keyof FromShopfrontInternal | keyof FromShopfront,
+                data: Record<string, unknown>
+            ) => {
                 if(event !== "RESPONSE_CURRENT_SALE") {
                     return;
                 }
@@ -548,18 +726,23 @@ export class Application {
         return new CurrentSale(this, saleState);
     }
 
-    protected dataIsCreateEvent(data: Record<string, unknown>): data is { requestId: string; success: boolean; message?: string } {
+    /**
+     * Checks whether `data` is formatted as response data from a 'create sale' request
+     */
+    protected dataIsCreateEvent(data: Record<string, unknown>): data is {
+        requestId: string;
+        success: boolean;
+        message?: string;
+    } {
         return typeof data.requestId === "string" &&
             typeof data.success === "boolean" && (
-                typeof data.message === "undefined" ||
+            typeof data.message === "undefined" ||
                 typeof data.message === "string"
-            );
+        );
     }
 
     /**
-     * Send the sale to be created on shopfront.
-     *
-     * @param sale
+     * @inheritDoc
      */
     public async createSale(sale: Sale): Promise<{
         success: boolean;
@@ -567,20 +750,24 @@ export class Application {
     }> {
         const createSaleRequest = `CreateSaleRequest-${Date.now().toString()}`;
 
-        const promise: Promise<{
+        const promise = new Promise<{
             success: boolean;
             message?: string;
-        }> = new Promise(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
-                if (event !== "RESPONSE_CREATE_SALE") {
+        }>(res => {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const listener = (
+                event: keyof FromShopfrontInternal | keyof FromShopfront,
+                data: Record<string, unknown>
+            ) => {
+                if(event !== "RESPONSE_CREATE_SALE") {
                     return;
                 }
 
-                if (!this.dataIsCreateEvent(data)) {
+                if(!this.dataIsCreateEvent(data)) {
                     return;
                 }
 
-                if (data.requestId !== createSaleRequest) {
+                if(data.requestId !== createSaleRequest) {
                     return;
                 }
 
@@ -596,12 +783,15 @@ export class Application {
 
         this.bridge.sendMessage(ToShopfront.CREATE_SALE, {
             requestId: createSaleRequest,
-            sale: buildSaleData(sale),
+            sale     : buildSaleData(sale),
         });
 
         return promise;
     }
 
+    /**
+     * Checks whether `data` is formatted as location data
+     */
     protected dataIsLocation(data: Record<string, unknown>): data is {
         requestId: string;
         register: string | null;
@@ -615,7 +805,7 @@ export class Application {
     }
 
     /**
-     * Get the location from Shopfront
+     * @inheritDoc
      */
     public async getLocation(): Promise<{
         register: string | null;
@@ -626,10 +816,14 @@ export class Application {
 
         const promise = new Promise<{
             register: string | null;
-            outlet  : string | null;
-            user    : string | null;
+            outlet: string | null;
+            user: string | null;
         }>(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const listener = (
+                event: keyof FromShopfrontInternal | keyof FromShopfront,
+                data: Record<string, unknown>
+            ) => {
                 if(event !== "RESPONSE_LOCATION") {
                     return;
                 }
@@ -662,6 +856,9 @@ export class Application {
         };
     }
 
+    /**
+     * @inheritDoc
+     */
     public printReceipt(content: string): void {
         this.bridge.sendMessage(ToShopfront.PRINT_RECEIPT, {
             content,
@@ -669,38 +866,58 @@ export class Application {
         });
     }
 
-    public changeSellScreenActionMode(mode: SellScreenActionMode) {
+    /**
+     * @inheritDoc
+     */
+    public changeSellScreenActionMode(mode: SellScreenActionMode): void {
         this.bridge.sendMessage(ToShopfront.CHANGE_SELL_SCREEN_ACTION_MODE, {
-            mode
+            mode,
         });
     }
 
-    public changeSellScreenSummaryMode(mode: SellScreenSummaryMode) {
+    /**
+     * @inheritDoc
+     */
+    public changeSellScreenSummaryMode(mode: SellScreenSummaryMode): void {
         this.bridge.sendMessage(ToShopfront.CHANGE_SELL_SCREEN_SUMMARY_MODE, {
-            mode
+            mode,
         });
     }
 
-    protected dataIsAudioResponse(data: Record<string, unknown>): data is { requestId: string; success: boolean; message?: string } {
+    /**
+     * Checks whether `data` is formatted as an audio response
+     */
+    protected dataIsAudioResponse(data: Record<string, unknown>): data is {
+        requestId: string;
+        success: boolean;
+        message?: string;
+    } {
         return typeof data.requestId === "string" &&
             typeof data.success === "boolean" && (
-                typeof data.message === "string" ||
+            typeof data.message === "string" ||
                 typeof data.message === "undefined"
-            );
+        );
     }
 
+    /**
+     * Sends an audio request to Shopfront
+     */
     protected sendAudioRequest(
-        type: SoundEvents, data?: unknown,
-    ): Promise<{ success: boolean; message?: string }> {
+        type: SoundEvents, data?: unknown
+    ): Promise<{ success: boolean; message?: string; }> {
         const request = `AudioRequest-${type}-${Date.now().toString()}`;
 
-        const promise = new Promise<{ success: boolean; message?: string }>(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+        const promise = new Promise<{ success: boolean; message?: string; }>(res => {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const listener = (
+                event: keyof FromShopfrontInternal | keyof FromShopfront,
+                data: Record<string, unknown>
+            ) => {
                 if(event !== "RESPONSE_AUDIO_REQUEST") {
                     return;
                 }
 
-                if (!this.dataIsAudioResponse(data)) {
+                if(!this.dataIsAudioResponse(data)) {
                     return;
                 }
 
@@ -728,38 +945,39 @@ export class Application {
     }
 
     /**
-     * Requests permission from the user to be able to play audio
+     * @inheritDoc
      */
-    public requestAudioPermission(): Promise<{ success: boolean; message?: string }> {
+    public requestAudioPermission(): Promise<{ success: boolean; message?: string; }> {
         return this.sendAudioRequest(ToShopfront.AUDIO_REQUEST_PERMISSION);
     }
 
     /**
-     * Requests shopfront to preload audio so that it can be pre-cached before being played
-     * @param url
+     * @inheritDoc
      */
-    public audioPreload(url: string): Promise<{ success: boolean; message?: string }> {
+    public audioPreload(url: string): Promise<{ success: boolean; message?: string; }> {
         return this.sendAudioRequest(
             ToShopfront.AUDIO_PRELOAD,
             {
-                url
+                url,
             }
         );
     }
 
     /**
-     * Requests the sound to be played
-     * @param url
+     * @inheritDoc
      */
-    public audioPlay(url: string): Promise<{ success: boolean; message?: string }> {
+    public audioPlay(url: string): Promise<{ success: boolean; message?: string; }> {
         return this.sendAudioRequest(
             ToShopfront.AUDIO_PLAY,
             {
-                url
+                url,
             }
         );
     }
 
+    /**
+     * Checks whether `data` is formatted as response data to a 'get option' request
+     */
     protected dataIsOption<TValueType>(data: Record<string, unknown>): data is {
         requestId: string;
         option: string;
@@ -768,11 +986,18 @@ export class Application {
         return typeof data.requestId === "string" && typeof data.option === "string";
     }
 
+    /**
+     * @inheritDoc
+     */
     public async getOption<TValueType>(option: string, defaultValue: TValueType): Promise<TValueType> {
         const request = `OptionRequest-${Date.now().toString()}`;
 
         const promise = new Promise<TValueType | undefined>(res => {
-            const listener = (event: keyof FromShopfrontInternal | keyof FromShopfront, data: Record<string, unknown>) => {
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            const listener = (
+                event: keyof FromShopfrontInternal | keyof FromShopfront,
+                data: Record<string, unknown>
+            ) => {
                 if(event !== "RESPONSE_OPTION") {
                     return;
                 }
@@ -798,6 +1023,7 @@ export class Application {
         });
 
         const optionValue = await promise;
+
         if(typeof optionValue === "undefined") {
             return defaultValue;
         }
@@ -805,6 +1031,9 @@ export class Application {
         return optionValue;
     }
 
+    /**
+     * Checks whether `data` is formatted as response data to an embedded token request
+     */
     protected dataIsEmbeddedToken(data: Record<string, unknown>): data is {
         requestId: string;
         data: BufferSource;
@@ -813,6 +1042,9 @@ export class Application {
         return typeof data.requestId === "string" && typeof data.data === "object" && data.data !== null;
     }
 
+    /**
+     * Generates a signing key and sends it to Shopfront
+     */
     protected async generateSigningKey(): Promise<void> {
         if(typeof this.signingKey !== "undefined") {
             return;
@@ -821,7 +1053,7 @@ export class Application {
         this.signingKey = await crypto.subtle.generateKey({
             name      : "ECDSA",
             namedCurve: "P-384",
-        }, true, ["sign", "verify"]);
+        }, true, [ "sign", "verify" ]);
 
         this.bridge.sendMessage(ToShopfront.ROTATE_SIGNING_KEY, await crypto.subtle.exportKey(
             "jwk",
@@ -829,6 +1061,9 @@ export class Application {
         ));
     }
 
+    /**
+     * Decodes the embedded token response from Shopfront using the signing key
+     */
     protected async decodeToken(
         signature: BufferSource,
         data: BufferSource,
@@ -867,21 +1102,34 @@ export class Application {
         return decoded.auth;
     }
 
+    /**
+     * Checks whether `data` is an error response from an embedded token request
+     */
     protected tokenDataContainsErrors(data: unknown): data is ShopfrontEmbeddedTokenError {
-        if (!data || typeof data !== "object") {
+        if(!data || typeof data !== "object") {
             return false;
         }
 
         return "error" in data && "type" in data;
     }
 
+    /**
+     * @inheritDoc
+     */
     public getToken(returnTokenObject: true): Promise<ShopfrontEmbeddedVerificationToken>;
+    /**
+     * @inheritDoc
+     */
     public getToken(returnTokenObject?: false): Promise<string>;
+    /**
+     * @inheritDoc
+     */
     public async getToken(returnTokenObject?: boolean): Promise<string | ShopfrontEmbeddedVerificationToken> {
         await this.generateSigningKey();
 
         const request = `TokenRequest-${Date.now().toString()}`;
         const promise = new Promise<[BufferSource, BufferSource]>(res => {
+            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener: ApplicationEventListener = (event, data) => {
                 if(event !== "RESPONSE_SECURE_KEY") {
                     return;
@@ -896,7 +1144,7 @@ export class Application {
                 }
 
                 this.bridge.removeEventListener(listener);
-                res([data.signature, data.data]);
+                res([ data.signature, data.data ]);
             };
 
             this.bridge.addEventListener(listener);
@@ -906,10 +1154,10 @@ export class Application {
             requestId: request,
         });
 
-        const [signature, data] = await promise;
+        const [ signature, data ] = await promise;
 
         // Throw the error if there is one
-        if (this.tokenDataContainsErrors(data)) {
+        if(this.tokenDataContainsErrors(data)) {
             throw new ShopfrontTokenRequestError(data.type);
         }
 

@@ -1,12 +1,12 @@
-import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
-import {Bridge} from "..";
-import {BaseEvent} from "./BaseEvent";
-import { MaybePromise } from "../Utilities/MiscTypes";
+import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import { Bridge } from "../Bridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export interface SellScreenOption {
-    url  : string,
-    title: string,
-    id?  : string,
+    url: string;
+    title: string;
+    id?: string;
 }
 
 export class RequestSellScreenOptions extends BaseEvent<
@@ -14,11 +14,16 @@ export class RequestSellScreenOptions extends BaseEvent<
     MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
     FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]
 > {
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_SELL_SCREEN_OPTIONS"]) {
         super(callback);
     }
 
-    public static getOptionId(url: string) {
+    /**
+     * Generates a unique identifier for a URL by encoding it to base64.
+     * If the URL contains non-ASCII characters, it first URI-encodes the URL before converting to base64.
+     */
+    public static getOptionId(url: string): string {
         try {
             return btoa(url);
         } catch(e) {
@@ -27,6 +32,10 @@ export class RequestSellScreenOptions extends BaseEvent<
         }
     }
 
+    /**
+     * Validates the URL by ensuring it follows the HTTPS protocol
+     * @param url
+     */
     public static validateURL(url: string): void {
         const urlObj = new URL(url);
 
@@ -35,12 +44,15 @@ export class RequestSellScreenOptions extends BaseEvent<
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    /**
+     * @inheritDoc
+     * @param _
+     */
     public async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]> {
         let result = await this.callback(undefined, undefined);
 
         if(!Array.isArray(result)) {
-            result = [result];
+            result = [ result ];
         }
 
         for(let i = 0, l = result.length; i < l; i++) {
@@ -56,6 +68,12 @@ export class RequestSellScreenOptions extends BaseEvent<
         return result;
     }
 
+    /**
+     * Sends the response data to Shopfront
+     * @param bridge
+     * @param options
+     * @param id
+     */
     public static async respond(bridge: Bridge, options: Array<SellScreenOption>, id: string): Promise<void> {
         bridge.sendMessage(ToShopfront.RESPONSE_SELL_SCREEN_OPTIONS, options, id);
     }

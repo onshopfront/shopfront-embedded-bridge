@@ -1,7 +1,14 @@
-export { OrderCancel } from "./OrderCancel";
-export { OrderCreate } from "./OrderCreate";
-export { OrderUpdate } from "./OrderUpdate";
-export { OrdersSync } from "./OrdersSync";
-export { Options, FulfilmentOptions } from "./Options";
-export { RegisterIntent } from "./RegisterIntent";
-export { OrderStatus, OrderCreateDetails, OrderSummaryDetails, OrderDetails, OrderItemMatch, OrderItem } from "../../APIs/Fulfilment/FulfilmentTypes";
+export type {
+    OrderCreateDetails,
+    OrderDetails,
+    OrderItem,
+    OrderItemMatch,
+    OrderStatus,
+    OrderSummaryDetails,
+} from "../../APIs/Fulfilment/FulfilmentTypes.js";
+export { type FulfilmentOptions, Options } from "./Options.js";
+export { OrderCancel } from "./OrderCancel.js";
+export { OrderCreate } from "./OrderCreate.js";
+export { OrdersSync } from "./OrdersSync.js";
+export { OrderUpdate } from "./OrderUpdate.js";
+export { RegisterIntent } from "./RegisterIntent.js";

@@ -1,4 +1,4 @@
-import {ToShopfront} from "../ApplicationEvents";
+import { ToShopfront } from "../ApplicationEvents.js";
 
 export class BaseEmitableEvent<T> {
     protected eventName: ToShopfront;
@@ -13,10 +13,16 @@ export class BaseEmitableEvent<T> {
         this.eventData = data;
     }
 
+    /**
+     * Returns the event name
+     */
     public getEvent(): ToShopfront {
         return this.eventName;
     }
 
+    /**
+     * Returns the event data
+     */
     public getData(): T {
         return this.eventData;
     }

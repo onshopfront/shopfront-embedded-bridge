@@ -1,9 +1,9 @@
+import UUID from "../../Utilities/UUID.js";
 import {
     ShopfrontSaleProduct,
     ShopfrontSaleProductPromotions,
-    ShopfrontSaleProductType
-} from "./ShopfrontSaleState";
-import UUID from "../../Utilities/UUID";
+    ShopfrontSaleProductType,
+} from "./ShopfrontSaleState.js";
 
 export class SaleProduct {
     public readonly internalId: string;
@@ -45,15 +45,13 @@ export class SaleProduct {
 
     /**
      * Hydrate a sale product from the SaleState.
-     *
      * @internal
-     * @param {ShopfrontSaleProduct} product
-     * @param {Array<number>} indexAddress
-     * @returns {SaleProduct}
-     * @constructor
+     * @param product
+     * @param indexAddress
      */
     public static HydrateFromState(product: ShopfrontSaleProduct, indexAddress: Array<number>): SaleProduct {
         const hydrated = new SaleProduct(product.uuid, product.quantity, product.prices.price, indexAddress);
+
         hydrated.setInternal(product, indexAddress);
 
         return hydrated;
@@ -61,23 +59,21 @@ export class SaleProduct {
 
     /**
      * Append a product to this product's list of contained products.
-     *
-     * @protected
-     * @param {SaleProduct} product
+     * @param product
      */
-    protected appendProduct(product: SaleProduct) {
+    protected appendProduct(product: SaleProduct): void {
         this.contains.push(product);
     }
 
     /**
      * Set the internal data for the product.
-     * This method is for hydration of the product from Shopfront, it's highly recommend that you DO NOT use this method.
-     *
+     * This method is for hydration of the product from Shopfront,
+     * it's highly recommend that you DO NOT use this method.
      * @internal
-     * @param {ShopfrontSaleProduct} data
-     * @param {Array<number>} indexAddress
+     * @param data
+     * @param indexAddress
      */
-    public setInternal(data: ShopfrontSaleProduct, indexAddress: Array<number>) {
+    public setInternal(data: ShopfrontSaleProduct, indexAddress: Array<number>): void {
         this.name          = data.name;
         this.type          = data.type;
         this.taxRateAmount = data.tax?.amount || 0;
@@ -98,49 +94,45 @@ export class SaleProduct {
 
     /**
      * Get the ID of the product.
-     * @returns {string}
      */
-    public getId() {
+    public getId(): string {
         return this.id;
     }
 
     /**
      * Gets the mapped id for the product.
      * Used when the product goes through the fulfilment process mapping
-     * @returns {string | undefined}
      */
-    public getMapped() {
+    public getMapped(): string | undefined {
         return this.mapped;
     }
 
     /**
      * Get the current sale quantity of the product.
-     * @returns {number}
      */
-    public getQuantity() {
+    public getQuantity(): number {
         return this.quantity;
     }
 
     /**
      * Sets the current sale quantity of the product
      */
-    public setQuantity(quantity: number) {
+    public setQuantity(quantity: number): void {
         this.quantity = quantity;
         this.quantityModified = true;
     }
 
     /**
      * Get the current price of the product.
-     * @returns {number | undefined}
      */
-    public getPrice() {
+    public getPrice(): number | undefined {
         return this.price;
     }
 
     /**
      * Sets the current price of the product
      */
-    public setPrice(price: number) {
+    public setPrice(price: number): void {
         this.price = price;
         this.priceModified = true;
     }
@@ -149,93 +141,73 @@ export class SaleProduct {
      * Get the index address of the product.
      * This is the internal address of where the product is in the sale.
      * (e.g. if the address is [1, 3] it's the fourth contained product in the second sale line).
-     *
-     * @returns {Array<number>}
      */
-    public getIndexAddress() {
+    public getIndexAddress(): Array<number> {
         return this.indexAddress;
     }
 
     /**
      * Get the name of the product.
-     *
-     * @returns {string | undefined}
      */
-    public getName() {
+    public getName(): string | undefined {
         return this.name;
     }
 
     /**
      * Get the type of product this product is.
-     *
-     * @returns {ShopfrontSaleProductType | undefined}
      */
-    public getType() {
+    public getType(): ShopfrontSaleProductType | undefined {
         return this.type;
     }
 
     /**
      * Get the tax rate amount.
      * This is the rate of the tax rate (e.g. 10 is a tax rate of 10%).
-     *
-     * @returns {number | undefined}
      */
-    public getTaxRateAmount() {
+    public getTaxRateAmount(): number | undefined {
         return this.taxRateAmount;
     }
 
     /**
      * Get the sale note attached to this product.
-     *
-     * @returns {string}
      */
-    public getNote() {
+    public getNote(): string {
         return this.note;
     }
 
     /**
      * Get the products this product contains.
-     *
-     * @returns {Array<SaleProduct>}
      */
-    public getContains() {
+    public getContains(): Array<SaleProduct> {
         return this.contains;
     }
 
     /**
      * Get whether this product has been "edited".
      * Typically, being edited just means that this product has been discounted.
-     *
-     * @returns {boolean}
      */
-    public getEdited() {
+    public getEdited(): boolean {
         return this.edited;
     }
 
     /**
      * Get the case quantity for this product.
-     *
-     * @returns {number | undefined}
      */
-    public getCaseQuantity() {
+    public getCaseQuantity(): number | undefined {
         return this.caseQuantity;
     }
 
     /**
      * Get the current active promotions for the product.
-     *
-     * @returns {ShopfrontSaleProductPromotions}
      */
-    public getPromotions() {
+    public getPromotions(): ShopfrontSaleProductPromotions {
         return this.promotions;
     }
 
     /**
-     * Get the meta data for the product.
-     *
-     * @returns {Record<string, unknown>}
+     * Get the meta-data for the product.
      */
-    public getMetaData() {
+    public getMetaData(): Record<string, unknown> {
         return this.metaData;
     }
 
@@ -244,44 +216,40 @@ export class SaleProduct {
      * @param key
      * @param value
      */
-    public setMetaData(key: string, value: unknown) {
+    public setMetaData(key: string, value: unknown): void {
         this.metaData[key] = value;
         this.metaDataModified = true;
     }
 
     /**
      * Returns whether the product's quantity was modified externally
-     *
      * @internal
      */
-    public wasQuantityModified() {
+    public wasQuantityModified(): boolean {
         return this.quantityModified;
     }
 
     /**
      * Returns whether the product's price was modified externally
-     *
      * @internal
      */
-    public wasPriceModified() {
+    public wasPriceModified(): boolean {
         return this.priceModified;
     }
 
     /**
      * Returns whether the product's metaData was modified externally
-     *
      * @internal
      */
-    public wasMetaDataModified(){
+    public wasMetaDataModified(): boolean {
         return this.metaDataModified;
     }
 
     /**
      * Sets a product's modification flags to false
-     *
      * @internal
      */
-    public clearModificationFlags() {
+    public clearModificationFlags(): void {
         this.quantityModified = false;
         this.priceModified = false;
         this.metaDataModified = false;
