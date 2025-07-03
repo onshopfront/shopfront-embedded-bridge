@@ -5,7 +5,12 @@ export default [
     {
         ignores: [
             "lib/**",
-            "**/*.js"
+            "tests/**",
+            "**/*.js",
         ],
+    }, {
+        rules: {
+            "@typescript-eslint/no-useless-constructor": 0
+        }
     }
 ]
