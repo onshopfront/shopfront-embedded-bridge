@@ -9,24 +9,22 @@ import { OrderDetails } from "../../src/APIs/Fulfilment/FulfilmentTypes.js";
 import { InternalMessageSource } from "../../src/APIs/InternalMessages/InternalMessageSource.js";
 import { SaleData } from "../../src/APIs/Sale/BaseSale.js";
 import { Sale } from "../../src/APIs/Sale/Sale.js";
+import { SaleCustomer } from "../../src/APIs/Sale/SaleCustomer.js";
 import { SalePayment } from "../../src/APIs/Sale/SalePayment.js";
+import { SaleProduct } from "../../src/APIs/Sale/SaleProduct.js";
 import { ShopfrontSaleState } from "../../src/APIs/Sale/ShopfrontSaleState.js";
 import { Application } from "../../src/Application.js";
 import { Bridge } from "../../src/Bridge.js";
 import { FormattedSaleProduct } from "../../src/Events/FormatIntegratedProduct.js";
 import { CompletedSale } from "../../src/Events/SaleComplete.js";
+import { mockApplication } from "../../src/Mocks/index.js";
 import { MockApplication } from "../../src/Mocks/MockApplication.js";
-import { SaleProduct } from "../../src/APIs/Sale/SaleProduct.js";
-import { SaleCustomer } from "../../src/APIs/Sale/SaleCustomer.js";
 
 /**
  * Returns a new instance of a mocked Application
  */
 const createMockedApplication = (): MockApplication => {
-    return Bridge.createApplication({
-        id    : "application-id",
-        vendor: "testing",
-    }, true);
+    return mockApplication("application-id", "testing");
 };
 
 const blankSaleData: SaleData = {
@@ -53,23 +51,17 @@ const blankSaleData: SaleData = {
 };
 
 suite("Testing the methods of the mock `Application` class", () => {
-    suite("The Bridge's static `createApplication` method can return a mocked Application", () => {
+    suite("The `mockApplication` method can return a mocked Application", () => {
         test("When `mock` is `true`, a mocked Application is returned", () => {
-            const application = Bridge.createApplication({
-                id    : "application-id",
-                vendor: "testing",
-            }, true);
+            const application = mockApplication("application-id", "testing");
 
             assert(application instanceof MockApplication);
         });
 
         test("When no `id` is provided, an error is thrown", () => {
             assert(
-                () => Bridge.createApplication({
-                    // @ts-expect-error Forcing undefined for testing
-                    id    : undefined,
-                    vendor: "testing",
-                }, true)
+                // @ts-expect-error Forcing undefined for testing
+                () => mockApplication(undefined, "testing")
             ).throws(
                 new TypeError("You must specify the ID for the application")
             );
@@ -77,11 +69,8 @@ suite("Testing the methods of the mock `Application` class", () => {
 
         test("When no `vendor` is provided, an error is thrown", () => {
             assert(
-                () => Bridge.createApplication({
-                    id    : "application-id",
-                    // @ts-expect-error Forcing undefined for testing
-                    vendor: undefined,
-                }, true)
+                // @ts-expect-error Forcing undefined for testing
+                () => mockApplication("application-id", undefined)
             ).throws(
                 new TypeError("You must specify the Vendor for the application")
             );
@@ -881,7 +870,7 @@ suite("Testing the methods of the mock `Application` class", () => {
         test("When a product is added, the `SALE_ADD_PRODUCT` event is fired", async () => {
             const sale = await application.getCurrentSale();
 
-            if (!sale) {
+            if(!sale) {
                 assert.fail("Unable to get current sale");
 
                 return;
@@ -896,12 +885,12 @@ suite("Testing the methods of the mock `Application` class", () => {
             assert(callback.mock.calls.length).equals(1);
 
             sale.clearSale();
-        })
+        });
 
         test("When a product is removed, the `SALE_REMOVE_PRODUCT` event is fired", async () => {
             const sale = await application.getCurrentSale();
 
-            if (!sale) {
+            if(!sale) {
                 assert.fail("Unable to get current sale");
 
                 return;
@@ -915,12 +904,12 @@ suite("Testing the methods of the mock `Application` class", () => {
             await sale.removeProduct(new SaleProduct("product-id", 10, 10));
 
             assert(callback.mock.calls.length).equals(1);
-        })
+        });
 
         test("When a product is updated, the `SALE_UPDATE_PRODUCT` event is fired", async () => {
             const sale = await application.getCurrentSale();
 
-            if (!sale) {
+            if(!sale) {
                 assert.fail("Unable to get current sale");
 
                 return;
@@ -936,12 +925,12 @@ suite("Testing the methods of the mock `Application` class", () => {
 
             // Adding a product is considered updating, so we'll have two events fired
             assert(callback.mock.calls.length).equals(2);
-        })
+        });
 
         test("When a customer is added, the `SALE_ADD_CUSTOMER` event is fired", async () => {
             const sale = await application.getCurrentSale();
 
-            if (!sale) {
+            if(!sale) {
                 assert.fail("Unable to get current sale");
 
                 return;
@@ -954,12 +943,12 @@ suite("Testing the methods of the mock `Application` class", () => {
             await sale.addCustomer(new SaleCustomer("customer-id"));
 
             assert(callback.mock.calls.length).equals(1);
-        })
+        });
 
         test("When a customer is removed, the `SALE_REMOVE_CUSTOMER` event is fired", async () => {
             const sale = await application.getCurrentSale();
 
-            if (!sale) {
+            if(!sale) {
                 assert.fail("Unable to get current sale");
 
                 return;
@@ -972,6 +961,6 @@ suite("Testing the methods of the mock `Application` class", () => {
             await sale.removeCustomer();
 
             assert(callback.mock.calls.length).equals(1);
-        })
-    })
+        });
+    });
 });
