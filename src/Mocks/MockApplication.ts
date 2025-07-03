@@ -1,9 +1,5 @@
 import { Sale } from "../APIs/Sale/index.js";
-import {
-    Application,
-    ApplicationInterface,
-    ShopfrontEmbeddedVerificationToken,
-} from "../Application.js";
+import { Application } from "../Application.js";
 import {
     DirectShopfrontEvent,
     DirectShopfrontEventCallback,
@@ -19,6 +15,7 @@ import {
     SoundEvents,
     ToShopfront,
 } from "../ApplicationEvents.js";
+import { BaseApplication, ShopfrontEmbeddedVerificationToken } from "../BaseApplication.js";
 import { Bridge } from "../Bridge.js";
 import { Serializable } from "../Common/Serializable.js";
 import { BaseEmitableEvent } from "../EmitableEvents/BaseEmitableEvent.js";
@@ -47,7 +44,7 @@ import { SaleComplete } from "../Events/SaleComplete.js";
 import { UIPipeline } from "../Events/UIPipeline.js";
 import ActionEventRegistrar from "../Utilities/ActionEventRegistrar.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
-import { MockedCurrentSale } from "./APIs/Sale/CurrentSale.js";
+import { MockCurrentSale } from "./APIs/Sale/MockCurrentSale.js";
 import { MockDatabase } from "./Database/MockDatabase.js";
 import { MockBridge } from "./MockBridge.js";
 
@@ -56,55 +53,11 @@ interface AudioRequestOptions {
     forceError: boolean;
 }
 
-export class MockApplication implements ApplicationInterface {
-    protected bridge: MockBridge;
-    protected isReady: boolean;
-    protected key: string;
-    protected register: string | null;
-    protected outlet: string | null;
-    protected user: string | null;
-    protected listeners: {
-        [key in ListenableFromShopfrontEvents]: Map<
-            (...args: Array<unknown>) => void,
-            FromShopfront[key] & BaseEvent
-        >;
-    } = {
-        READY                        : new Map(),
-        REQUEST_SETTINGS             : new Map(),
-        REQUEST_BUTTONS              : new Map(),
-        REQUEST_TABLE_COLUMNS        : new Map(),
-        REQUEST_SELL_SCREEN_OPTIONS  : new Map(),
-        INTERNAL_PAGE_MESSAGE        : new Map(),
-        REGISTER_CHANGED             : new Map(),
-        FORMAT_INTEGRATED_PRODUCT    : new Map(),
-        REQUEST_CUSTOMER_LIST_OPTIONS: new Map(),
-        REQUEST_SALE_KEYS            : new Map(),
-        SALE_COMPLETE                : new Map(),
-        UI_PIPELINE                  : new Map(),
-        PAYMENT_METHODS_ENABLED      : new Map(),
-        AUDIO_PERMISSION_CHANGE      : new Map(),
-        AUDIO_READY                  : new Map(),
-        FULFILMENT_GET_ORDER         : new Map(),
-        FULFILMENT_PROCESS_ORDER     : new Map(),
-        FULFILMENT_VOID_ORDER        : new Map(),
-        FULFILMENT_ORDER_APPROVAL    : new Map(),
-        FULFILMENT_ORDER_COLLECTED   : new Map(),
-        FULFILMENT_ORDER_COMPLETED   : new Map(),
-        GIFT_CARD_CODE_CHECK         : new Map(),
-    };
-    protected directListeners: Partial<Record<DirectShopfrontEvent, Set<DirectShopfrontEventCallback>>> = {};
-    public database: MockDatabase;
-
-    protected currentSale: MockedCurrentSale | false = false;
+export class MockApplication extends BaseApplication<MockBridge, MockDatabase> {
+    protected currentSale: MockCurrentSale | false = false;
 
     constructor(bridge: MockBridge) {
-        this.bridge   = bridge;
-        this.isReady  = false;
-        this.key      = "";
-        this.register = null;
-        this.outlet   = null;
-        this.user     = null;
-        this.database = new MockDatabase();
+        super(bridge, new MockDatabase(bridge));
 
         this.bridge.addEventListener(this.handleEvent);
         this.addEventListener("REGISTER_CHANGED", this.handleLocationChanged);
@@ -135,9 +88,9 @@ export class MockApplication implements ApplicationInterface {
         id: string
     ): void => {
         if(event === "READY") {
-            this.isReady = true;
-            this.key     = data.key as string;
-            this.outlet  = data.outlet as string;
+            this.isReady  = true;
+            this.key      = data.key as string;
+            this.outlet   = data.outlet as string;
             this.register = data.register as string;
 
             data = {
@@ -426,9 +379,14 @@ export class MockApplication implements ApplicationInterface {
      * @inheritDoc
      */
     public load(): () => void {
-        /* empty */
-
         return () => undefined;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected handleEventCallback(data: { id?: string; data: unknown; }): void {
+        /* empty */
     }
 
     /**
@@ -450,11 +408,9 @@ export class MockApplication implements ApplicationInterface {
     /**
      * @inheritDoc
      */
-    public async getCurrentSale(): Promise<MockedCurrentSale | false> {
+    public async getCurrentSale(): Promise<MockCurrentSale | false> {
         if(!this.currentSale) {
-            this.currentSale = new MockedCurrentSale();
-
-            this.currentSale.injectEventTrigger(this.currentSaleEventTrigger);
+            this.currentSale = new MockCurrentSale(this);
         }
 
         return this.currentSale;
@@ -667,13 +623,6 @@ export class MockApplication implements ApplicationInterface {
 
         return "embedded-token";
     }
-
-    /**
-     * Event trigger to pass into the mocked Current Sale
-     */
-    protected currentSaleEventTrigger = (event: DirectShopfrontEvent): void => {
-        this.fireEvent(event);
-    };
 
     /**
      * Mocks an event being fired from Shopfront

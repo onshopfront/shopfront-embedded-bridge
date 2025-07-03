@@ -1,9 +1,9 @@
 import {
+    BaseDatabase,
     DatabaseCallReturn,
-    DatabaseInterface,
     DatabaseMethodName,
     DatabaseTable,
-} from "../../APIs/Database/Database.js";
+} from "../../APIs/Database/BaseDatabase.js";
 import { LocalDatabaseBarcodeTemplate } from "../../APIs/Database/types/BaseBarcodeTemplateRepository.js";
 import { LocalDatabaseClassification } from "../../APIs/Database/types/BaseClassificationRepository.js";
 import { LocalDatabaseCustomerDisplay } from "../../APIs/Database/types/BaseCustomerDisplayRepository.js";
@@ -32,6 +32,7 @@ import { LocalDatabaseTakings } from "../../APIs/Database/types/BaseTakingsRepos
 import { LocalDatabaseTaxRate } from "../../APIs/Database/types/BaseTaxRateRepository.js";
 import { LocalDatabaseTransferee } from "../../APIs/Database/types/BaseTransfereeRepository.js";
 import { LocalDatabaseVendorConnection } from "../../APIs/Database/types/BaseVendorConnectionRepository.js";
+import { MockBridge } from "../MockBridge.js";
 
 interface MockedDatabase {
     products: Array<LocalDatabaseProduct>;
@@ -101,8 +102,12 @@ const emptyDatabase: MockedDatabase = {
     enterprises         : [],
 };
 
-export class MockDatabase implements DatabaseInterface {
+export class MockDatabase extends BaseDatabase<MockBridge> {
     protected mockedDatabase: MockedDatabase = emptyDatabase;
+
+    constructor(bridge: MockBridge) {
+        super(bridge);
+    }
 
     /**
      * @inheritDoc
@@ -154,7 +159,7 @@ export class MockDatabase implements DatabaseInterface {
             throw new Error(`The table ${table} does not exist`);
         }
 
-        // @ts-expect-error TypeScript for some reason thinks `MockedDatabase[Table] is a union of arrays
+        // @ts-expect-error TypeScript resolves `MockedDatabase[Table]` as a union of arrays
         this.mockedDatabase[table].push(...rows);
     }
 

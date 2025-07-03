@@ -1,7 +1,6 @@
 import { Application } from "./Application.js";
 import * as ApplicationEvents from "./ApplicationEvents.js";
-import { MockApplication } from "./Mocks/MockApplication.js";
-import { MockBridge } from "./Mocks/MockBridge.js";
+import { BaseBridge } from "./BaseBridge.js";
 
 interface ApplicationOptions {
     id: string; // The Client ID
@@ -33,22 +32,11 @@ export interface BridgeInterface {
     removeEventListener(listener: ApplicationEventListener): void;
 }
 
-export class Bridge implements BridgeInterface {
+export class Bridge extends BaseBridge {
     /**
      * A static method for instantiating an Application
      */
-    public static createApplication(options: ApplicationOptions): Application;
-    /**
-     * A static method for instantiating an Application
-     */
-    public static createApplication(options: ApplicationOptions, mock: true): MockApplication;
-    /**
-     * A static method for instantiating an Application
-     */
-    public static createApplication(
-        options: ApplicationOptions,
-        mock?: boolean
-    ): Application | MockApplication {
+    public static createApplication(options: ApplicationOptions): Application {
         if(typeof options.id === "undefined") {
             throw new TypeError("You must specify the ID for the application");
         }
@@ -57,17 +45,9 @@ export class Bridge implements BridgeInterface {
             throw new TypeError("You must specify the Vendor for the application");
         }
 
-        if(mock) {
-            return new MockApplication(new MockBridge(options.id, options.vendor));
-        }
-
         return new Application(new Bridge(options.id, options.vendor));
     }
 
-    public key: string;
-    public url: URL;
-    protected listeners: Array<ApplicationEventListener> = [];
-    protected hasListener = false;
     protected target: Window | null = null;
 
     constructor(key: string, url: string) {
@@ -75,16 +55,7 @@ export class Bridge implements BridgeInterface {
             throw new Error("The bridge has not been initialised within a frame");
         }
 
-        this.key = key;
-
-        if(url.split(".").length === 1) {
-            this.url = new URL(`https://${url}.onshopfront.com`);
-        } else {
-            this.url = new URL(url);
-        }
-
-        this.registerListeners();
-        this.sendMessage(ApplicationEvents.ToShopfront.READY);
+        super(key, url);
     }
 
     /**

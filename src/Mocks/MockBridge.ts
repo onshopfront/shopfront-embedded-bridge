@@ -1,21 +1,12 @@
 import * as ApplicationEvents from "../ApplicationEvents.js";
-import { ApplicationEventListener, BridgeInterface } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
+import { ApplicationEventListener } from "../Bridge.js";
 
-export class MockBridge implements BridgeInterface {
-    public key: string;
-    public url: URL;
-    protected listeners: Array<ApplicationEventListener> = [];
-    protected hasListener = false;
+export class MockBridge extends BaseBridge {
     protected isReady = false;
 
     constructor(key: string, url: string) {
-        this.key = key;
-
-        if(url.split(".").length === 1) {
-            this.url = new URL(`https://${url}.onshopfront.com`);
-        } else {
-            this.url = new URL(url);
-        }
+        super(key, url);
     }
 
     /**
@@ -23,6 +14,20 @@ export class MockBridge implements BridgeInterface {
      */
     public destroy(): void {
         this.listeners = [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected registerListeners(): void {
+        /* Do nothing */
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected unregisterListeners(): void {
+        /* Do nothing */
     }
 
     /**

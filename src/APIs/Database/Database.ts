@@ -1,59 +1,16 @@
-import { AnyFunction } from "@onshopfront/core";
 import { FromShopfront, FromShopfrontInternal, ToShopfront } from "../../ApplicationEvents.js";
 import { Bridge } from "../../Bridge.js";
-import { DataSourceTables } from "./types/DataSourceTables.js";
+import {
+    BaseDatabase,
+    DatabaseCallReturn,
+    DatabaseMethodName,
+    DatabaseTable,
+} from "./BaseDatabase.js";
 
-export type DatabaseTable = keyof DataSourceTables;
-
-export type DatabaseMethodName<Table extends DatabaseTable> = {
-    [K in keyof DataSourceTables[Table]]: DataSourceTables[Table][K] extends AnyFunction ?
-        K :
-        never
-};
-
-export type DatabaseCallReturn<
-    Table extends DatabaseTable,
-    Method extends keyof DatabaseMethodName<Table>,
-> = ReturnType<Extract<DataSourceTables[Table][Method], AnyFunction>>;
-
-export interface DatabaseInterface {
-    /**
-     * Makes a request to the Shopfront local database
-     */
-    callMethod<
-        Table extends DatabaseTable,
-        Method extends keyof DatabaseMethodName<Table>,
-        ExpectedResult extends DatabaseCallReturn<Table, Method>
-    >(
-        table: Table,
-        method: Method,
-        args: Array<unknown>
-    ): Promise<ExpectedResult>;
-
-    /**
-     * Retrieves all items in the specified table
-     */
-    all<Table extends DatabaseTable>(table: Table): Promise<DatabaseCallReturn<Table, "all">>;
-
-    /**
-     * Retrieves all items that match the given ID in the specified table
-     */
-    get<Table extends DatabaseTable>(
-        table: Table,
-        id: string | number
-    ): Promise<DatabaseCallReturn<Table, "get">>;
-
-    /**
-     * Returns the item count of the specified table
-     */
-    count(table: DatabaseTable): Promise<number>;
-}
-
-export class Database implements DatabaseInterface {
-    protected bridge: Bridge;
+export class Database extends BaseDatabase<Bridge> {
 
     constructor(bridge: Bridge) {
-        this.bridge = bridge;
+        super(bridge);
     }
 
     /**

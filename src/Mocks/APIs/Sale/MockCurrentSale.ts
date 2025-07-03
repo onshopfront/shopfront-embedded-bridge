@@ -1,14 +1,13 @@
-import { CurrentSaleInterface } from "../../../APIs/Sale/CurrentSale.js";
-import { SaleCancelledError } from "../../../APIs/Sale/Exceptions.js";
+import { BaseCurrentSale } from "../../../APIs/Sale/BaseCurrentSale.js";
+import { ProductNotExistsError, SaleCancelledError } from "../../../APIs/Sale/Exceptions.js";
 import {
-    BaseSale,
-    Sale,
     SaleCustomer,
     SalePayment,
     SaleProduct,
     ShopfrontSaleState,
 } from "../../../APIs/Sale/index.js";
 import { DirectShopfrontEvent } from "../../../ApplicationEvents.js";
+import { MockApplication } from "../../MockApplication.js";
 
 const emptySaleState: ShopfrontSaleState = {
     clientId: undefined,
@@ -33,30 +32,16 @@ const emptySaleState: ShopfrontSaleState = {
     metaData      : {},
 };
 
-export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface {
-    protected cancelled: boolean;
-    protected eventTrigger: ((event: DirectShopfrontEvent) => void) | undefined;
-
-    constructor(saleState?: ShopfrontSaleState) {
-        super(Sale.buildSaleData(saleState ?? emptySaleState));
-
-        this.cancelled = false;
+export class MockCurrentSale extends BaseCurrentSale<MockApplication> {
+    constructor(application: MockApplication, saleState?: ShopfrontSaleState) {
+        super(application, saleState ?? emptySaleState);
     }
 
     /**
-     * Allows the mocked sale to trigger sale events
-     */
-    public injectEventTrigger(trigger: (event: DirectShopfrontEvent) => void): void {
-        this.eventTrigger = trigger;
-    }
-
-    /**
-     * Fires the event trigger (if one was injected)
+     * Fires the event trigger
      */
     protected triggerEvent(event: DirectShopfrontEvent): void {
-        if(this.eventTrigger) {
-            this.eventTrigger(event);
-        }
+        this.application.fireEvent(event);
     }
 
     /**
@@ -85,6 +70,43 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
     }
 
     /**
+     * Round the price to the specified decimal place
+     */
+    protected roundNumber(price: number, precision = 2): number {
+        const multiplier = Math.pow(10, precision);
+
+        return Math.round(price * multiplier) / multiplier;
+    }
+
+    /**
+     * Updates the sale total by adding the specified `amount`
+     */
+    protected updateSaleTotal(amount: number): void {
+        this.sale.totals.sale += amount;
+        this.sale.totals.sale = this.roundNumber(this.sale.totals.sale);
+    };
+
+    /**
+     * Updates the paid total by adding the specified `amount`
+     */
+    protected updatePaidTotal(amount: number): void {
+        this.sale.totals.paid += amount;
+        this.sale.totals.paid = this.roundNumber(this.sale.totals.paid);
+    };
+
+    /**
+     * Updates the sale total when a product's price is changed
+     */
+    protected handleSaleProductPriceChange(index: number, currentPrice: number, newPrice: number): void {
+        // Editing the property directly to avoid triggering the `wasPriceModified` flag
+        this.products[index]["price"] = newPrice;
+
+        const difference = newPrice - currentPrice;
+
+        this.updateSaleTotal(difference);
+    };
+
+    /**
      * @inheritDoc
      */
     public async addProduct(product: SaleProduct): Promise<void> {
@@ -106,32 +128,26 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
             // Editing the property directly to avoid triggering the `wasQuantityModified` flag
             this.products[index]["quantity"] += product.getQuantity();
 
-            const newPrice = Math.round((currentRate * this.products[index].getQuantity()) * 100) / 100;
+            const newPrice = this.roundNumber(currentRate * this.products[index].getQuantity());
 
-            // Editing the property directly to avoid triggering the `wasPriceModified` flag
-            this.products[index]["price"] = newPrice;
-
-            const difference = newPrice - currentPrice;
-
-            this.sale.totals.sale += difference;
-            this.sale.totals.sale = Math.round(this.sale.totals.sale * 100) / 100;
+            this.handleSaleProductPriceChange(index, currentPrice, newPrice);
 
             this.triggerEvent("SALE_UPDATE_PRODUCTS");
 
             return;
         } catch(e) {
-            // Product doesn't exist in the sale, we can add it
+            // We want to throw the error unless it's because the product isn't in the sale
+            if(!(e instanceof ProductNotExistsError)) {
+                throw e;
+            }
         }
 
-        // If it doesn't, add it
         product["indexAddress"] = this.products.length === 0 ? [ 0 ] : [ this.products.length ];
         product["edited"] = false;
 
         this.products.push(this.cloneProduct(product));
 
-        // Update the totals
-        this.sale.totals.sale += product.getPrice() || 0;
-        this.sale.totals.sale = Math.round(this.sale.totals.sale * 100) / 100;
+        this.updateSaleTotal(product.getPrice() || 0);
 
         this.triggerEvent("SALE_ADD_PRODUCT");
         this.triggerEvent("SALE_UPDATE_PRODUCTS");
@@ -149,13 +165,11 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
             );
         }
 
-        /* Remove Product */
         const index = this.getIndexOfProduct(product);
 
         this.products.splice(index, 1);
 
-        this.sale.totals.sale -= product.getPrice() || 0;
-        this.sale.totals.sale = Math.round(this.sale.totals.sale * 100) / 100;
+        this.updateSaleTotal((product.getPrice() || 0) * -1);
 
         // Reshuffle the index addresses
         for(let i = 0, l = this.products.length; i < l; i++) {
@@ -178,12 +192,14 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
             return;
         }
 
-        const cashout = payment.getCashout() || 0;
+        this.updatePaidTotal(payment.getAmount() - (payment.getCashout() || 0));
 
-        this.sale.totals.paid += (payment.getAmount() - cashout);
-        this.sale.totals.paid = Math.round(this.sale.totals.paid * 100) / 100;
+        const remaining = this.roundNumber(this.sale.totals.sale - this.sale.totals.paid);
 
-        // TODO: If the payment reduces the remaining total to 0, should the sale auto-complete?
+        if(remaining <= 0) {
+            this.clearSale();
+            this.triggerEvent("SALE_CLEAR");
+        }
     }
 
     /**
@@ -206,8 +222,7 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
             return;
         }
 
-        this.sale.totals.paid += reversed.getAmount();
-        this.sale.totals.paid = Math.round(this.sale.totals.paid * 100) / 100;
+        this.updatePaidTotal(reversed.getAmount());
     }
 
     /**
@@ -216,7 +231,6 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
     public async addCustomer(customer: SaleCustomer): Promise<void> {
         this.checkIfCancelled();
 
-        /* Add Customer */
         this.customer = customer;
 
         this.triggerEvent("SALE_ADD_CUSTOMER");
@@ -291,36 +305,24 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
     public async updateProduct(product: SaleProduct): Promise<void> {
         this.checkIfCancelled();
 
-        // Update product
         const index = this.getIndexOfProduct(product);
 
         if(product.wasQuantityModified()) {
             const currentPrice = this.products[index].getPrice() || 0;
-            const currentRate = Math.round((currentPrice / this.products[index].getQuantity()) * 100) / 100;
+            const currentRate = this.roundNumber(currentPrice / this.products[index].getQuantity());
 
             this.products[index]["quantity"] = product.getQuantity();
 
-            const newPrice = Math.round((currentRate * product.getQuantity()) * 100) / 100;
+            const newPrice = this.roundNumber(currentRate * product.getQuantity());
 
-            this.products[index]["price"] = newPrice;
-
-            const difference = newPrice - currentPrice;
-
-            this.sale.totals.sale += difference;
-            this.sale.totals.sale = Math.round(this.sale.totals.sale * 100) / 100;
+            this.handleSaleProductPriceChange(index, currentPrice, newPrice);
         }
 
         if(product.wasPriceModified()) {
             const currentPrice = this.products[index].getPrice() || 0;
             const newPrice = product.getPrice() || 0;
 
-            this.products[index]["price"] = newPrice;
-
-            const difference = newPrice - currentPrice;
-
-            // Update the sale total
-            this.sale.totals.sale += difference;
-            this.sale.totals.sale = Math.round(this.sale.totals.sale * 100) / 100;
+            this.handleSaleProductPriceChange(index, currentPrice, newPrice);
         }
 
         if(product.wasMetaDataModified()) {
@@ -339,7 +341,7 @@ export class MockedCurrentSale extends BaseSale implements CurrentSaleInterface 
         const index = this.products.findIndex((p) => p.getId() === product.getId());
 
         if(index === -1) {
-            throw new Error("Product does not exist in the sale");
+            throw new ProductNotExistsError();
         }
 
         return index;
