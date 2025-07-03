@@ -1,12 +1,11 @@
 import { SaleUpdate, SaleUpdateChanges } from "../../Actions/SaleUpdate.js";
-import { Application } from "../../Application.js";
 import { BaseCurrentSale } from "./BaseCurrentSale.js";
 import { InvalidSaleDeviceError, SaleCancelledError } from "./Exceptions.js";
 import { SaleCustomer } from "./SaleCustomer.js";
 import { SalePayment } from "./SalePayment.js";
 import { SaleProduct } from "./SaleProduct.js";
 
-export class CurrentSale extends BaseCurrentSale<Application> {
+export class CurrentSale extends BaseCurrentSale {
     /**
      * @inheritDoc
      */

@@ -32,7 +32,7 @@ const emptySaleState: ShopfrontSaleState = {
     metaData      : {},
 };
 
-export class MockCurrentSale extends BaseCurrentSale<MockApplication> {
+export class MockCurrentSale extends BaseCurrentSale {
     constructor(application: MockApplication, saleState?: ShopfrontSaleState) {
         super(application, saleState ?? emptySaleState);
     }
@@ -41,7 +41,11 @@ export class MockCurrentSale extends BaseCurrentSale<MockApplication> {
      * Fires the event trigger
      */
     protected triggerEvent(event: DirectShopfrontEvent): void {
-        this.application.fireEvent(event);
+        if(this.application instanceof MockApplication) {
+            this.application.fireEvent(event);
+        } else {
+            throw new Error("Manually firing events is only supported in the `MockApplication`");
+        }
     }
 
     /**

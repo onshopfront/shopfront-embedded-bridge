@@ -53,7 +53,7 @@ interface AudioRequestOptions {
     forceError: boolean;
 }
 
-export class MockApplication extends BaseApplication<MockBridge, MockDatabase> {
+export class MockApplication extends BaseApplication {
     protected currentSale: MockCurrentSale | false = false;
 
     constructor(bridge: MockBridge) {

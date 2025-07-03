@@ -44,11 +44,8 @@ export class ShopfrontTokenDecodingError extends Error {}
 
 export class ShopfrontTokenRequestError extends Error {}
 
-export abstract class BaseApplication<
-    BridgeType extends BaseBridge = BaseBridge,
-    DatabaseType extends BaseDatabase = BaseDatabase
-> {
-    protected bridge: BridgeType;
+export abstract class BaseApplication {
+    protected bridge: BaseBridge;
     protected isReady: boolean;
     protected key: string;
     protected register: string | null;
@@ -85,9 +82,9 @@ export abstract class BaseApplication<
         GIFT_CARD_CODE_CHECK         : new Map(),
     };
     protected directListeners: Partial<Record<DirectShopfrontEvent, Set<DirectShopfrontEventCallback>>> = {};
-    public database: DatabaseType;
+    public database: BaseDatabase;
 
-    protected constructor(bridge: BridgeType, database: DatabaseType) {
+    protected constructor(bridge: BaseBridge, database: BaseDatabase) {
         this.bridge   = bridge;
         this.isReady  = false;
         this.key      = "";

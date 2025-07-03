@@ -1,5 +1,5 @@
 import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
-import { Bridge } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
@@ -68,7 +68,7 @@ export class RequestSellScreenOptions extends BaseEvent<
     /**
      * Sends the response data to Shopfront
      */
-    public static async respond(bridge: Bridge, options: Array<SellScreenOption>, id: string): Promise<void> {
+    public static async respond(bridge: BaseBridge, options: Array<SellScreenOption>, id: string): Promise<void> {
         bridge.sendMessage(ToShopfront.RESPONSE_SELL_SCREEN_OPTIONS, options, id);
     }
 }

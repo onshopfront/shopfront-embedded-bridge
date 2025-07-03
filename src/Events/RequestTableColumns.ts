@@ -1,5 +1,5 @@
 import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
-import { Bridge } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
@@ -36,7 +36,7 @@ export class RequestTableColumns extends BaseEvent<
      * Sends the response data to Shopfront
      */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         columns: Array<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
         id: string
     ): Promise<void> {

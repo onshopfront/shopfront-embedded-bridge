@@ -1,6 +1,6 @@
 import { Button } from "../Actions/Button.js";
 import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
-import { Bridge } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
@@ -43,7 +43,7 @@ export class RequestButtons extends BaseEvent<
     /**
      * Sends the response data to Shopfront
      */
-    public static async respond(bridge: Bridge, buttons: Array<Button>, id: string): Promise<void> {
+    public static async respond(bridge: BaseBridge, buttons: Array<Button>, id: string): Promise<void> {
         const response = [];
 
         for(let i = 0, l = buttons.length; i < l; i++) {

@@ -3,7 +3,7 @@ import {
     FromShopfrontReturns,
     ToShopfront,
 } from "../ApplicationEvents.js";
-import { Bridge } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
@@ -112,7 +112,7 @@ export class FormatIntegratedProduct extends BaseEvent<
      * Sends the response data to Shopfront
      */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         data: Array<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
         id: string
     ): Promise<void> {

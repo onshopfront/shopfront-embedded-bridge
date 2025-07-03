@@ -6,6 +6,7 @@ import {
     UIPipelineContext,
     UIPipelineResponse,
 } from "../ApplicationEvents.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { Bridge } from "../Bridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -64,7 +65,7 @@ export class UIPipeline extends BaseEvent<
      * @param id
      */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         data: FromShopfrontReturns["UI_PIPELINE"],
         id: string
     ): Promise<void> {

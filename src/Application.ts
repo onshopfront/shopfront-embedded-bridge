@@ -55,7 +55,7 @@ import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
 import { MaybePromise } from "./Utilities/MiscTypes.js";
 import { buildSaleData } from "./Utilities/SaleCreate.js";
 
-export class Application extends BaseApplication<Bridge> {
+export class Application extends BaseApplication {
     constructor(bridge: Bridge) {
         super(bridge, new Database(bridge));
 

@@ -1,6 +1,6 @@
 import { SaleKey } from "../Actions/SaleKey.js";
 import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
-import { Bridge } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
@@ -31,7 +31,7 @@ export class RequestSaleKeys extends BaseEvent<undefined, MaybePromise<Array<Sal
     /**
      * Sends the response data to Shopfront
      */
-    public static async respond(bridge: Bridge, keys: Array<SaleKey>, id: string): Promise<void> {
+    public static async respond(bridge: BaseBridge, keys: Array<SaleKey>, id: string): Promise<void> {
         const response = [];
 
         for(let i = 0, l = keys.length; i < l; i++) {

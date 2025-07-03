@@ -4,7 +4,7 @@ import {
     GiftCardCodeCheckEvent,
     ToShopfront,
 } from "../ApplicationEvents.js";
-import { Bridge } from "../Bridge.js";
+import { BaseBridge } from "../BaseBridge.js";
 import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
@@ -41,7 +41,7 @@ export class GiftCardCodeCheck extends BaseEvent<
      * Sends the response data to Shopfront
      */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         data: FromShopfrontReturns["GIFT_CARD_CODE_CHECK"],
         id: string
     ): Promise<void> {

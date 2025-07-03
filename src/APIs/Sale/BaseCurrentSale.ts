@@ -6,15 +6,15 @@ import { SalePayment } from "./SalePayment.js";
 import { SaleProduct } from "./SaleProduct.js";
 import { ShopfrontSaleState } from "./ShopfrontSaleState.js";
 
-export abstract class BaseCurrentSale<ApplicationType extends BaseApplication = BaseApplication> extends BaseSale {
-    protected application: ApplicationType;
+export abstract class BaseCurrentSale extends BaseSale {
+    protected application: BaseApplication;
     protected cancelled: boolean;
 
     /**
      * Create a sale from a sale state.
      * It's highly recommend to not construct a sale manually, instead use application.getCurrentSale().
      */
-    constructor(application: ApplicationType, saleState: ShopfrontSaleState) {
+    constructor(application: BaseApplication, saleState: ShopfrontSaleState) {
         super(Sale.buildSaleData(saleState));
 
         this.application = application;
