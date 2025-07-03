@@ -1,9 +1,9 @@
 /**
  * Fast UUID generator, RFC4122 version 4 compliant.
  * @author Jeff Ward (jcward.com).
- * @license MIT license
- * @link http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
- **/
+ * @license MIT
+ * {@link http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136}
+ */
 export default class UUID {
     protected lut: Array<string>;
 
@@ -17,11 +17,15 @@ export default class UUID {
         this.generate = this.generate.bind(this);
     }
 
+    /**
+     * Generates a UUID
+     */
     public generate(): string {
         const d0 = Math.random() * 0xffffffff | 0;
         const d1 = Math.random() * 0xffffffff | 0;
         const d2 = Math.random() * 0xffffffff | 0;
         const d3 = Math.random() * 0xffffffff | 0;
+
         return this.lut[d0 & 0xff] +
             this.lut[d0 >> 8 & 0xff] +
             this.lut[d0 >> 16 & 0xff] +
@@ -40,8 +44,11 @@ export default class UUID {
             this.lut[d3 >> 24 & 0xff];
     }
 
+    /**
+     * Static method for generating a UUID
+     */
     public static generate(): string {
-        if (typeof self?.crypto?.randomUUID === "function") {
+        if(typeof self?.crypto?.randomUUID === "function") {
             return self.crypto.randomUUID();
         }
 

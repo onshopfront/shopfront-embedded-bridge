@@ -1,14 +1,19 @@
-import { BaseEvent } from "./BaseEvent";
 import {
     FromShopfrontCallbacks,
     FromShopfrontReturns,
-    ToShopfront, GiftCardCodeCheckEvent,
-} from "../ApplicationEvents";
-import { Bridge } from "../Bridge";
-import { MaybePromise } from "../Utilities/MiscTypes";
+    GiftCardCodeCheckEvent,
+    ToShopfront,
+} from "../ApplicationEvents.js";
+import { BaseBridge } from "../BaseBridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
+
+interface GiftCardCodeCheckData {
+    data: GiftCardCodeCheckEvent;
+}
 
 export class GiftCardCodeCheck extends BaseEvent<
-    { data: GiftCardCodeCheckEvent; },
+    GiftCardCodeCheckData,
     MaybePromise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>,
     FromShopfrontReturns["GIFT_CARD_CODE_CHECK"],
     GiftCardCodeCheckEvent
@@ -17,10 +22,13 @@ export class GiftCardCodeCheck extends BaseEvent<
         super(callback);
     }
 
+    /**
+     * @inheritDoc
+     */
     public async emit(
-        data: { data: GiftCardCodeCheckEvent, context: undefined }
+        data: GiftCardCodeCheckData
     ): Promise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]> {
-        const result = await this.callback(data.data, data.context);
+        const result = await this.callback(data.data, undefined);
 
         if(typeof result !== "object") {
             throw new TypeError("Callback must return an object");
@@ -29,11 +37,14 @@ export class GiftCardCodeCheck extends BaseEvent<
         return result;
     }
 
+    /**
+     * Sends the response data to Shopfront
+     */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         data: FromShopfrontReturns["GIFT_CARD_CODE_CHECK"],
         id: string
-    ) {
+    ): Promise<void> {
         bridge.sendMessage(ToShopfront.RESPONSE_GIFT_CARD_CODE_CHECK, data, id);
     }
 }

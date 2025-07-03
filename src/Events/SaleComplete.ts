@@ -1,5 +1,5 @@
-import {BaseEvent} from "./BaseEvent";
-import {FromShopfrontCallbacks, FromShopfrontReturns} from "../ApplicationEvents";
+import { FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 interface CompletedSaleProduct {
     uuid: string;
@@ -36,19 +36,15 @@ interface CompletedSaleProduct {
     defaultProducts: Array<CompletedSaleProduct>;
     special: boolean;
     edited: boolean;
-    promotions: {
-        [id: string]: {
-            name: string;
-            active: boolean;
-            quantity: number;
-        };
-    };
-    rebates: {
-        [id: string]: {
-            amount: number;
-            quantity: number;
-        };
-    };
+    promotions: Record<string, {
+        name: string;
+        active: boolean;
+        quantity: number;
+    }>;
+    rebates: Record<string, {
+        amount: number;
+        quantity: number;
+    }>;
     giftCard: {
         code: string;
         amount: number;
@@ -64,9 +60,7 @@ interface CompletedSaleProduct {
     discountReason?: string;
     requestPrice?: boolean;
     lockQuantity: boolean;
-    metaData: {
-        [key: string]: unknown;
-    };
+    metaData: Record<string, unknown>;
 }
 
 interface CompletedSalePayment {
@@ -122,7 +116,10 @@ export class SaleComplete extends BaseEvent {
         super(callback);
     }
 
-    async emit(data: CompletedSale): Promise<FromShopfrontReturns["SALE_COMPLETE"]> {
-        this.callback(data, undefined);
+    /**
+     * @inheritDoc
+     */
+    public async emit(data: CompletedSale): Promise<FromShopfrontReturns["SALE_COMPLETE"]> {
+        return this.callback(data, undefined);
     }
 }

@@ -1,5 +1,4 @@
 src/
+tests/
 tsconfig.json
-.eslintignore
-.eslintrc
 bitbucket-pipelines.yml

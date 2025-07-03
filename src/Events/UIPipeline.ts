@@ -1,14 +1,15 @@
-import { BaseEvent } from "./BaseEvent";
 import {
     FromShopfrontCallbacks,
     FromShopfrontReturns,
     ToShopfront,
     UIPipelineBaseContext,
     UIPipelineContext,
-    UIPipelineResponse
-} from "../ApplicationEvents";
-import { Bridge } from "../Bridge";
-import { MaybePromise } from "../Utilities/MiscTypes";
+    UIPipelineResponse,
+} from "../ApplicationEvents.js";
+import { BaseBridge } from "../BaseBridge.js";
+import { Bridge } from "../Bridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 interface UIPPipelineIncomingData {
     data: Array<UIPipelineResponse>;
@@ -27,12 +28,17 @@ export class UIPipeline extends BaseEvent<
         super(callback);
     }
 
+    /**
+     * @inheritDoc
+     * @param data
+     * @param bridge
+     */
     public async emit(
         data: UIPPipelineIncomingData,
         bridge: Bridge
     ): Promise<FromShopfrontReturns["UI_PIPELINE"]> {
         const context: UIPipelineContext = {
-            ...data.context
+            ...data.context,
         };
 
         if(typeof data.pipelineId === "string") {
@@ -52,11 +58,17 @@ export class UIPipeline extends BaseEvent<
         return result;
     }
 
+    /**
+     * Sends the response data to Shopfront
+     * @param bridge
+     * @param data
+     * @param id
+     */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         data: FromShopfrontReturns["UI_PIPELINE"],
         id: string
-    ) {
+    ): Promise<void> {
         bridge.sendMessage(ToShopfront.RESPONSE_UI_PIPELINE, data, id);
     }
 }

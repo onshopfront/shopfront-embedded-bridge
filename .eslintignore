@@ -1,5 +1,0 @@
-# Build artifacts
-lib/*
-
-# Data definition files
-**/*.d.ts

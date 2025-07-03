@@ -16,19 +16,20 @@
         "Adam Simpkins",
         "Zachary Stanford"
     ],
+    "type": "module",
     "private": false,
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^5.29.0",
-        "@typescript-eslint/parser": "^5.29.0",
-        "eslint": "^8.18.0",
-        "typescript": "^4.7.4"
+        "@onshopfront/core": "^0.1.89",
+        "ts-jest-resolver": "^2.0.1",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.34.0"
     },
     "scripts": {
         "type-check": "tsc --noEmit",
-        "type-check:watch": "yarn run type-check --watch",
-        "build": "npm run-script lint && tsc",
+        "type-check:watch": "npm run-script type-check --watch",
+        "build": "tsc",
         "watch": "tsc -w",
-        "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --fix"
-    },
-    "dependencies": {}
+        "lint": "eslint . --fix",
+        "test": "npx @onshopfront/core test"
+    }
 }

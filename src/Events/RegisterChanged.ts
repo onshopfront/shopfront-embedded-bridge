@@ -1,15 +1,21 @@
-import {BaseEvent} from "./BaseEvent";
-import {FromShopfrontCallbacks, FromShopfrontReturns} from "../ApplicationEvents";
+import { FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
+
+interface RegisterChangedData {
+    outlet: string | null;
+    register: string | null;
+    user: string | null;
+}
 
 export class RegisterChanged extends BaseEvent {
     constructor(callback: FromShopfrontCallbacks["REGISTER_CHANGED"]) {
         super(callback);
     }
 
-    async emit(data: {
-        outlet: string | null,
-        register: string | null,
-    }): Promise<FromShopfrontReturns["REGISTER_CHANGED"]> {
-        this.callback(data, undefined);
+    /**
+     * @inheritDoc
+     */
+    public async emit(data: RegisterChangedData): Promise<FromShopfrontReturns["REGISTER_CHANGED"]> {
+        return this.callback(data, undefined);
     }
 }

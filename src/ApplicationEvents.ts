@@ -1,33 +1,33 @@
-import { Ready } from "./Events/Ready";
-import { Button } from "./Actions/Button";
-import { RequestSettings } from "./Events/RequestSettings";
-import { RequestButtons } from "./Events/RequestButtons";
-import { Callback } from "./Events/Callback";
-import { RequestTableColumns } from "./Events/RequestTableColumns";
-import { RequestSellScreenOptions, SellScreenOption } from "./Events/RequestSellScreenOptions";
-import { ShopfrontSaleState } from "./APIs/Sale";
-import { InternalPageMessage } from "./Events/InternalPageMessage";
-import { InternalMessageSource } from "./APIs/InternalMessages/InternalMessageSource";
-import { RegisterChanged } from "./Events/RegisterChanged";
-import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct";
-import { MaybePromise } from "./Utilities/MiscTypes";
-import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions";
-import { SaleKey } from "./Actions/SaleKey";
-import { RequestSaleKeys } from "./Events/RequestSaleKeys";
-import { CompletedSale, SaleComplete } from "./Events/SaleComplete";
-import { UIPipeline } from "./Events/UIPipeline";
-import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled";
-import { AudioPermissionChange } from "./Events/AudioPermissionChange";
-import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder";
-import { FulfilmentVoidOrder } from "./Events/FulfilmentVoidOrder";
-import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder";
-import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval";
-import { OrderDetails } from "./APIs/Fulfilment/FulfilmentTypes";
-import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder";
-import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder";
-import { Sale } from "./APIs/Sale";
-import { AudioReady } from "./Events/AudioReady";
-import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck";
+/* eslint @typescript-eslint/no-invalid-void-type: 0 */
+import { Button } from "./Actions/Button.js";
+import { SaleKey } from "./Actions/SaleKey.js";
+import { OrderDetails } from "./APIs/Fulfilment/FulfilmentTypes.js";
+import { InternalMessageSource } from "./APIs/InternalMessages/InternalMessageSource.js";
+import { Sale, ShopfrontSaleState } from "./APIs/Sale/index.js";
+import { AudioPermissionChange } from "./Events/AudioPermissionChange.js";
+import { AudioReady } from "./Events/AudioReady.js";
+import { Callback } from "./Events/Callback.js";
+import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct.js";
+import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder.js";
+import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder.js";
+import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder.js";
+import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval.js";
+import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder.js";
+import { FulfilmentVoidOrder } from "./Events/FulfilmentVoidOrder.js";
+import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck.js";
+import { InternalPageMessage } from "./Events/InternalPageMessage.js";
+import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled.js";
+import { Ready } from "./Events/Ready.js";
+import { RegisterChanged } from "./Events/RegisterChanged.js";
+import { RequestButtons } from "./Events/RequestButtons.js";
+import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions.js";
+import { RequestSaleKeys } from "./Events/RequestSaleKeys.js";
+import { RequestSellScreenOptions, SellScreenOption } from "./Events/RequestSellScreenOptions.js";
+import { RequestSettings } from "./Events/RequestSettings.js";
+import { RequestTableColumns } from "./Events/RequestTableColumns.js";
+import { CompletedSale, SaleComplete } from "./Events/SaleComplete.js";
+import { UIPipeline } from "./Events/UIPipeline.js";
+import { MaybePromise } from "./Utilities/MiscTypes.js";
 
 export enum ToShopfront {
     READY                              = "READY",
@@ -88,86 +88,82 @@ export enum ToShopfront {
 export type SoundEvents = ToShopfront.AUDIO_REQUEST_PERMISSION | ToShopfront.AUDIO_PRELOAD | ToShopfront.AUDIO_PLAY;
 
 export interface FromShopfrontReturns {
-    READY           : void,
+    READY: unknown;
     REQUEST_SETTINGS: {
-        logo       : null | string,
-        description: null | string,
-        url        : null | string,
-    },
-    REQUEST_BUTTONS      : Array<Button>,
+        logo: null | string;
+        description: null | string;
+        url: null | string;
+    };
+    REQUEST_BUTTONS: Array<Button>;
     REQUEST_TABLE_COLUMNS: null | {
         headers: Array<{
-            label : string,
-            key   : string,
-            weight: number,
-        }>,
-        body: Array<{
-            [key: string]: string,
-        }>,
-        footer: {
-            [key: string]: string,
-        },
-    },
-    REQUEST_SELL_SCREEN_OPTIONS: Array<SellScreenOption>,
-    CALLBACK: void,
+            label: string;
+            key: string;
+            weight: number;
+        }>;
+        body: Array<Record<string, string>>;
+        footer: Record<string, string>;
+    };
+    REQUEST_SELL_SCREEN_OPTIONS: Array<SellScreenOption>;
+    CALLBACK: unknown;
     RESPONSE_CURRENT_SALE: {
-        requestId: string,
-        saleState: ShopfrontSaleState,
-    },
-    INTERNAL_PAGE_MESSAGE: void,
-    REGISTER_CHANGED: void,
+        requestId: string;
+        saleState: ShopfrontSaleState;
+    };
+    INTERNAL_PAGE_MESSAGE: unknown;
+    REGISTER_CHANGED: unknown;
     RESPONSE_LOCATION: {
-        requestId: string,
+        requestId: string;
         register: string | null;
         outlet: string | null;
         user: string | null;
-    },
+    };
     RESPONSE_AUDIO_REQUEST: {
         requestId: string;
         success: boolean;
         message?: string;
-    },
-    FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent,
-    REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>,
-    REQUEST_SALE_KEYS: Array<SaleKey>,
-    SALE_COMPLETE: void;
+    };
+    FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent;
+    REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>;
+    REQUEST_SALE_KEYS: Array<SaleKey>;
+    SALE_COMPLETE: unknown;
     UI_PIPELINE: Array<UIPipelineResponse>;
-    PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>,
-    AUDIO_READY: void;
-    AUDIO_PERMISSION_CHANGE: void;
+    PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>;
+    AUDIO_READY: unknown;
+    AUDIO_PERMISSION_CHANGE: unknown;
     FULFILMENT_GET_ORDER: OrderDetails;
-    FULFILMENT_VOID_ORDER: void;
-    FULFILMENT_PROCESS_ORDER: void;
-    FULFILMENT_ORDER_APPROVAL: void;
-    FULFILMENT_ORDER_COLLECTED: void;
-    FULFILMENT_ORDER_COMPLETED: void;
+    FULFILMENT_VOID_ORDER: unknown;
+    FULFILMENT_PROCESS_ORDER: unknown;
+    FULFILMENT_ORDER_APPROVAL: unknown;
+    FULFILMENT_ORDER_COLLECTED: unknown;
+    FULFILMENT_ORDER_COMPLETED: unknown;
     RESPONSE_CREATE_SALE: {
         requestId: string;
         success: boolean;
         message?: string;
     };
     GIFT_CARD_CODE_CHECK: {
-        code: string,
-        message: string|null
+        code: string;
+        message: string | null;
     };
 }
 
 export interface InternalPageMessageEvent {
-    method   : "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS" | "EXTERNAL_APPLICATION",
-    url      : string,
-    message  : unknown,
-    reference: InternalMessageSource,
+    method: "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS" | "EXTERNAL_APPLICATION";
+    url: string;
+    message: unknown;
+    reference: InternalMessageSource;
 }
 
 export interface RegisterChangedEvent {
     register: null | string;
-    outlet  : null | string;
-    user    : null | string;
+    outlet: null | string;
+    user: null | string;
 }
 
 export interface GiftCardCodeCheckEvent {
-    code: string,
-    message: string|null,
+    code: string;
+    message: string | null;
 }
 
 export interface FormatIntegratedProductEvent {
@@ -192,10 +188,10 @@ export interface FulfilmentApprovalEvent {
     approved: boolean;
 }
 
-export type UIPipelineResponse = {
+export interface UIPipelineResponse {
     name: string;
     content: string;
-};
+}
 
 export interface UIPipelineBaseContext {
     location: string;
@@ -233,56 +229,80 @@ export interface PaymentMethodEnabledContext {
 }
 
 export interface FromShopfrontCallbacks {
-    READY                        : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>,
-    REQUEST_SETTINGS             : () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
-    REQUEST_BUTTONS              : (location: string, context: unknown) => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
-    REQUEST_TABLE_COLUMNS        : (location: string, data: unknown) => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
-    REQUEST_SELL_SCREEN_OPTIONS  : () => MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
-    INTERNAL_PAGE_MESSAGE        : (event: InternalPageMessageEvent) => MaybePromise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>,
-    REGISTER_CHANGED             : (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["REGISTER_CHANGED"]>,
-    CALLBACK                     : () => MaybePromise<FromShopfrontReturns["CALLBACK"]>,
-    FORMAT_INTEGRATED_PRODUCT    : (event: FormatIntegratedProductEvent) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
-    REQUEST_CUSTOMER_LIST_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
-    REQUEST_SALE_KEYS            : () => MaybePromise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>,
-    SALE_COMPLETE                : (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>,
-    UI_PIPELINE                  : (event: Array<UIPipelineResponse>, context: UIPipelineContext) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>,
-    PAYMENT_METHODS_ENABLED      : (event: Array<SellScreenPaymentMethod>, context: PaymentMethodEnabledContext) => MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>,
-    AUDIO_READY                  : () => MaybePromise<FromShopfrontReturns["AUDIO_READY"]>,
-    AUDIO_PERMISSION_CHANGE      : (event: AudioPermissionChangeEvent) => MaybePromise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]>,
-    FULFILMENT_GET_ORDER         : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>,
-    FULFILMENT_VOID_ORDER        : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_VOID_ORDER"]>,
-    FULFILMENT_PROCESS_ORDER     : (event: FulfilmentProcessEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]>,
-    FULFILMENT_ORDER_APPROVAL    : (event: FulfilmentApprovalEvent) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]>,
-    FULFILMENT_ORDER_COLLECTED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]>,
-    FULFILMENT_ORDER_COMPLETED   : (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COMPLETED"]>,
-    GIFT_CARD_CODE_CHECK         : (event: GiftCardCodeCheckEvent, context: unknown) => MaybePromise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>,
+    READY: (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["READY"]>;
+    REQUEST_SETTINGS: () => MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>;
+    REQUEST_BUTTONS: (location: string, context: unknown) => MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>;
+    REQUEST_TABLE_COLUMNS: (
+        location: string,
+        data: unknown
+    ) => MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>;
+    REQUEST_SELL_SCREEN_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>;
+    INTERNAL_PAGE_MESSAGE: (
+        event: InternalPageMessageEvent
+    ) => MaybePromise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]>;
+    REGISTER_CHANGED: (event: RegisterChangedEvent) => MaybePromise<FromShopfrontReturns["REGISTER_CHANGED"]>;
+    CALLBACK: () => MaybePromise<FromShopfrontReturns["CALLBACK"]>;
+    FORMAT_INTEGRATED_PRODUCT: (
+        event: FormatIntegratedProductEvent
+    ) => MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>;
+    REQUEST_CUSTOMER_LIST_OPTIONS: () => MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>;
+    REQUEST_SALE_KEYS: () => MaybePromise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>;
+    SALE_COMPLETE: (event: SaleCompletedEvent) => MaybePromise<FromShopfrontReturns["SALE_COMPLETE"]>;
+    UI_PIPELINE: (
+        event: Array<UIPipelineResponse>,
+        context: UIPipelineContext
+    ) => MaybePromise<FromShopfrontReturns["UI_PIPELINE"]>;
+    PAYMENT_METHODS_ENABLED: (
+        event: Array<SellScreenPaymentMethod>,
+        context: PaymentMethodEnabledContext
+    ) => MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>;
+    AUDIO_READY: () => MaybePromise<FromShopfrontReturns["AUDIO_READY"]>;
+    AUDIO_PERMISSION_CHANGE: (
+        event: AudioPermissionChangeEvent
+    ) => MaybePromise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]>;
+    FULFILMENT_GET_ORDER: (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>;
+    FULFILMENT_VOID_ORDER: (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_VOID_ORDER"]>;
+    FULFILMENT_PROCESS_ORDER: (
+        event: FulfilmentProcessEvent
+    ) => MaybePromise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]>;
+    FULFILMENT_ORDER_APPROVAL: (
+        event: FulfilmentApprovalEvent
+    ) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]>;
+    FULFILMENT_ORDER_COLLECTED: (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]>;
+    FULFILMENT_ORDER_COMPLETED: (id: string) => MaybePromise<FromShopfrontReturns["FULFILMENT_ORDER_COMPLETED"]>;
+    GIFT_CARD_CODE_CHECK: (
+        event: GiftCardCodeCheckEvent,
+        context: unknown
+    ) => MaybePromise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>;
 }
 
 export interface FromShopfront {
-    READY                        : Ready,
-    REQUEST_SETTINGS             : RequestSettings,
-    REQUEST_BUTTONS              : RequestButtons,
-    REQUEST_TABLE_COLUMNS        : RequestTableColumns,
-    REQUEST_SELL_SCREEN_OPTIONS  : RequestSellScreenOptions,
-    CALLBACK                     : Callback,
-    INTERNAL_PAGE_MESSAGE        : InternalPageMessage,
-    REGISTER_CHANGED             : RegisterChanged,
-    FORMAT_INTEGRATED_PRODUCT    : FormatIntegratedProduct,
-    REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions,
-    SALE_COMPLETE                : SaleComplete,
-    REQUEST_SALE_KEYS            : RequestSaleKeys,
-    UI_PIPELINE                  : UIPipeline,
-    PAYMENT_METHODS_ENABLED      : PaymentMethodsEnabled,
-    AUDIO_READY                  : AudioReady,
-    AUDIO_PERMISSION_CHANGE      : AudioPermissionChange,
-    FULFILMENT_GET_ORDER         : FulfilmentGetOrder,
-    FULFILMENT_VOID_ORDER        : FulfilmentVoidOrder,
-    FULFILMENT_PROCESS_ORDER     : FulfilmentProcessOrder,
-    FULFILMENT_ORDER_APPROVAL    : FulfilmentOrderApproval,
-    FULFILMENT_ORDER_COLLECTED   : FulfilmentCollectOrder,
-    FULFILMENT_ORDER_COMPLETED   : FulfilmentCompleteOrder,
-    GIFT_CARD_CODE_CHECK         : GiftCardCodeCheck,
+    READY: Ready;
+    REQUEST_SETTINGS: RequestSettings;
+    REQUEST_BUTTONS: RequestButtons;
+    REQUEST_TABLE_COLUMNS: RequestTableColumns;
+    REQUEST_SELL_SCREEN_OPTIONS: RequestSellScreenOptions;
+    CALLBACK: Callback;
+    INTERNAL_PAGE_MESSAGE: InternalPageMessage;
+    REGISTER_CHANGED: RegisterChanged;
+    FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProduct;
+    REQUEST_CUSTOMER_LIST_OPTIONS: RequestCustomerListOptions;
+    SALE_COMPLETE: SaleComplete;
+    REQUEST_SALE_KEYS: RequestSaleKeys;
+    UI_PIPELINE: UIPipeline;
+    PAYMENT_METHODS_ENABLED: PaymentMethodsEnabled;
+    AUDIO_READY: AudioReady;
+    AUDIO_PERMISSION_CHANGE: AudioPermissionChange;
+    FULFILMENT_GET_ORDER: FulfilmentGetOrder;
+    FULFILMENT_VOID_ORDER: FulfilmentVoidOrder;
+    FULFILMENT_PROCESS_ORDER: FulfilmentProcessOrder;
+    FULFILMENT_ORDER_APPROVAL: FulfilmentOrderApproval;
+    FULFILMENT_ORDER_COLLECTED: FulfilmentCollectOrder;
+    FULFILMENT_ORDER_COMPLETED: FulfilmentCompleteOrder;
+    GIFT_CARD_CODE_CHECK: GiftCardCodeCheck;
 }
+
+export type ListenableFromShopfrontEvents = keyof Omit<FromShopfront, "CALLBACK">;
 
 export const directShopfrontEvents = [
     "SALE_ADD_PRODUCT",
@@ -294,18 +314,29 @@ export const directShopfrontEvents = [
     "SALE_CLEAR",
 ] as const;
 
+/**
+ * Checks whether the event is a direct Shopfront event
+ */
+export const isDirectShopfrontEvent = (
+    event: DirectShopfrontEvent | ListenableFromShopfrontEvents
+): event is DirectShopfrontEvent => {
+    return directShopfrontEvents.includes(event as DirectShopfrontEvent);
+};
+
 export type DirectShopfrontEvent = typeof directShopfrontEvents[number];
 
+export type DirectShopfrontEventCallback = () => void | Promise<void>;
+
 export interface FromShopfrontInternal {
-    CYCLE_KEY                : "CYCLE_KEY",
-    LOCATION_CHANGED         : "LOCATION_CHANGED",
-    RESPONSE_CURRENT_SALE    : "RESPONSE_CURRENT_SALE",
-    RESPONSE_DATABASE_REQUEST: "RESPONSE_DATABASE_REQUEST",
-    RESPONSE_LOCATION        : "RESPONSE_LOCATION",
-    RESPONSE_OPTION          : "RESPONSE_OPTION",
-    RESPONSE_AUDIO_REQUEST   : "RESPONSE_AUDIO_REQUEST",
-    RESPONSE_SECURE_KEY      : "RESPONSE_SECURE_KEY",
-    RESPONSE_CREATE_SALE     : "RESPONSE_CREATE_SALE",
+    CYCLE_KEY: "CYCLE_KEY";
+    LOCATION_CHANGED: "LOCATION_CHANGED";
+    RESPONSE_CURRENT_SALE: "RESPONSE_CURRENT_SALE";
+    RESPONSE_DATABASE_REQUEST: "RESPONSE_DATABASE_REQUEST";
+    RESPONSE_LOCATION: "RESPONSE_LOCATION";
+    RESPONSE_OPTION: "RESPONSE_OPTION";
+    RESPONSE_AUDIO_REQUEST: "RESPONSE_AUDIO_REQUEST";
+    RESPONSE_SECURE_KEY: "RESPONSE_SECURE_KEY";
+    RESPONSE_CREATE_SALE: "RESPONSE_CREATE_SALE";
 }
 
 export type SellScreenActionMode =

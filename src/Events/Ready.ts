@@ -1,20 +1,25 @@
-import { FromShopfrontCallbacks, FromShopfrontReturns, RegisterChangedEvent } from "../ApplicationEvents";
-import {BaseEvent} from "./BaseEvent";
+import { FromShopfrontCallbacks, FromShopfrontReturns, RegisterChangedEvent } from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
+
+interface ReadyData {
+    outlet: string | null;
+    register: string | null;
+    user: string | null;
+}
 
 export class Ready extends BaseEvent<RegisterChangedEvent> {
     constructor(callback: FromShopfrontCallbacks["READY"]) {
         super(callback);
     }
 
-    async emit(data: {
-        outlet: string | null,
-        register: string | null,
-        user: string | null,
-    }): Promise<FromShopfrontReturns["READY"]> {
+    /**
+     * @inheritDoc
+     */
+    public async emit(data: ReadyData): Promise<FromShopfrontReturns["READY"]> {
         return this.callback({
-            outlet: data.outlet,
+            outlet  : data.outlet,
             register: data.register,
-            user: data.user,
+            user    : data.user,
         }, undefined);
     }
 }

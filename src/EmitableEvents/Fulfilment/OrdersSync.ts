@@ -1,10 +1,10 @@
-import { BaseEmitableEvent } from "../BaseEmitableEvent";
-import { ToShopfront } from "../../ApplicationEvents";
-import { OrderCreateDetails } from "../../APIs/Fulfilment/FulfilmentTypes";
+import { OrderCreateDetails } from "../../APIs/Fulfilment/FulfilmentTypes.js";
+import { ToShopfront } from "../../ApplicationEvents.js";
+import { BaseEmitableEvent } from "../BaseEmitableEvent.js";
 
 export class OrdersSync extends BaseEmitableEvent<{
     orders: Array<OrderCreateDetails>;
-    merge: boolean
+    merge: boolean;
 }> {
     constructor(orders: Array<OrderCreateDetails>, merge: boolean) {
         super(ToShopfront.FULFILMENT_ORDERS_SYNC, {

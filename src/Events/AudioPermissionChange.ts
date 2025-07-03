@@ -1,12 +1,15 @@
-import { BaseEvent } from "./BaseEvent";
-import { AudioPermissionChangeEvent, FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents";
+import { AudioPermissionChangeEvent, FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export class AudioPermissionChange extends BaseEvent<AudioPermissionChangeEvent> {
     constructor(callback: FromShopfrontCallbacks["AUDIO_PERMISSION_CHANGE"]) {
         super(callback);
     }
 
-    async emit(data: AudioPermissionChangeEvent): Promise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]> {
-        this.callback(data, undefined);
+    /**
+     * @inheritDoc
+     */
+    public async emit(data: AudioPermissionChangeEvent): Promise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]> {
+        return this.callback(data, undefined);
     }
 }

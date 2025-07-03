@@ -1,11 +1,11 @@
-import { BaseEvent } from "./BaseEvent";
 import {
     FromShopfrontCallbacks,
     FromShopfrontReturns,
-    ToShopfront
-} from "../ApplicationEvents";
-import { Bridge } from "../Bridge";
-import { MaybePromise } from "../Utilities/MiscTypes";
+    ToShopfront,
+} from "../ApplicationEvents.js";
+import { BaseBridge } from "../BaseBridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export type FormattedSaleProductType =
     "Normal" |
@@ -51,19 +51,15 @@ export interface FormattedSaleProduct {
     defaultProducts: Array<FormattedSaleProduct>;
     special: boolean;
     edited: boolean;
-    promotions: {
-        [id: string]: {
-            name: string;
-            active: boolean;
-            quantity: number;
-        };
-    };
-    rebates: {
-        [id: string]: {
-            amount: number;
-            quantity: number;
-        };
-    };
+    promotions: Record<string, {
+        name: string;
+        active: boolean;
+        quantity: number;
+    }>;
+    rebates: Record<string, {
+        amount: number;
+        quantity: number;
+    }>;
     giftCard: SaleGiftCard | null;
     note: string;
     userId: null | string;
@@ -75,24 +71,33 @@ export interface FormattedSaleProduct {
     discountReason?: string;
     requestPrice?: boolean;
     lockQuantity: boolean;
-    metaData: {
-        [key: string]: unknown;
+    metaData: Record<string, unknown>;
+}
+
+interface FormattedIntegratedProductData {
+    data: {
+        product: FormattedSaleProduct;
     };
+    context: Record<string, never>;
 }
 
 export class FormatIntegratedProduct extends BaseEvent<
-    { data: { product: FormattedSaleProduct }, context: Record<string, never> },
+    FormattedIntegratedProductData,
     MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
     FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"],
-    { product: FormattedSaleProduct },
+    FormattedIntegratedProductData["data"],
     Record<string, never>
 > {
+
     constructor(callback: FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]) {
         super(callback);
     }
 
+    /**
+     * @inheritDoc
+     */
     public async emit(
-        data: { data: { product: FormattedSaleProduct }, context: Record<string, never> }
+        data: FormattedIntegratedProductData
     ): Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]> {
         const result = await this.callback(data.data, data.context);
 
@@ -103,13 +108,19 @@ export class FormatIntegratedProduct extends BaseEvent<
         return result;
     }
 
+    /**
+     * Sends the response data to Shopfront
+     */
     public static async respond(
-        bridge: Bridge,
+        bridge: BaseBridge,
         data: Array<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
         id: string
-    ) {
+    ): Promise<void> {
         if(data.length > 1) {
-            throw new Error("Multiple integrated product responses found, please ensure you are only subscribed to FORMAT_INTEGRATED_PRODUCT once");
+            throw new Error(
+                "Multiple integrated product responses found, " +
+                "please ensure you are only subscribed to FORMAT_INTEGRATED_PRODUCT once"
+            );
         }
 
         bridge.sendMessage(ToShopfront.RESPONSE_FORMAT_PRODUCT, data[0], id);

@@ -1,9 +1,9 @@
-import { BaseEvent } from "./BaseEvent";
 import {
     FromShopfrontCallbacks,
     FromShopfrontReturns,
     FulfilmentApprovalEvent,
-} from "../ApplicationEvents";
+} from "../ApplicationEvents.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export class FulfilmentOrderApproval extends BaseEvent<
     FulfilmentApprovalEvent,
@@ -14,6 +14,9 @@ export class FulfilmentOrderApproval extends BaseEvent<
         super(callback);
     }
 
+    /**
+     * @inheritDoc
+     */
     public async emit(data: FulfilmentApprovalEvent): Promise<FromShopfrontReturns["FULFILMENT_ORDER_APPROVAL"]> {
         return this.callback(data, undefined);
     }

@@ -1,8 +1,8 @@
-import { BaseEvent } from "./BaseEvent";
-import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents";
-import { MaybePromise } from "../Utilities/MiscTypes";
-import { Bridge } from "../Bridge";
-import { OrderDetails } from "../APIs/Fulfilment/FulfilmentTypes";
+import { OrderDetails } from "../APIs/Fulfilment/FulfilmentTypes.js";
+import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import { BaseBridge } from "../BaseBridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export class FulfilmentGetOrder extends BaseEvent<
     string,
@@ -13,11 +13,17 @@ export class FulfilmentGetOrder extends BaseEvent<
         super(callback);
     }
 
+    /**
+     * @inheritDoc
+     */
     public async emit(data: string): Promise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]> {
         return this.callback(data, undefined);
     }
 
-    public static async respond(bridge: Bridge, order: OrderDetails, id: string): Promise<void> {
+    /**
+     * Sends the response data to Shopfront
+     */
+    public static async respond(bridge: BaseBridge, order: OrderDetails, id: string): Promise<void> {
         bridge.sendMessage(ToShopfront.FULFILMENT_GET_ORDER, order, id);
     }
 }

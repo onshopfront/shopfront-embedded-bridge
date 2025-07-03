@@ -1,7 +1,7 @@
-import {BaseEmitableEvent} from "./BaseEmitableEvent";
-import type {SellScreenOption as Option} from "../Events/RequestSellScreenOptions";
-import {RequestSellScreenOptions} from "../Events/RequestSellScreenOptions";
-import {ToShopfront} from "../ApplicationEvents";
+import { ToShopfront } from "../ApplicationEvents.js";
+import type { SellScreenOption as Option } from "../Events/RequestSellScreenOptions.js";
+import { RequestSellScreenOptions } from "../Events/RequestSellScreenOptions.js";
+import { BaseEmitableEvent } from "./BaseEmitableEvent.js";
 
 export class SellScreenOption extends BaseEmitableEvent<Option> {
     constructor(url: string, title: string) {

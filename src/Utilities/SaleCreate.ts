@@ -1,5 +1,5 @@
-import { Sale, SaleProduct, ShopfrontSalePaymentStatus } from "../APIs/Sale";
-import { BaseSaleData } from "../APIs/Sale/BaseSale";
+import { BaseSaleData } from "../APIs/Sale/BaseSale.js";
+import { Sale, SaleProduct, ShopfrontSalePaymentStatus } from "../APIs/Sale/index.js";
 
 export interface SaleProductData {
     uuid: string;
@@ -27,59 +27,69 @@ export interface SaleData extends BaseSaleData {
     products: Array<SaleProductData>;
 }
 
+/**
+ * Builds a Shopfront sale product from the embedded product data
+ * @param product
+ */
 function buildSaleProductData(product: SaleProduct): SaleProductData {
     const price = product.getPrice();
-    if (typeof price !== "number") {
+
+    if(typeof price !== "number") {
         throw new TypeError("Sale Product must have price when creating the sale.");
     }
 
     const caseQuantity = product.getCaseQuantity();
-    if (typeof caseQuantity !== "number") {
+
+    if(typeof caseQuantity !== "number") {
         throw new TypeError("Sale Product must have case quantity when creating the sale.");
     }
 
     return {
-        uuid: product.getId(),
+        uuid    : product.getId(),
         quantity: product.getQuantity(),
         metaData: product.getMetaData(),
         products: product.getContains().map(buildSaleProductData),
-        note: product.getNote(),
+        note    : product.getNote(),
         caseQuantity,
         price,
     };
 }
 
+/**
+ * Builds a Shopfront sale from the embedded sale data
+ * @param sale
+ */
 export function buildSaleData(sale: Sale): SaleData {
     const customer = sale.getCustomer();
 
     return {
         register: sale.getRegister(),
         clientId: sale.getClientId(),
-        notes: {
+        notes   : {
             internal: sale.getInternalNote(),
-            sale: sale.getExternalNote(),
+            sale    : sale.getExternalNote(),
         },
         totals: {
-            sale: sale.getSaleTotal(),
-            paid: sale.getPaidTotal(),
-            savings: sale.getSavingsTotal(),
+            sale    : sale.getSaleTotal(),
+            paid    : sale.getPaidTotal(),
+            savings : sale.getSavingsTotal(),
             discount: sale.getDiscountTotal(),
         },
-        linkedTo: sale.getLinkedTo(),
+        linkedTo      : sale.getLinkedTo(),
         orderReference: sale.getOrderReference(),
-        refundReason: sale.getRefundReason(),
-        priceSet: sale.getPriceSet(),
-        metaData: sale.getMetaData(),
-        customer: customer ? customer.getId() : null,
-        products: sale.getProducts().map(buildSaleProductData),
-        payments: sale.getPayments().map(payment => ({
-            method: payment.getId(),
-            type: payment.getType(),
-            amount: payment.getAmount(),
-            status: payment.getStatus(),
+        refundReason  : sale.getRefundReason(),
+        priceSet      : sale.getPriceSet(),
+        metaData      : sale.getMetaData(),
+        customer      : customer ? customer.getId() : null,
+        products      : sale.getProducts().map(buildSaleProductData),
+        payments      : sale.getPayments().map(payment => ({
+            method  : payment.getId(),
+            type    : payment.getType(),
+            amount  : payment.getAmount(),
+            status  : payment.getStatus(),
             rounding: payment.getRounding() || 0,
-            cashout: payment.getCashout() || 0,
-            metaData: payment.getMetaData()
+            cashout : payment.getCashout() || 0,
+            metaData: payment.getMetaData(),
         })),
     };
 }

@@ -1,7 +1,7 @@
-import {FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront} from "../ApplicationEvents";
-import {BaseEvent} from "./BaseEvent";
-import {Bridge} from "../Bridge";
-import { MaybePromise } from "../Utilities/MiscTypes";
+import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import { BaseBridge } from "../BaseBridge.js";
+import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { BaseEvent } from "./BaseEvent.js";
 
 export class RequestSettings extends BaseEvent<
     undefined,
@@ -12,8 +12,10 @@ export class RequestSettings extends BaseEvent<
         super(callback);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SETTINGS"]> {
+    /**
+     * @inheritDoc
+     */
+    public async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SETTINGS"]> {
         const result = await this.callback(undefined, undefined);
 
         if(typeof result !== "object" || result === null) {
@@ -23,9 +25,19 @@ export class RequestSettings extends BaseEvent<
         return result;
     }
 
-    public static async respond(bridge: Bridge, settings: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>, id: string) {
+    /**
+     * Sends the response data to Shopfront
+     */
+    public static async respond(
+        bridge: BaseBridge,
+        settings: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>,
+        id: string
+    ): Promise<void> {
         if(settings.length > 1) {
-            throw new Error("Multiple settings responses found, please ensure you are only subscribed to REQUEST_SETTINGS once");
+            throw new Error(
+                "Multiple settings responses found, " +
+                "please ensure you are only subscribed to REQUEST_SETTINGS once"
+            );
         }
 
         bridge.sendMessage(ToShopfront.RESPONSE_SETTINGS, settings[0], id);
