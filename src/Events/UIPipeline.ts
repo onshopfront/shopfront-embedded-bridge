@@ -23,7 +23,6 @@ export class UIPipeline extends BaseEvent<
     Array<UIPipelineResponse>,
     UIPipelineContext
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["UI_PIPELINE"]) {
         super(callback);
     }

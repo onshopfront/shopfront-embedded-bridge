@@ -12,12 +12,9 @@ export interface LocalDatabaseGiftCard {
     uuid: string;
 }
 
-interface BaseGiftCardRepository extends BaseRepository<LocalDatabaseGiftCard> {
+export interface BaseGiftCardRepository extends BaseRepository<LocalDatabaseGiftCard> {
     /**
      * Retrieve all gift cards with the specified code
-     * @param code
      */
     code(code: string): Promise<Array<LocalDatabaseGiftCard>>;
 }
-
-export default BaseGiftCardRepository;

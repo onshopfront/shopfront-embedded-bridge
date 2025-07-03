@@ -15,14 +15,12 @@ export class RequestTableColumns extends BaseEvent<
     string,
     unknown
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_TABLE_COLUMNS"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: RequestTableColumnsData): Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]> {
         const result = await this.callback(data.location, data.context);
@@ -36,9 +34,6 @@ export class RequestTableColumns extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param columns
-     * @param id
      */
     public static async respond(
         bridge: Bridge,

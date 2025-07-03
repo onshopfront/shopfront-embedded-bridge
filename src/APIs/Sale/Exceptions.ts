@@ -9,3 +9,9 @@ export class InvalidSaleDeviceError extends Error {
         super("This device is no longer a register able to perform a sale.");
     }
 }
+
+export class ProductNotExistsError extends Error {
+    constructor() {
+        super("Product does not exist in the sale");
+    }
+}

@@ -5,6 +5,4 @@ export interface LocalDatabasePriceSet {
     uuid: string;
 }
 
-type BasePriceSetRepository = BaseRepository<LocalDatabasePriceSet>;
-
-export default BasePriceSetRepository;
+export type BasePriceSetRepository = BaseRepository<LocalDatabasePriceSet>;

@@ -57,9 +57,9 @@ export interface FormattedSaleProduct {
         quantity: number;
     }>;
     rebates: Record<string, {
-            amount: number;
-            quantity: number;
-        }>;
+        amount: number;
+        quantity: number;
+    }>;
     giftCard: SaleGiftCard | null;
     note: string;
     userId: null | string;
@@ -88,14 +88,13 @@ export class FormatIntegratedProduct extends BaseEvent<
     FormattedIntegratedProductData["data"],
     Record<string, never>
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
+
     constructor(callback: FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(
         data: FormattedIntegratedProductData
@@ -111,9 +110,6 @@ export class FormatIntegratedProduct extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param data
-     * @param id
      */
     public static async respond(
         bridge: Bridge,

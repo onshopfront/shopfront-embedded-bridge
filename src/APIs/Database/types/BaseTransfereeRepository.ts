@@ -12,8 +12,6 @@ export interface LocalDatabaseTransferee {
     order_automatic_email: boolean;
 }
 
-type BaseTransfereeRepository =
+export type BaseTransfereeRepository =
     BaseRepository<LocalDatabaseTransferee> &
     BaseSearchableRepository<LocalDatabaseTransferee>;
-
-export default BaseTransfereeRepository;

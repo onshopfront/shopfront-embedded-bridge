@@ -21,14 +21,12 @@ export class PaymentMethodsEnabled extends BaseEvent<
     Array<SellScreenPaymentMethod>,
     PaymentMethodEnabledContext
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["PAYMENT_METHODS_ENABLED"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: PaymentMethodsEnabledData): Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]> {
         const result = await this.callback(data.data, data.context);
@@ -42,9 +40,6 @@ export class PaymentMethodsEnabled extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param data
-     * @param id
      */
     public static async respond(
         bridge: Bridge,

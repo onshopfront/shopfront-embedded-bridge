@@ -6,8 +6,6 @@ export interface LocalDatabaseVendorConnection {
     name: string;
 }
 
-type BaseVendorConnectionRepository =
+export type BaseVendorConnectionRepository =
     BaseRepository<LocalDatabaseVendorConnection> &
     BaseSearchableRepository<LocalDatabaseVendorConnection>;
-
-export default BaseVendorConnectionRepository;

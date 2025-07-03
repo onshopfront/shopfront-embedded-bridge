@@ -46,8 +46,6 @@ export class SaleProduct {
     /**
      * Hydrate a sale product from the SaleState.
      * @internal
-     * @param product
-     * @param indexAddress
      */
     public static HydrateFromState(product: ShopfrontSaleProduct, indexAddress: Array<number>): SaleProduct {
         const hydrated = new SaleProduct(product.uuid, product.quantity, product.prices.price, indexAddress);
@@ -59,7 +57,6 @@ export class SaleProduct {
 
     /**
      * Append a product to this product's list of contained products.
-     * @param product
      */
     protected appendProduct(product: SaleProduct): void {
         this.contains.push(product);
@@ -70,8 +67,6 @@ export class SaleProduct {
      * This method is for hydration of the product from Shopfront,
      * it's highly recommend that you DO NOT use this method.
      * @internal
-     * @param data
-     * @param indexAddress
      */
     public setInternal(data: ShopfrontSaleProduct, indexAddress: Array<number>): void {
         this.name          = data.name;
@@ -213,8 +208,6 @@ export class SaleProduct {
 
     /**
      * Set the metaData for a product
-     * @param key
-     * @param value
      */
     public setMetaData(key: string, value: unknown): void {
         this.metaData[key] = value;

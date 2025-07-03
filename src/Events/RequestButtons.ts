@@ -17,14 +17,12 @@ export class RequestButtons extends BaseEvent<
     string,
     unknown
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_BUTTONS"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: RequestButtonsData): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
         let result = await this.callback(data.location, data.context);
@@ -44,9 +42,6 @@ export class RequestButtons extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param buttons
-     * @param id
      */
     public static async respond(bridge: Bridge, buttons: Array<Button>, id: string): Promise<void> {
         const response = [];

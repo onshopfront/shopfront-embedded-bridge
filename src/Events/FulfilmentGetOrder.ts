@@ -9,14 +9,12 @@ export class FulfilmentGetOrder extends BaseEvent<
     MaybePromise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>,
     MaybePromise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["FULFILMENT_GET_ORDER"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: string): Promise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]> {
         return this.callback(data, undefined);
@@ -24,9 +22,6 @@ export class FulfilmentGetOrder extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param order
-     * @param id
      */
     public static async respond(bridge: Bridge, order: OrderDetails, id: string): Promise<void> {
         bridge.sendMessage(ToShopfront.FULFILMENT_GET_ORDER, order, id);

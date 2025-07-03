@@ -14,7 +14,6 @@ export class RequestSellScreenOptions extends BaseEvent<
     MaybePromise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>,
     FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_SELL_SCREEN_OPTIONS"]) {
         super(callback);
     }
@@ -34,7 +33,6 @@ export class RequestSellScreenOptions extends BaseEvent<
 
     /**
      * Validates the URL by ensuring it follows the HTTPS protocol
-     * @param url
      */
     public static validateURL(url: string): void {
         const urlObj = new URL(url);
@@ -46,7 +44,6 @@ export class RequestSellScreenOptions extends BaseEvent<
 
     /**
      * @inheritDoc
-     * @param _
      */
     public async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]> {
         let result = await this.callback(undefined, undefined);
@@ -70,9 +67,6 @@ export class RequestSellScreenOptions extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param options
-     * @param id
      */
     public static async respond(bridge: Bridge, options: Array<SellScreenOption>, id: string): Promise<void> {
         bridge.sendMessage(ToShopfront.RESPONSE_SELL_SCREEN_OPTIONS, options, id);

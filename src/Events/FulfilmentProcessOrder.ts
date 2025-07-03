@@ -14,14 +14,12 @@ export class FulfilmentProcessOrder extends BaseEvent<
     MaybePromise<FromShopfrontReturns["FULFILMENT_PROCESS_ORDER"]>,
     FulfilmentProcessEvent
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["FULFILMENT_PROCESS_ORDER"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(
         data: FulfilmentProcessOrderData

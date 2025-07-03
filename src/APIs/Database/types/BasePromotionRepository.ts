@@ -59,39 +59,31 @@ export interface LocalDatabasePromotion {
     activated_by?: null | string;
 }
 
-interface BasePromotionRepository extends BaseRepository<
+export interface BasePromotionRepository extends BaseRepository<
     LocalDatabasePromotion
 >, BaseSearchableRepository<LocalDatabasePromotion> {
     /**
      * Update a promotion's data
-     * @param id
-     * @param update
      */
     update(id: string, update: Partial<LocalDatabasePromotion>): Promise<void>;
 
     /**
      * Retrieve all promotions that contain the specified product
-     * @param product
      */
     getPromotionsForProduct(product: string): Promise<Array<string>>;
 
     /**
      * Retrieve all promotions with the specified category ID
-     * @param id
      */
     getByCategory(id: string): Promise<Array<LocalDatabasePromotion>>;
 
     /**
      * Retrieve all promotions that pass the specified filter
-     * @param filter
      */
     filter(filter: (promotion: LocalDatabasePromotion) => boolean): Promise<Array<LocalDatabasePromotion>>;
 
     /**
      * Retrieve all promotions with the specified IDs
-     * @param ids
      */
     getBulk(ids: Array<string>): Promise<Array<LocalDatabasePromotion>>;
 }
-
-export default BasePromotionRepository;

@@ -2,10 +2,10 @@ export type ShopfrontSalePaymentStatus = "completed" | "cancelled" | "failed";
 export type ShopfrontSaleProductType = "Normal" | "Basket" | "Package" | "Component" | "Voucher";
 
 export type ShopfrontSaleProductPromotions = Record<string, {
-        name: string;
-        active: boolean;
-        quantity: number;
-    }>;
+    name: string;
+    active: boolean;
+    quantity: number;
+}>;
 
 export interface ShopfrontSaleProduct {
     uuid: string;

@@ -8,14 +8,12 @@ interface ReadyData {
 }
 
 export class Ready extends BaseEvent<RegisterChangedEvent> {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["READY"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: ReadyData): Promise<FromShopfrontReturns["READY"]> {
         return this.callback({

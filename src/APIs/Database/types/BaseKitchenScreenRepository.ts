@@ -16,6 +16,4 @@ export interface LocalKitchenScreen {
     rules: KitchenDisplayFilterRules;
 }
 
-interface BaseKitchenScreenRepository extends BaseRepository<LocalKitchenScreen> {}
-
-export default BaseKitchenScreenRepository;
+export interface BaseKitchenScreenRepository extends BaseRepository<LocalKitchenScreen> {}

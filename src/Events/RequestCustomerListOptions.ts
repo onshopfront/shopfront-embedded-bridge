@@ -15,14 +15,12 @@ export class RequestCustomerListOptions extends BaseEvent<
     FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"],
     undefined
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_CUSTOMER_LIST_OPTIONS"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param _
      */
     public async emit(_: Record<string, unknown>): Promise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]> {
         let result = await this.callback(undefined, undefined);
@@ -42,9 +40,6 @@ export class RequestCustomerListOptions extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param options
-     * @param id
      */
     public static async respond(
         bridge: Bridge,

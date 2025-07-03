@@ -127,7 +127,7 @@ export type ProductClassificationUnion = "category" |
     "supplier" |
     "supplier_code";
 
-interface BaseProductRepository extends BaseRepository<
+export interface BaseProductRepository extends BaseRepository<
     LocalDatabaseProduct
 >, BaseSearchableRepository<
     ProductSearchResultType,
@@ -135,8 +135,6 @@ interface BaseProductRepository extends BaseRepository<
 > {
     /**
      * Retrieve all products with the specified classification type and classification ID
-     * @param classificationType
-     * @param uuid
      */
     getFromClassification(
         classificationType: ProductClassificationUnion,
@@ -145,38 +143,31 @@ interface BaseProductRepository extends BaseRepository<
 
     /**
      * Retrieve all products with the specified status
-     * @param status
      */
     getByStatus(status: ProductStatusUnion | Array<ProductStatusUnion>): Promise<Array<LocalDatabaseProduct>>;
 
     /**
      * Retrieve all products with the specified type
-     * @param type
      */
     getByType(type: ProductTypeUnion | Array<ProductTypeUnion>): Promise<Array<LocalDatabaseProduct>>;
 
     /**
      * Retrieve all products with the specified IDs
-     * @param ids
      */
     getBulk(ids: Array<string>): Promise<Array<LocalDatabaseProduct>>;
 
     /**
      * Retrieve all products with the specified MDB ID
-     * @param mdbId
      */
     getByMDBId(mdbId: number): Promise<Array<LocalDatabaseProduct>>;
 
     /**
      * Retrieve all products with the specified supplier codes
-     * @param supplierCodes
      */
     getBySupplierCodes(supplierCodes: Array<string>): Promise<Array<LocalDatabaseProduct>>;
 
     /**
      * Update a product's data
-     * @param id
-     * @param changes
      */
     update(id: string, changes: Partial<LocalDatabaseProduct>): Promise<void>;
 
@@ -185,5 +176,3 @@ interface BaseProductRepository extends BaseRepository<
      */
     clearCache(): void;
 }
-
-export default BaseProductRepository;

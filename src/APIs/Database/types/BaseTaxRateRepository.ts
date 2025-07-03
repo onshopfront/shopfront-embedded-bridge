@@ -8,6 +8,5 @@ export interface LocalDatabaseTaxRate {
     uuid: string;
 }
 
-type BaseTaxRateRepository = BaseRepository<LocalDatabaseTaxRate> & BaseSearchableRepository<LocalDatabaseTaxRate>;
-
-export default BaseTaxRateRepository;
+export type BaseTaxRateRepository = BaseRepository<LocalDatabaseTaxRate> &
+    BaseSearchableRepository<LocalDatabaseTaxRate>;

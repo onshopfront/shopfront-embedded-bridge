@@ -37,12 +37,9 @@ export interface LocalKitchenOrder {
     order: KitchenOrder;
 }
 
-interface BaseKitchenOrderRepository extends BaseRepository<LocalKitchenOrder> {
+export interface BaseKitchenOrderRepository extends BaseRepository<LocalKitchenOrder> {
     /**
      * Delete any orders below the specified version
-     * @param version
      */
     removeVersionsBefore(version: number): Promise<void>;
 }
-
-export default BaseKitchenOrderRepository;

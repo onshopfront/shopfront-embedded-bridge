@@ -11,13 +11,9 @@ export interface LocalDatabaseLoyalty {
     uuid: string; // The ID of the classification
 }
 
-interface BaseLoyaltyRepository extends BaseRepository<LocalDatabaseLoyalty, number> {
+export interface BaseLoyaltyRepository extends BaseRepository<LocalDatabaseLoyalty, number> {
     /**
      * Retrieve all loyalty rates with the specified ID and type
-     * @param id
-     * @param type
      */
     getByType(id: string, type: LoyaltyUnion): Promise<Array<LocalDatabaseLoyalty>>;
 }
-
-export default BaseLoyaltyRepository;

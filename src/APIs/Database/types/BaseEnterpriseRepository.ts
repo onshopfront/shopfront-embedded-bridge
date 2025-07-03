@@ -7,8 +7,6 @@ export interface LocalDatabaseEnterprise {
     name: string;
 }
 
-type BaseEnterpriseRepository =
+export type BaseEnterpriseRepository =
     BaseRepository<LocalDatabaseEnterprise> &
     BaseSearchableRepository<LocalDatabaseEnterprise>;
-
-export default BaseEnterpriseRepository;

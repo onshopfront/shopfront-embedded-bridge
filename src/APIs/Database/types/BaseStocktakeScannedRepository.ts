@@ -14,22 +14,17 @@ export interface LocalDatabaseStocktakeScanned {
     client_id: string;
 }
 
-interface BaseStocktakeScannedRepository extends BaseRepository<
+export interface BaseStocktakeScannedRepository extends BaseRepository<
     LocalDatabaseStocktakeScanned,
     number
 > {
     /**
      * Retrieve all scanned stocktakes by stocktake ID
-     * @param stocktake
      */
     stocktake(stocktake: string): Promise<Array<LocalDatabaseStocktakeScanned>>;
 
     /**
      * Update a scanned stocktake's data
-     * @param id
-     * @param changes
      */
     update(id: number, changes: Partial<LocalDatabaseStocktakeScanned>): Promise<void>;
 }
-
-export default BaseStocktakeScannedRepository;

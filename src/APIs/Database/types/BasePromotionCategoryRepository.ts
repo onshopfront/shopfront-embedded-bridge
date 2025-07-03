@@ -9,8 +9,6 @@ export interface LocalDatabasePromotionCategory {
     include_in_integrations: boolean;
 }
 
-type BasePromotionCategoryRepository =
+export type BasePromotionCategoryRepository =
     BaseRepository<LocalDatabasePromotionCategory> &
     BaseSearchableRepository<LocalDatabasePromotionCategory>;
-
-export default BasePromotionCategoryRepository;

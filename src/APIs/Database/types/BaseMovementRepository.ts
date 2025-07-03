@@ -15,6 +15,4 @@ export interface LocalDatabaseMovement {
     uuid: string;
 }
 
-type BaseMovementRepository = BaseRepository<LocalDatabaseMovement>;
-
-export default BaseMovementRepository;
+export type BaseMovementRepository = BaseRepository<LocalDatabaseMovement>;

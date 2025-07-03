@@ -8,14 +8,12 @@ export class RequestSettings extends BaseEvent<
     MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
     FromShopfrontReturns["REQUEST_SETTINGS"]
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_SETTINGS"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param _
      */
     public async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SETTINGS"]> {
         const result = await this.callback(undefined, undefined);
@@ -29,9 +27,6 @@ export class RequestSettings extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param settings
-     * @param id
      */
     public static async respond(
         bridge: Bridge,

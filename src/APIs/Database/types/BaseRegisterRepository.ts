@@ -51,13 +51,9 @@ export interface LocalDatabaseRegister {
     uuid: string;
 }
 
-interface BaseRegisterRepository extends BaseRepository<LocalDatabaseRegister> {
+export interface BaseRegisterRepository extends BaseRepository<LocalDatabaseRegister> {
     /**
      * Update a register's data
-     * @param id
-     * @param changes
      */
     update(id: string, changes: Partial<LocalDatabaseRegister>): Promise<void>;
 }
-
-export default BaseRegisterRepository;

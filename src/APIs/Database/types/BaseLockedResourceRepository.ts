@@ -6,14 +6,11 @@ export interface LocalDatabaseLockedResource {
     resource: string;
 }
 
-interface BaseLockedResourceRepository extends BaseRepository<
+export interface BaseLockedResourceRepository extends BaseRepository<
     LocalDatabaseLockedResource
 > {
     /**
      * Retrieve all locked resources with the specified resource
-     * @param resource
      */
     getByResource(resource: string): Promise<LocalDatabaseLockedResource>;
 }
-
-export default BaseLockedResourceRepository;

@@ -131,7 +131,7 @@ export interface LocalDatabaseSale {
     metaData: Record<string, unknown>;
 }
 
-interface BaseSalesRepository extends BaseRepository<LocalDatabaseSale> {
+export interface BaseSalesRepository extends BaseRepository<LocalDatabaseSale> {
     /**
      * Retrieve all parked sales
      */
@@ -139,21 +139,16 @@ interface BaseSalesRepository extends BaseRepository<LocalDatabaseSale> {
 
     /**
      * Retrieve all sales with the specified client ID
-     * @param id
      */
     getByClientId(id: string): Promise<Array<LocalDatabaseSale>>;
 
     /**
      * Retrieve all sales with the specified invoice ID
-     * @param invoiceId
      */
     search(invoiceId: string): Promise<Array<LocalDatabaseSale>>;
 
     /**
      * Retrieve all sales that pass the specified filter
-     * @param callback
      */
     filter(callback: (sale: LocalDatabaseSale) => boolean): Promise<Array<LocalDatabaseSale>>;
 }
-
-export default BaseSalesRepository;

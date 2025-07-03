@@ -57,7 +57,6 @@ export class BaseAction<T> extends EventEmitter {
 
     /**
      * Recursively serializes the action properties
-     * @param properties
      */
     protected serializeProperties(properties: Array<unknown>): Array<unknown> {
         const results: Array<unknown> = [];
@@ -83,7 +82,6 @@ export class BaseAction<T> extends EventEmitter {
 
     /**
      * Deserializes the action data
-     * @param serialized
      */
     public static deserialize<T extends Serializable<T>>(serialized: Serialized<T>): T {
         return new BaseAction.serializedRegistry[serialized.type](serialized) as unknown as T;
@@ -91,8 +89,6 @@ export class BaseAction<T> extends EventEmitter {
 
     /**
      * Registers an action event listener
-     * @param event
-     * @param callback
      */
     public addEventListener(event: string, callback: (...args: Array<unknown>) => void): void {
         super.addEventListener(event, callback);
@@ -110,8 +106,6 @@ export class BaseAction<T> extends EventEmitter {
 
     /**
      * Unregisters an action event listener
-     * @param event
-     * @param callback
      */
     public removeEventListener(event: string, callback: (...args: Array<unknown>) => void): void {
         super.removeEventListener(event, callback);
@@ -140,8 +134,6 @@ export class BaseAction<T> extends EventEmitter {
 
     /**
      * Fires the callback for the registered action event
-     * @param id
-     * @param data
      */
     public handleRegistrarEvent(id: string, data: unknown): void {
         for(let i = 0, l = this.events.length; i < l; i++) {

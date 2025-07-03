@@ -2,7 +2,6 @@ import { FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEven
 import { BaseEvent } from "./BaseEvent.js";
 
 export class Callback extends BaseEvent {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["CALLBACK"]) {
         super(callback);
     }

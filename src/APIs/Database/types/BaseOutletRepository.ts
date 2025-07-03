@@ -13,13 +13,9 @@ export interface LocalDatabaseOutlet {
     uuid: string;
 }
 
-interface BaseOutletRepository extends BaseRepository<LocalDatabaseOutlet> {
+export interface BaseOutletRepository extends BaseRepository<LocalDatabaseOutlet> {
     /**
      * Update the outlet data
-     * @param id
-     * @param changes
      */
     update(id: string, changes: Partial<LocalDatabaseOutlet>): Promise<void>;
 }
-
-export default BaseOutletRepository;

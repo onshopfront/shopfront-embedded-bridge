@@ -30,7 +30,6 @@ export class SalePayment {
     /**
      * Hydrate a sale payment from the SaleState.
      * @internal
-     * @param payment
      */
     public static HydrateFromState(payment: ShopfrontSalePayment): SalePayment {
         let status = SalePaymentStatus.APPROVED;
@@ -56,7 +55,6 @@ export class SalePayment {
      * This method is for hydration of the payment from Shopfront,
      * it's highly recommend that you DO NOT use this method.
      * @internal
-     * @param data
      */
     public setInternal(data: ShopfrontSalePayment): void {
         this.type     = data.type;

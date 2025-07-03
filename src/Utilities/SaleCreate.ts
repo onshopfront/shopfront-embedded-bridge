@@ -1,4 +1,3 @@
-
 import { BaseSaleData } from "../APIs/Sale/BaseSale.js";
 import { Sale, SaleProduct, ShopfrontSalePaymentStatus } from "../APIs/Sale/index.js";
 

@@ -7,6 +7,4 @@ export interface LocalDatabaseBarcodeTemplate {
     template: string;
 }
 
-type BaseBarcodeTemplateRepository = BaseRepository<LocalDatabaseBarcodeTemplate, number>;
-
-export default BaseBarcodeTemplateRepository;
+export type BaseBarcodeTemplateRepository = BaseRepository<LocalDatabaseBarcodeTemplate, number>;

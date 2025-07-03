@@ -18,14 +18,12 @@ export class GiftCardCodeCheck extends BaseEvent<
     FromShopfrontReturns["GIFT_CARD_CODE_CHECK"],
     GiftCardCodeCheckEvent
 > {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["GIFT_CARD_CODE_CHECK"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(
         data: GiftCardCodeCheckData
@@ -41,9 +39,6 @@ export class GiftCardCodeCheck extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param data
-     * @param id
      */
     public static async respond(
         bridge: Bridge,

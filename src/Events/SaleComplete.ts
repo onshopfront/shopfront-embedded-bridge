@@ -37,14 +37,14 @@ interface CompletedSaleProduct {
     special: boolean;
     edited: boolean;
     promotions: Record<string, {
-            name: string;
-            active: boolean;
-            quantity: number;
-        }>;
+        name: string;
+        active: boolean;
+        quantity: number;
+    }>;
     rebates: Record<string, {
-            amount: number;
-            quantity: number;
-        }>;
+        amount: number;
+        quantity: number;
+    }>;
     giftCard: {
         code: string;
         amount: number;
@@ -112,16 +112,14 @@ export interface CompletedSale {
 }
 
 export class SaleComplete extends BaseEvent {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["SALE_COMPLETE"]) {
         super(callback);
     }
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: CompletedSale): Promise<FromShopfrontReturns["SALE_COMPLETE"]> {
-        this.callback(data, undefined);
+        return this.callback(data, undefined);
     }
 }

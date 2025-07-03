@@ -9,6 +9,4 @@ export interface LocalDatabaseCustomerDisplay {
     uuid: string;
 }
 
-type BaseCustomerDisplayRepository = BaseRepository<LocalDatabaseCustomerDisplay>;
-
-export default BaseCustomerDisplayRepository;
+export type BaseCustomerDisplayRepository = BaseRepository<LocalDatabaseCustomerDisplay>;

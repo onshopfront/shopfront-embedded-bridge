@@ -23,8 +23,6 @@ export interface LocalDatabaseCustomerGroup {
     uuid: string;
 }
 
-type BaseCustomerGroupRepository =
+export type BaseCustomerGroupRepository =
     BaseRepository<LocalDatabaseCustomerGroup> &
     BaseSearchableRepository<LocalDatabaseCustomerGroup>;
-
-export default BaseCustomerGroupRepository;

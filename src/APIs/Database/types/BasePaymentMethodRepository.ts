@@ -33,12 +33,9 @@ export interface LocalDatabasePaymentMethod {
     uuid: string;
 }
 
-interface BasePaymentMethodRepository extends BaseRepository<LocalDatabasePaymentMethod> {
+export interface BasePaymentMethodRepository extends BaseRepository<LocalDatabasePaymentMethod> {
     /**
      * Retrieve all payment methods with the specified type
-     * @param type
      */
     getByType(type: PaymentMethodTypeUnion | Array<PaymentMethodTypeUnion>): Promise<Array<LocalDatabasePaymentMethod>>;
 }
-
-export default BasePaymentMethodRepository;

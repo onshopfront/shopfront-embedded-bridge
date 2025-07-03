@@ -19,8 +19,6 @@ export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
 
     /**
      * Creates and returns a new internal message source
-     * @param method
-     * @param url
      */
     protected createReference(
         method: keyof FromShopfront | "EXTERNAL_APPLICATION",
@@ -35,10 +33,9 @@ export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
 
     /**
      * @inheritDoc
-     * @param data
      */
     public async emit(data: InternalPageMessageEvent): Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]> {
-        this.callback({
+        return this.callback({
             method   : data.method,
             url      : data.url,
             message  : data.message,

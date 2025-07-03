@@ -1,5 +1,7 @@
 import { Bridge } from "../Bridge.js";
-import { _Infer } from "../Utilities/MiscTypes.js";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type _Infer = any;
 
 export abstract class BaseEvent<
     TData = _Infer,
@@ -16,8 +18,6 @@ export abstract class BaseEvent<
 
     /**
      * Invokes the registered callback
-     * @param data
-     * @param bridge
      */
     public abstract emit(data: TData, bridge?: Bridge): Promise<TEmitReturn>;
 }

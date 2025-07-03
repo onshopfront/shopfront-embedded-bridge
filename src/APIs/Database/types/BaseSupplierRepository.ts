@@ -35,8 +35,6 @@ export interface LocalDatabaseAdditionalContact {
     contact: LocalDatabaseContact;
 }
 
-type BaseSupplierRepository =
+export type BaseSupplierRepository =
     BaseRepository<LocalDatabaseSupplier> &
     BaseSearchableRepository<LocalDatabaseSupplier>;
-
-export default BaseSupplierRepository;

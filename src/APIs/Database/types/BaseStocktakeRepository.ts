@@ -7,6 +7,4 @@ export interface LocalDatabaseStocktake {
     uuid: string;
 }
 
-type BaseStocktakeRepository = BaseRepository<LocalDatabaseStocktake>;
-
-export default BaseStocktakeRepository;
+export type BaseStocktakeRepository = BaseRepository<LocalDatabaseStocktake>;

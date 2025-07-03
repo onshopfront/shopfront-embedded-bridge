@@ -5,7 +5,6 @@ import { MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class RequestSaleKeys extends BaseEvent<undefined, MaybePromise<Array<SaleKey>>, Array<SaleKey>> {
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(callback: FromShopfrontCallbacks["REQUEST_SALE_KEYS"]) {
         super(callback);
     }
@@ -31,9 +30,6 @@ export class RequestSaleKeys extends BaseEvent<undefined, MaybePromise<Array<Sal
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param keys
-     * @param id
      */
     public static async respond(bridge: Bridge, keys: Array<SaleKey>, id: string): Promise<void> {
         const response = [];

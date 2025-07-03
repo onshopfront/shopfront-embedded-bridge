@@ -11,8 +11,6 @@ export interface LocalDatabaseCategory extends LocalDatabaseClassification {
     metcash_msc: string | undefined;
 }
 
-type BaseClassificationRepository =
+export type BaseClassificationRepository =
     BaseRepository<LocalDatabaseClassification> &
     BaseSearchableRepository<LocalDatabaseClassification>;
-
-export default BaseClassificationRepository;

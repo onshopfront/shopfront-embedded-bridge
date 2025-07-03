@@ -81,6 +81,4 @@ export interface LocalDatabaseSaleKeys {
     uuid: string;
 }
 
-type BaseSalesKeyRepository = BaseRepository<LocalDatabaseSaleKeys>;
-
-export default BaseSalesKeyRepository;
+export type BaseSalesKeyRepository = BaseRepository<LocalDatabaseSaleKeys>;

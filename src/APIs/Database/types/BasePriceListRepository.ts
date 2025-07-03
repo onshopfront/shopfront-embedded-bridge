@@ -58,8 +58,6 @@ export interface LocalDatabasePriceList {
     uuid: string;
 }
 
-type BasePriceListRepository =
+export type BasePriceListRepository =
     BaseRepository<LocalDatabasePriceList> &
     BaseSearchableRepository<LocalDatabasePriceList>;
-
-export default BasePriceListRepository;

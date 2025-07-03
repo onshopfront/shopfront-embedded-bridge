@@ -9,14 +9,12 @@ export class Sale extends BaseSale {
     protected created = false;
     protected creating = false;
 
-    // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(data: SaleData) {
         super(data);
     }
 
     /**
      * Add a customer to the sale
-     * @param customer
      */
     public async addCustomer(customer: SaleCustomer): Promise<void> {
         this.customer = customer;
@@ -24,7 +22,6 @@ export class Sale extends BaseSale {
 
     /**
      * Add a payment to the sale
-     * @param payment
      */
     public async addPayment(payment: SalePayment): Promise<void> {
         if(this.payments.find(p => p.internalId === payment.internalId)) {
@@ -36,7 +33,6 @@ export class Sale extends BaseSale {
 
     /**
      * Add a product to the sale
-     * @param product
      */
     public async addProduct(product: SaleProduct): Promise<void> {
         if(this.products.find(p => p.internalId === product.internalId)) {
@@ -55,7 +51,6 @@ export class Sale extends BaseSale {
 
     /**
      * Remove a product from the sale
-     * @param product
      */
     public async removeProduct(product: SaleProduct): Promise<void> {
         const index = this.products.findIndex(p => p.internalId === product.internalId);
@@ -69,7 +64,6 @@ export class Sale extends BaseSale {
 
     /**
      * Remove a payment from the sale
-     * @param payment
      */
     public async removePayment(payment: SalePayment): Promise<void> {
         const index = this.payments.findIndex(p => p.internalId === payment.internalId);
@@ -83,8 +77,6 @@ export class Sale extends BaseSale {
 
     /**
      * Add / append an external note to the sale
-     * @param note
-     * @param append
      */
     public async setExternalNote(note: string, append?: boolean): Promise<void> {
         if(append) {
@@ -96,8 +88,6 @@ export class Sale extends BaseSale {
 
     /**
      * Add / append an internal note to the sale
-     * @param note
-     * @param append
      */
     public async setInternalNote(note: string, append?: boolean): Promise<void> {
         if(append) {
@@ -109,7 +99,6 @@ export class Sale extends BaseSale {
 
     /**
      * Set the sale's meta-data
-     * @param metaData
      */
     public async setMetaData(metaData: Record<string, unknown>): Promise<void> {
         this.sale.metaData = metaData;
@@ -117,7 +106,6 @@ export class Sale extends BaseSale {
 
     /**
      * Set the sale's order reference
-     * @param reference
      */
     public async setOrderReference(reference: string): Promise<void> {
         this.sale.orderReference = reference;
@@ -125,7 +113,6 @@ export class Sale extends BaseSale {
 
     /**
      * Update a product in the sale
-     * @param product
      */
     public async updateProduct(product: SaleProduct): Promise<void> {
         const index = this.products.findIndex(p => p.internalId === product.internalId);
@@ -167,7 +154,6 @@ export class Sale extends BaseSale {
 
     /**
      * Converts the sale state to the sale data
-     * @param saleState
      */
     public static buildSaleData(saleState: ShopfrontSaleState): SaleData {
         return {

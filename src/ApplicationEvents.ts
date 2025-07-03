@@ -88,7 +88,7 @@ export enum ToShopfront {
 export type SoundEvents = ToShopfront.AUDIO_REQUEST_PERMISSION | ToShopfront.AUDIO_PRELOAD | ToShopfront.AUDIO_PLAY;
 
 export interface FromShopfrontReturns {
-    READY: void;
+    READY: unknown;
     REQUEST_SETTINGS: {
         logo: null | string;
         description: null | string;
@@ -105,13 +105,13 @@ export interface FromShopfrontReturns {
         footer: Record<string, string>;
     };
     REQUEST_SELL_SCREEN_OPTIONS: Array<SellScreenOption>;
-    CALLBACK: void;
+    CALLBACK: unknown;
     RESPONSE_CURRENT_SALE: {
         requestId: string;
         saleState: ShopfrontSaleState;
     };
-    INTERNAL_PAGE_MESSAGE: void;
-    REGISTER_CHANGED: void;
+    INTERNAL_PAGE_MESSAGE: unknown;
+    REGISTER_CHANGED: unknown;
     RESPONSE_LOCATION: {
         requestId: string;
         register: string | null;
@@ -126,17 +126,17 @@ export interface FromShopfrontReturns {
     FORMAT_INTEGRATED_PRODUCT: FormatIntegratedProductEvent;
     REQUEST_CUSTOMER_LIST_OPTIONS: Array<SellScreenCustomerListOption>;
     REQUEST_SALE_KEYS: Array<SaleKey>;
-    SALE_COMPLETE: void;
+    SALE_COMPLETE: unknown;
     UI_PIPELINE: Array<UIPipelineResponse>;
     PAYMENT_METHODS_ENABLED: Array<SellScreenPaymentMethod>;
-    AUDIO_READY: void;
-    AUDIO_PERMISSION_CHANGE: void;
+    AUDIO_READY: unknown;
+    AUDIO_PERMISSION_CHANGE: unknown;
     FULFILMENT_GET_ORDER: OrderDetails;
-    FULFILMENT_VOID_ORDER: void;
-    FULFILMENT_PROCESS_ORDER: void;
-    FULFILMENT_ORDER_APPROVAL: void;
-    FULFILMENT_ORDER_COLLECTED: void;
-    FULFILMENT_ORDER_COMPLETED: void;
+    FULFILMENT_VOID_ORDER: unknown;
+    FULFILMENT_PROCESS_ORDER: unknown;
+    FULFILMENT_ORDER_APPROVAL: unknown;
+    FULFILMENT_ORDER_COLLECTED: unknown;
+    FULFILMENT_ORDER_COMPLETED: unknown;
     RESPONSE_CREATE_SALE: {
         requestId: string;
         success: boolean;

@@ -43,7 +43,6 @@ export abstract class BaseSale {
 
     /**
      * Updates the sale data to be inline with the new sale
-     * @param sale
      */
     protected hydrate(sale: BaseSale): void {
         this.sale = sale.sale;
