@@ -18,10 +18,8 @@
     ],
     "type": "module",
     "private": false,
-    "dependencies": {
-        "@onshopfront/core": "^0.1.89"
-    },
     "devDependencies": {
+        "@onshopfront/core": "^0.1.89",
         "ts-jest-resolver": "^2.0.1",
         "typescript": "^5.5.4",
         "typescript-eslint": "^8.34.0"

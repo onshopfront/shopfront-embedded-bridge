@@ -17,6 +17,14 @@ import {
     SoundEvents,
     ToShopfront,
 } from "./ApplicationEvents.js";
+import {
+    BaseApplication,
+    ShopfrontEmbeddedTokenError,
+    ShopfrontEmbeddedVerificationToken,
+    ShopfrontResponse,
+    ShopfrontTokenDecodingError,
+    ShopfrontTokenRequestError,
+} from "./BaseApplication.js";
 import { ApplicationEventListener, Bridge } from "./Bridge.js";
 import { Serializable } from "./Common/Serializable.js";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
@@ -43,203 +51,13 @@ import { RequestSettings } from "./Events/RequestSettings.js";
 import { RequestTableColumns } from "./Events/RequestTableColumns.js";
 import { SaleComplete } from "./Events/SaleComplete.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
-import { MockedCurrentSale } from "./Mocks/APIs/Sale/CurrentSale.js";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
 import { MaybePromise } from "./Utilities/MiscTypes.js";
 import { buildSaleData } from "./Utilities/SaleCreate.js";
 
-export interface ShopfrontEmbeddedVerificationToken {
-    auth: string;
-    id: string;
-    app: string;
-    user: string;
-    url: {
-        raw: string;
-        loaded: string;
-    };
-}
-
-export interface ShopfrontEmbeddedTokenError {
-    error: boolean;
-    type: string;
-}
-
-export class ShopfrontTokenDecodingError extends Error {}
-
-export class ShopfrontTokenRequestError extends Error {}
-
-export interface ApplicationInterface {
-    /**
-     * Destroy the bridge instance
-     */
-    destroy(): void;
-    /**
-     * Register a listener for a Shopfront event
-     */
-    addEventListener<E extends keyof FromShopfrontCallbacks>(
-        event: E,
-        callback: FromShopfrontCallbacks[E]
-    ): void;
-    /**
-     * Register a listener for a Shopfront event
-     */
-    addEventListener<D>(
-        event: DirectShopfrontEvent,
-        callback: (event: D) => MaybePromise<void>
-    ): void;
-    /**
-     * Removed a registered listener for a Shopfront event
-     */
-    removeEventListener<E extends keyof FromShopfrontCallbacks>(
-        event: E,
-        callback: FromShopfrontCallbacks[E]
-    ): void;
-    /**
-     * Removed a registered listener for a Shopfront event
-     */
-    removeEventListener<D>(
-        event: DirectShopfrontEvent,
-        callback: (event: D) => MaybePromise<void>
-    ): void;
-    /**
-     * Removed a registered listener for a Shopfront event
-     */
-    removeEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
-        callback: (...args: Array<unknown>) => MaybePromise<void>
-    ): void;
-    /**
-     * Send data to Shopfront
-     */
-    send(item: BaseEmitableEvent<unknown> | Serializable<unknown>): void;
-    /**
-     * Requests permission from the user to download the specified file
-     */
-    download(file: string): void;
-    /**
-     * Redirects the user to the specified location.
-     * If `externalRedirect` is `true`, the user is prompted to confirm the redirect.
-     */
-    redirect(toLocation: string, externalRedirect: boolean): void;
-    /**
-     * Shows a loading screen in Shopfront
-     */
-    load(): () => void;
-    /**
-     * Retrieves the cached authentication key
-     */
-    getAuthenticationKey(): string;
-    /**
-     * Get the current sale on the sell screen, if the current device is not a register
-     * then this will return false.
-     */
-    getCurrentSale(): Promise<(CurrentSale | MockedCurrentSale) | false>;
-    /**
-     * Send the sale to be created on shopfront.
-     */
-    createSale(sale: Sale): Promise<{
-        success: boolean;
-        message?: string;
-    }>;
-    /**
-     * Retrieves the current location data from Shopfront
-     */
-    getLocation(): Promise<{
-        register: string | null;
-        outlet: string | null;
-        user: string | null;
-    }>;
-    /**
-     * Prints the provided content as a receipt
-     */
-    printReceipt(content: string): void;
-    /**
-     * Changes the display mode of the sell screen's `action` container
-     */
-    changeSellScreenActionMode(mode: SellScreenActionMode): void;
-    /**
-     * Changes the display mode of the sell screen's 'summary' container
-     */
-    changeSellScreenSummaryMode(mode: SellScreenSummaryMode): void;
-    /**
-     * Requests permission from the user to be able to play audio
-     */
-    requestAudioPermission(): Promise<{ success: boolean; message?: string; }>;
-    /**
-     * Requests Shopfront to preload audio so that it can be pre-cached before being played
-     */
-    audioPreload(url: string): Promise<{ success: boolean; message?: string; }>;
-    /**
-     * Attempts to play the provided audio in Shopfront
-     */
-    audioPlay(url: string): Promise<{ success: boolean; message?: string; }>;
-    /**
-     * Retrieve the value of the specified option from Shopfront
-     */
-    getOption<TValueType>(option: string, defaultValue: TValueType): Promise<TValueType>;
-    /**
-     * Retrieves an embedded token from Shopfront that can be used to validate server requests
-     */
-    getToken(returnTokenObject: true): Promise<ShopfrontEmbeddedVerificationToken>;
-    /**
-     * Retrieves an embedded token from Shopfront that can be used to validate server requests
-     */
-    getToken(returnTokenObject?: false): Promise<string>;
-    /**
-     * Retrieves an embedded token from Shopfront that can be used to validate server requests
-     */
-    getToken(returnTokenObject?: boolean): Promise<string | ShopfrontEmbeddedVerificationToken>;
-}
-
-// noinspection JSUnusedGlobalSymbols
-export class Application implements ApplicationInterface {
-    protected bridge: Bridge;
-    protected isReady: boolean;
-    protected key: string;
-    protected register: string | null;
-    protected outlet: string | null;
-    protected user: string | null;
-    protected signingKey: CryptoKeyPair | undefined;
-    protected listeners: {
-        [key in ListenableFromShopfrontEvents]: Map<
-            (...args: Array<unknown>) => void,
-            FromShopfront[key] & BaseEvent
-        >;
-    } = {
-        READY                        : new Map(),
-        REQUEST_SETTINGS             : new Map(),
-        REQUEST_BUTTONS              : new Map(),
-        REQUEST_TABLE_COLUMNS        : new Map(),
-        REQUEST_SELL_SCREEN_OPTIONS  : new Map(),
-        INTERNAL_PAGE_MESSAGE        : new Map(),
-        REGISTER_CHANGED             : new Map(),
-        FORMAT_INTEGRATED_PRODUCT    : new Map(),
-        REQUEST_CUSTOMER_LIST_OPTIONS: new Map(),
-        REQUEST_SALE_KEYS            : new Map(),
-        SALE_COMPLETE                : new Map(),
-        UI_PIPELINE                  : new Map(),
-        PAYMENT_METHODS_ENABLED      : new Map(),
-        AUDIO_PERMISSION_CHANGE      : new Map(),
-        AUDIO_READY                  : new Map(),
-        FULFILMENT_GET_ORDER         : new Map(),
-        FULFILMENT_PROCESS_ORDER     : new Map(),
-        FULFILMENT_VOID_ORDER        : new Map(),
-        FULFILMENT_ORDER_APPROVAL    : new Map(),
-        FULFILMENT_ORDER_COLLECTED   : new Map(),
-        FULFILMENT_ORDER_COMPLETED   : new Map(),
-        GIFT_CARD_CODE_CHECK         : new Map(),
-    };
-    protected directListeners: Partial<Record<DirectShopfrontEvent, Set<DirectShopfrontEventCallback>>> = {};
-    public database: Database;
-
+export class Application extends BaseApplication<Bridge> {
     constructor(bridge: Bridge) {
-        this.bridge   = bridge;
-        this.isReady  = false;
-        this.key      = "";
-        this.register = null;
-        this.outlet   = null;
-        this.user     = null;
-        this.database = new Database(this.bridge);
+        super(bridge, new Database(bridge));
 
         this.bridge.addEventListener(this.handleEvent);
         this.addEventListener("REGISTER_CHANGED", this.handleLocationChanged);
@@ -735,10 +553,10 @@ export class Application implements ApplicationInterface {
         message?: string;
     } {
         return typeof data.requestId === "string" &&
-            typeof data.success === "boolean" && (
-            typeof data.message === "undefined" ||
-                typeof data.message === "string"
-        );
+            typeof data.success === "boolean" &&
+            (
+                typeof data.message === "undefined" || typeof data.message === "string"
+            );
     }
 
     /**
@@ -893,21 +711,20 @@ export class Application implements ApplicationInterface {
         message?: string;
     } {
         return typeof data.requestId === "string" &&
-            typeof data.success === "boolean" && (
-            typeof data.message === "string" ||
+            typeof data.success === "boolean" &&
+            (
+                typeof data.message === "string" ||
                 typeof data.message === "undefined"
-        );
+            );
     }
 
     /**
      * Sends an audio request to Shopfront
      */
-    protected sendAudioRequest(
-        type: SoundEvents, data?: unknown
-    ): Promise<{ success: boolean; message?: string; }> {
+    protected sendAudioRequest(type: SoundEvents, data?: unknown): Promise<ShopfrontResponse> {
         const request = `AudioRequest-${type}-${Date.now().toString()}`;
 
-        const promise = new Promise<{ success: boolean; message?: string; }>(res => {
+        const promise = new Promise<ShopfrontResponse>(res => {
             // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
@@ -947,14 +764,14 @@ export class Application implements ApplicationInterface {
     /**
      * @inheritDoc
      */
-    public requestAudioPermission(): Promise<{ success: boolean; message?: string; }> {
+    public requestAudioPermission(): Promise<ShopfrontResponse> {
         return this.sendAudioRequest(ToShopfront.AUDIO_REQUEST_PERMISSION);
     }
 
     /**
      * @inheritDoc
      */
-    public audioPreload(url: string): Promise<{ success: boolean; message?: string; }> {
+    public audioPreload(url: string): Promise<ShopfrontResponse> {
         return this.sendAudioRequest(
             ToShopfront.AUDIO_PRELOAD,
             {
@@ -966,7 +783,7 @@ export class Application implements ApplicationInterface {
     /**
      * @inheritDoc
      */
-    public audioPlay(url: string): Promise<{ success: boolean; message?: string; }> {
+    public audioPlay(url: string): Promise<ShopfrontResponse> {
         return this.sendAudioRequest(
             ToShopfront.AUDIO_PLAY,
             {
