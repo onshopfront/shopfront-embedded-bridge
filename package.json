@@ -1,6 +1,6 @@
 {
     "name": "@shopfront/bridge",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "main": "./lib/index.js",
     "license": "ISC",
     "description": "The bridge used to embed your application within Shopfront",
