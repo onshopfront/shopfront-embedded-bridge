@@ -47,7 +47,7 @@ export class MockBridge extends BaseBridge {
 
             // We can fire off a READY event straight away
             for(let i = 0, l = listeners.length; i < l; i++) {
-                await listeners[i](type, {
+                listeners[i](type, {
                     key     : "signing-key-uuid",
                     outlet  : "outlet-uuid",
                     register: "register-uuid",
