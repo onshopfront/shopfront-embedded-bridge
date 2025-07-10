@@ -33,7 +33,7 @@ export class MockBridge extends BaseBridge {
     /**
      * @inheritDoc
      */
-    public sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
+    public async sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): Promise<void> {
         if(type === ApplicationEvents.ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
@@ -47,7 +47,7 @@ export class MockBridge extends BaseBridge {
 
             // We can fire off a READY event straight away
             for(let i = 0, l = listeners.length; i < l; i++) {
-                listeners[i](type, {
+                await listeners[i](type, {
                     key     : "signing-key-uuid",
                     outlet  : "outlet-uuid",
                     register: "register-uuid",
@@ -72,6 +72,7 @@ export class MockBridge extends BaseBridge {
 
         // If this is a READY event listener, we can fire off a Ready event immediately
         if(!this.hasListener) {
+            // TODO: Just checking that it's fine if this is not awaited? Making this function async seems overkill
             this.sendMessage(ApplicationEvents.ToShopfront.READY);
             this.hasListener = true;
         }
