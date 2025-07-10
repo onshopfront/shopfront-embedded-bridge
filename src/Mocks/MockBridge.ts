@@ -72,7 +72,6 @@ export class MockBridge extends BaseBridge {
 
         // If this is a READY event listener, we can fire off a Ready event immediately
         if(!this.hasListener) {
-            // TODO: Just checking that it's fine if this is not awaited? Making this function async seems overkill
             this.sendMessage(ApplicationEvents.ToShopfront.READY);
             this.hasListener = true;
         }
