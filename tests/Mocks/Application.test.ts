@@ -1,5 +1,6 @@
 import {
-    assert,
+    assert, 
+    beforeAll,
     mock,
     suite,
     test,
@@ -273,84 +274,84 @@ suite("Testing the methods of the mock `Application` class", () => {
         const application = createMockedApplication();
 
         suite("Direct events can be triggered", () => {
-            test("The `SALE_ADD_PRODUCT` event can be triggered", () => {
+            test("The `SALE_ADD_PRODUCT` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_ADD_PRODUCT", callback);
 
-                application.fireEvent("SALE_ADD_PRODUCT");
+                await application.fireEvent("SALE_ADD_PRODUCT");
 
                 assert(callback.mock.calls.length).equals(1);
             });
 
-            test("The `SALE_REMOVE_PRODUCT` event can be triggered", () => {
+            test("The `SALE_REMOVE_PRODUCT` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_REMOVE_PRODUCT", callback);
 
-                application.fireEvent("SALE_REMOVE_PRODUCT");
+                await application.fireEvent("SALE_REMOVE_PRODUCT");
 
                 assert(callback.mock.calls.length).equals(1);
             });
 
-            test("The `SALE_UPDATE_PRODUCTS` event can be triggered", () => {
+            test("The `SALE_UPDATE_PRODUCTS` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_UPDATE_PRODUCTS", callback);
 
-                application.fireEvent("SALE_UPDATE_PRODUCTS");
+                await application.fireEvent("SALE_UPDATE_PRODUCTS");
 
                 assert(callback.mock.calls.length).equals(1);
             });
 
-            test("The `SALE_CHANGE_QUANTITY` event can be triggered", () => {
+            test("The `SALE_CHANGE_QUANTITY` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_CHANGE_QUANTITY", callback);
 
-                application.fireEvent("SALE_CHANGE_QUANTITY");
+                await application.fireEvent("SALE_CHANGE_QUANTITY");
 
                 assert(callback.mock.calls.length).equals(1);
             });
 
-            test("The `SALE_ADD_CUSTOMER` event can be triggered", () => {
+            test("The `SALE_ADD_CUSTOMER` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_ADD_CUSTOMER", callback);
 
-                application.fireEvent("SALE_ADD_CUSTOMER");
+                await application.fireEvent("SALE_ADD_CUSTOMER");
 
                 assert(callback.mock.calls.length).equals(1);
             });
 
-            test("The `SALE_REMOVE_CUSTOMER` event can be triggered", () => {
+            test("The `SALE_REMOVE_CUSTOMER` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_REMOVE_CUSTOMER", callback);
 
-                application.fireEvent("SALE_REMOVE_CUSTOMER");
+                await application.fireEvent("SALE_REMOVE_CUSTOMER");
 
                 assert(callback.mock.calls.length).equals(1);
             });
 
-            test("The `SALE_CLEAR` event can be triggered", () => {
+            test("The `SALE_CLEAR` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("SALE_CLEAR", callback);
 
-                application.fireEvent("SALE_CLEAR");
+                await application.fireEvent("SALE_CLEAR");
 
                 assert(callback.mock.calls.length).equals(1);
             });
         });
 
         suite("FromShopfront events can be triggered", () => {
-            test("The `READY` event can be triggered", () => {
+            test("The `READY` event can be triggered", async () => {
                 const callback = mock.fn();
 
                 application.addEventListener("READY", callback);
 
-                application.fireEvent("READY", {
+                await application.fireEvent("READY", {
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
                     // @ts-expect-error READY event is marked as emitting a REGISTER_CHANGED event, but that's not true
@@ -369,7 +370,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 }, undefined); // The `READY` event passes in `undefined` to the `context` parameter
             });
 
-            test("The `REQUEST_SETTINGS` event can be triggered", () => {
+            test("The `REQUEST_SETTINGS` event can be triggered", async () => {
                 const callback = mock.fn(() => ({
                     logo       : "",
                     description: "",
@@ -378,7 +379,7 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("REQUEST_SETTINGS", callback);
 
-                application.fireEvent("REQUEST_SETTINGS", undefined);
+                await application.fireEvent("REQUEST_SETTINGS", undefined);
 
                 assert(callback.mock.calls.length).equals(1);
 
@@ -386,12 +387,12 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback).wasLastCalledWith(undefined, undefined);
             });
 
-            test("The `REQUEST_BUTTONS` event can be triggered", () => {
+            test("The `REQUEST_BUTTONS` event can be triggered", async () => {
                 const callback = mock.fn(() => ([]));
 
                 application.addEventListener("REQUEST_BUTTONS", callback);
 
-                application.fireEvent("REQUEST_BUTTONS", {
+                await application.fireEvent("REQUEST_BUTTONS", {
                     id      : "id",
                     location: "location-id",
                     context : {},
@@ -402,19 +403,19 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback).wasLastCalledWith("location-id", {});
             });
 
-            test("The `REQUEST_TABLE_COLUMNS` event can be triggered", () => {
+            test("The `REQUEST_TABLE_COLUMNS` event can be triggered", async () => {
                 const callback = mock.fn(() => ({ headers: [], body: [], footer: {} }));
 
                 application.addEventListener("REQUEST_TABLE_COLUMNS", callback);
 
-                application.fireEvent("REQUEST_TABLE_COLUMNS", { location: "location-id", context: {} });
+                await application.fireEvent("REQUEST_TABLE_COLUMNS", { location: "location-id", context: {} });
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith("location-id", {});
             });
 
-            test("The `REQUEST_SELL_SCREEN_OPTIONS` event can be triggered", () => {
+            test("The `REQUEST_SELL_SCREEN_OPTIONS` event can be triggered", async () => {
                 const callback = mock.fn(() => ([{
                     url  : "https://testing.test",
                     title: "Testing",
@@ -422,7 +423,7 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("REQUEST_SELL_SCREEN_OPTIONS", callback);
 
-                application.fireEvent("REQUEST_SELL_SCREEN_OPTIONS", undefined as never);
+                await application.fireEvent("REQUEST_SELL_SCREEN_OPTIONS", undefined as never);
 
                 assert(callback.mock.calls.length).equals(1);
 
@@ -430,12 +431,12 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback).wasLastCalledWith(undefined, undefined);
             });
 
-            test("The `INTERNAL_PAGE_MESSAGE` event can be triggered", () => {
+            test("The `INTERNAL_PAGE_MESSAGE` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("INTERNAL_PAGE_MESSAGE", callback);
 
-                application.fireEvent("INTERNAL_PAGE_MESSAGE", {
+                await application.fireEvent("INTERNAL_PAGE_MESSAGE", {
                     method   : "EXTERNAL_APPLICATION",
                     url      : "https://testing.test",
                     message  : {},
@@ -460,12 +461,12 @@ suite("Testing the methods of the mock `Application` class", () => {
                 }, undefined);
             });
 
-            test("The `REGISTER_CHANGED` event can be triggered", () => {
+            test("The `REGISTER_CHANGED` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("REGISTER_CHANGED", callback);
 
-                application.fireEvent("REGISTER_CHANGED", {
+                await application.fireEvent("REGISTER_CHANGED", {
                     outlet  : "outlet-id",
                     register: "register-id",
                     user    : "user-id",
@@ -480,14 +481,14 @@ suite("Testing the methods of the mock `Application` class", () => {
                 }, undefined);
             });
 
-            test("The `FORMAT_INTEGRATED_PRODUCT` event can be triggered", () => {
+            test("The `FORMAT_INTEGRATED_PRODUCT` event can be triggered", async () => {
                 const callback = mock.fn(() => ({
                     product: {} as FormattedSaleProduct,
                 }));
 
                 application.addEventListener("FORMAT_INTEGRATED_PRODUCT", callback);
 
-                application.fireEvent("FORMAT_INTEGRATED_PRODUCT", {
+                await application.fireEvent("FORMAT_INTEGRATED_PRODUCT", {
                     data: {
                         product: {} as FormattedSaleProduct,
                     },
@@ -501,19 +502,19 @@ suite("Testing the methods of the mock `Application` class", () => {
                 }, {});
             });
 
-            test("The `REQUEST_CUSTOMER_LIST_OPTIONS` event can be triggered", () => {
+            test("The `REQUEST_CUSTOMER_LIST_OPTIONS` event can be triggered", async () => {
                 const callback = mock.fn(() => ([]));
 
                 application.addEventListener("REQUEST_CUSTOMER_LIST_OPTIONS", callback);
 
-                application.fireEvent("REQUEST_CUSTOMER_LIST_OPTIONS", undefined as never);
+                await application.fireEvent("REQUEST_CUSTOMER_LIST_OPTIONS", undefined as never);
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith(undefined, undefined);
             });
 
-            test("The `SALE_COMPLETE` event can be triggered", () => {
+            test("The `SALE_COMPLETE` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 const completedSale: CompletedSale = {
@@ -547,31 +548,31 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("SALE_COMPLETE", callback);
 
-                application.fireEvent("SALE_COMPLETE", completedSale);
+                await application.fireEvent("SALE_COMPLETE", completedSale);
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith(completedSale, undefined);
             });
 
-            test("The `REQUEST_SALE_KEYS` event can be triggered", () => {
+            test("The `REQUEST_SALE_KEYS` event can be triggered", async () => {
                 const callback = mock.fn(() => ([]));
 
                 application.addEventListener("REQUEST_SALE_KEYS", callback);
 
-                application.fireEvent("REQUEST_SALE_KEYS");
+                await application.fireEvent("REQUEST_SALE_KEYS");
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith(undefined, undefined);
             });
 
-            test("The `UI_PIPELINE` event can be triggered", () => {
+            test("The `UI_PIPELINE` event can be triggered", async () => {
                 const callback = mock.fn((...params) => ([]));
 
                 application.addEventListener("UI_PIPELINE", callback);
 
-                application.fireEvent("UI_PIPELINE", {
+                await application.fireEvent("UI_PIPELINE", {
                     pipelineId: "",
                     context   : {
                         location: "location-id",
@@ -591,12 +592,12 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert("trigger" in callback.mock.calls[0][1]);
             });
 
-            test("The `PAYMENT_METHODS_ENABLED` event can be triggered", () => {
+            test("The `PAYMENT_METHODS_ENABLED` event can be triggered", async () => {
                 const callback = mock.fn(() => ([]));
 
                 application.addEventListener("PAYMENT_METHODS_ENABLED", callback);
 
-                application.fireEvent("PAYMENT_METHODS_ENABLED", {
+                await application.fireEvent("PAYMENT_METHODS_ENABLED", {
                     data   : [],
                     context: {
                         register: "",
@@ -612,55 +613,55 @@ suite("Testing the methods of the mock `Application` class", () => {
                 });
             });
 
-            test("The `AUDIO_READY` event can be triggered", () => {
+            test("The `AUDIO_READY` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("AUDIO_READY", callback);
 
-                application.fireEvent("AUDIO_READY");
+                await application.fireEvent("AUDIO_READY");
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith(undefined, undefined);
             });
 
-            test("The `AUDIO_PERMISSION_CHANGE` event can be triggered", () => {
+            test("The `AUDIO_PERMISSION_CHANGE` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("AUDIO_PERMISSION_CHANGE", callback);
 
-                application.fireEvent("AUDIO_PERMISSION_CHANGE", { permitted: true });
+                await application.fireEvent("AUDIO_PERMISSION_CHANGE", { permitted: true });
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith({ permitted: true }, undefined);
             });
 
-            test("The `FULFILMENT_GET_ORDER` event can be triggered", () => {
+            test("The `FULFILMENT_GET_ORDER` event can be triggered", async () => {
                 const callback = mock.fn(() => ({} as OrderDetails));
 
                 application.addEventListener("FULFILMENT_GET_ORDER", callback);
 
-                application.fireEvent("FULFILMENT_GET_ORDER", "order-id");
+                await application.fireEvent("FULFILMENT_GET_ORDER", "order-id");
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith("order-id", undefined);
             });
 
-            test("The `FULFILMENT_VOID_ORDER` event can be triggered", () => {
+            test("The `FULFILMENT_VOID_ORDER` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("FULFILMENT_VOID_ORDER", callback);
 
-                application.fireEvent("FULFILMENT_VOID_ORDER", "order-id");
+                await application.fireEvent("FULFILMENT_VOID_ORDER", "order-id");
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith("order-id", undefined);
             });
 
-            test("The `FULFILMENT_PROCESS_ORDER` event can be triggered", () => {
+            test("The `FULFILMENT_PROCESS_ORDER` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 const sale: ShopfrontSaleState = {
@@ -686,7 +687,7 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("FULFILMENT_PROCESS_ORDER", callback);
 
-                application.fireEvent("FULFILMENT_PROCESS_ORDER", {
+                await application.fireEvent("FULFILMENT_PROCESS_ORDER", {
                     id: "order-id",
                     sale,
                 });
@@ -699,12 +700,12 @@ suite("Testing the methods of the mock `Application` class", () => {
                 }, undefined);
             });
 
-            test("The `FULFILMENT_ORDER_APPROVAL` event can be triggered", () => {
+            test("The `FULFILMENT_ORDER_APPROVAL` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("FULFILMENT_ORDER_APPROVAL", callback);
 
-                application.fireEvent("FULFILMENT_ORDER_APPROVAL", {
+                await application.fireEvent("FULFILMENT_ORDER_APPROVAL", {
                     id      : "order-id",
                     approved: true,
                 });
@@ -717,31 +718,31 @@ suite("Testing the methods of the mock `Application` class", () => {
                 }, undefined);
             });
 
-            test("The `FULFILMENT_ORDER_COMPLETED` event can be triggered", () => {
+            test("The `FULFILMENT_ORDER_COMPLETED` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("FULFILMENT_ORDER_COMPLETED", callback);
 
-                application.fireEvent("FULFILMENT_ORDER_COMPLETED", "order-id");
+                await application.fireEvent("FULFILMENT_ORDER_COMPLETED", "order-id");
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith("order-id", undefined);
             });
 
-            test("The `FULFILMENT_ORDER_COLLECTED` event can be triggered", () => {
+            test("The `FULFILMENT_ORDER_COLLECTED` event can be triggered", async () => {
                 const callback = mock.fn(() => undefined);
 
                 application.addEventListener("FULFILMENT_ORDER_COLLECTED", callback);
 
-                application.fireEvent("FULFILMENT_ORDER_COLLECTED", "order-id");
+                await application.fireEvent("FULFILMENT_ORDER_COLLECTED", "order-id");
 
                 assert(callback.mock.calls.length).equals(1);
 
                 assert(callback).wasLastCalledWith("order-id", undefined);
             });
 
-            test("The `GIFT_CARD_CODE_CHECK` event can be triggered", () => {
+            test("The `GIFT_CARD_CODE_CHECK` event can be triggered", async () => {
                 const callback = mock.fn(() => ({
                     code   : "",
                     message: "",
@@ -749,7 +750,7 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("GIFT_CARD_CODE_CHECK", callback);
 
-                application.fireEvent("GIFT_CARD_CODE_CHECK", {
+                await application.fireEvent("GIFT_CARD_CODE_CHECK", {
                     data: {
                         code   : "1234",
                         message: "Message",
@@ -767,13 +768,17 @@ suite("Testing the methods of the mock `Application` class", () => {
     });
 
     suite("The `createSale` method correctly mocks a sale creation", () => {
-        const application = createMockedApplication();
+        let application: MockApplication;
 
-        application.fireEvent("REGISTER_CHANGED", {
-            outlet  : "outlet-id",
-            register: "register-id",
-            user    : "user-id",
-        });
+        beforeAll(async () => {
+            application = createMockedApplication();
+
+            await application.fireEvent("REGISTER_CHANGED", {
+                outlet  : "outlet-id",
+                register: "register-id",
+                user    : "user-id",
+            });
+        })
 
         test("If valid sale data is provided, method returns a successful response", async () => {
             const sale = new Sale(blankSaleData);

@@ -40,9 +40,9 @@ export class MockCurrentSale extends BaseCurrentSale {
     /**
      * Fires the event trigger
      */
-    protected triggerEvent(event: DirectShopfrontEvent): void {
+    protected async triggerEvent(event: DirectShopfrontEvent): Promise<void> {
         if(this.application instanceof MockApplication) {
-            this.application.fireEvent(event);
+            await this.application.fireEvent(event);
         } else {
             throw new Error("Manually firing events is only supported in the `MockApplication`");
         }
@@ -136,7 +136,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
             this.handleSaleProductPriceChange(index, currentPrice, newPrice);
 
-            this.triggerEvent("SALE_UPDATE_PRODUCTS");
+            await this.triggerEvent("SALE_UPDATE_PRODUCTS");
 
             return;
         } catch(e) {
@@ -153,8 +153,8 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.updateSaleTotal(product.getPrice() || 0);
 
-        this.triggerEvent("SALE_ADD_PRODUCT");
-        this.triggerEvent("SALE_UPDATE_PRODUCTS");
+        await this.triggerEvent("SALE_ADD_PRODUCT");
+        await this.triggerEvent("SALE_UPDATE_PRODUCTS");
     }
 
     /**
@@ -180,7 +180,7 @@ export class MockCurrentSale extends BaseCurrentSale {
             this.products[i]["indexAddress"] = [ i ];
         }
 
-        this.triggerEvent("SALE_REMOVE_PRODUCT");
+        await this.triggerEvent("SALE_REMOVE_PRODUCT");
     }
 
     /**
@@ -202,7 +202,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         if(remaining <= 0) {
             this.clearSale();
-            this.triggerEvent("SALE_CLEAR");
+            await this.triggerEvent("SALE_CLEAR");
         }
     }
 
@@ -237,7 +237,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.customer = customer;
 
-        this.triggerEvent("SALE_ADD_CUSTOMER");
+        await this.triggerEvent("SALE_ADD_CUSTOMER");
     }
 
     /**
@@ -248,7 +248,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.customer = null;
 
-        this.triggerEvent("SALE_REMOVE_CUSTOMER");
+        await this.triggerEvent("SALE_REMOVE_CUSTOMER");
     }
 
     /**
@@ -335,7 +335,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         product.clearModificationFlags();
 
-        this.triggerEvent("SALE_UPDATE_PRODUCTS");
+        await this.triggerEvent("SALE_UPDATE_PRODUCTS");
     }
 
     /**
