@@ -1,6 +1,6 @@
 {
     "name": "@shopfront/bridge",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "main": "./lib/index.js",
     "license": "ISC",
     "description": "The bridge used to embed your application within Shopfront",
@@ -30,6 +30,7 @@
         "build": "tsc",
         "watch": "tsc -w",
         "lint": "eslint . --fix",
-        "test": "npx @onshopfront/core test"
+        "test": "npx @onshopfront/core test",
+        "prepublishOnly": "npm run build"
     }
 }
