@@ -82,11 +82,11 @@ export class MockApplication extends BaseApplication {
     /**
      * Handles an application event
      */
-    protected handleEvent = (
+    protected handleEvent = async (
         event: keyof FromShopfront | keyof FromShopfrontInternal,
         data: Record<string, unknown>,
         id: string
-    ): void => {
+    ): Promise<void> => {
         if(event === "READY") {
             this.isReady  = true;
             this.key      = data.key as string;
@@ -125,17 +125,17 @@ export class MockApplication extends BaseApplication {
             return;
         }
 
-        this.emit(event, data, id);
+        await this.emit(event, data, id);
     };
 
     /**
      * Calls any registered listeners for the received event
      */
-    protected emit(
+    protected async emit(
         event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
         data: Record<string, unknown> | string = {},
         id: string
-    ): MaybePromise<void> {
+    ): Promise<void> {
         if(isDirectShopfrontEvent(event)) {
             const listeners = this.directListeners[event];
 
@@ -150,13 +150,12 @@ export class MockApplication extends BaseApplication {
                 results.push(e());
             }
 
-            return Promise.all(results)
-                .then(() => {
-                    // Ensure void is returned
-                });
+            await Promise.all(results);
+
+            return;
         }
 
-        const results = [];
+        const results: Array<Promise<FromShopfrontReturns[typeof event]>> = [];
 
         if(typeof this.listeners[event] === "undefined") {
             // Don't need to do anything here
@@ -171,8 +170,10 @@ export class MockApplication extends BaseApplication {
         const bridge = this.bridge as unknown as Bridge;
 
         for(const e of this.listeners[event].values()) {
-            results.push(e.emit(data, bridge) as Promise<FromShopfrontReturns[typeof event]>);
+            results.push(e.emit(data, bridge));
         }
+
+        await Promise.allSettled(results);
 
         // The responses have been removed as we don't currently need them
     }
@@ -627,13 +628,13 @@ export class MockApplication extends BaseApplication {
     /**
      * Mocks an event being fired from Shopfront
      */
-    public fireEvent<
+    public async fireEvent<
         T extends ListenableFromShopfrontEvents,
         HasParams extends (Parameters<FromShopfront[T]["emit"]> extends [never] ? false : true),
     >(
         event: T | DirectShopfrontEvent,
         ...data: HasParams extends true ? Parameters<FromShopfront[T]["emit"]> : [undefined]
-    ): void {
+    ): Promise<void> {
         let params: Record<string, unknown> | string | undefined;
 
         if(data.length > 0) {
@@ -647,6 +648,6 @@ export class MockApplication extends BaseApplication {
             // We don't care about the Bridge parameter, as that is passed in by the `emit` method
         }
 
-        this.emit(event, params, "");
+        await this.emit(event, params, "");
     };
 }

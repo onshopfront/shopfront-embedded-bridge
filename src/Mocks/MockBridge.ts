@@ -33,7 +33,7 @@ export class MockBridge extends BaseBridge {
     /**
      * @inheritDoc
      */
-    public sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
+    public async sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): Promise<void> {
         if(type === ApplicationEvents.ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
