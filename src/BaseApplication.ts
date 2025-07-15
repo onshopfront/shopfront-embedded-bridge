@@ -2,12 +2,13 @@ import { BaseDatabase } from "./APIs/Database/BaseDatabase.js";
 import { BaseCurrentSale } from "./APIs/Sale/BaseCurrentSale.js";
 import { Sale } from "./APIs/Sale/index.js";
 import {
+    DirectShopfront,
+    DirectShopfrontCallbacks,
     DirectShopfrontEvent,
-    DirectShopfrontEventCallback,
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
-    ListenableFromShopfrontEvents,
+    ListenableFromShopfrontEvent,
     RegisterChangedEvent,
     SellScreenActionMode,
     SellScreenSummaryMode,
@@ -17,7 +18,7 @@ import { BaseBridge } from "./BaseBridge.js";
 import { Serializable } from "./Common/Serializable.js";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { BaseEvent } from "./Events/BaseEvent.js";
-import { MaybePromise } from "./Utilities/MiscTypes.js";
+import { AnyFunction, MaybePromise } from "./Utilities/MiscTypes.js";
 
 export interface ShopfrontResponse {
     success: boolean;
@@ -53,8 +54,8 @@ export abstract class BaseApplication {
     protected user: string | null;
     protected signingKey: CryptoKeyPair | undefined;
     protected listeners: {
-        [key in ListenableFromShopfrontEvents]: Map<
-            (...args: Array<unknown>) => void,
+        [key in ListenableFromShopfrontEvent]: Map<
+            AnyFunction,
             FromShopfront[key] & BaseEvent
         >;
     } = {
@@ -81,7 +82,21 @@ export abstract class BaseApplication {
         FULFILMENT_ORDER_COMPLETED   : new Map(),
         GIFT_CARD_CODE_CHECK         : new Map(),
     };
-    protected directListeners: Partial<Record<DirectShopfrontEvent, Set<DirectShopfrontEventCallback>>> = {};
+    protected directListeners: {
+        [key in DirectShopfrontEvent]: Map<
+            AnyFunction,
+            DirectShopfront[key]
+        >;
+    } = {
+        SALE_ADD_PRODUCT    : new Map(),
+        SALE_REMOVE_PRODUCT : new Map(),
+        SALE_CHANGE_QUANTITY: new Map(),
+        SALE_UPDATE_PRODUCTS: new Map(),
+        SALE_ADD_CUSTOMER   : new Map(),
+        SALE_REMOVE_CUSTOMER: new Map(),
+        SALE_CLEAR          : new Map(),
+
+    };
     public database: BaseDatabase;
 
     protected constructor(bridge: BaseBridge, database: BaseDatabase) {
@@ -112,7 +127,7 @@ export abstract class BaseApplication {
      * Calls any registered listeners for the received event
      */
     protected abstract emit(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
         data: Record<string, unknown>,
         id: string
     ): MaybePromise<void>;
@@ -120,45 +135,45 @@ export abstract class BaseApplication {
     /**
      * Register a listener for a Shopfront event
      */
-    public abstract addEventListener<E extends ListenableFromShopfrontEvents>(
+    public abstract addEventListener<E extends ListenableFromShopfrontEvent>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
     /**
      * Register a listener for a Shopfront event
      */
-    public abstract addEventListener(
-        event: DirectShopfrontEvent,
-        callback: DirectShopfrontEventCallback
+    public abstract addEventListener<D extends DirectShopfrontEvent>(
+        event: D,
+        callback: DirectShopfrontCallbacks[D]
     ): void;
     /**
      * Register a listener for a Shopfront event
      */
     public abstract addEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
-        callback: (...args: Array<unknown>) => void
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
+        callback: AnyFunction
     ): void;
 
     /**
      * Removed a registered listener for a Shopfront event
      */
-    public abstract removeEventListener<E extends keyof FromShopfrontCallbacks>(
+    public abstract removeEventListener<E extends ListenableFromShopfrontEvent>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
     /**
      * Removed a registered listener for a Shopfront event
      */
-    public abstract removeEventListener<D>(
-        event: DirectShopfrontEvent,
-        callback: (event: D) => MaybePromise<void>
+    public abstract removeEventListener<D extends DirectShopfrontEvent>(
+        event: D,
+        callback: DirectShopfrontCallbacks[D]
     ): void;
     /**
      * Removed a registered listener for a Shopfront event
      */
     public abstract removeEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
-        callback: (...args: Array<unknown>) => MaybePromise<void>
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
+        callback: AnyFunction
     ): void;
 
     /**

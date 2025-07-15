@@ -3,14 +3,14 @@ import { Database } from "./APIs/Database/Database.js";
 import { CurrentSale } from "./APIs/Sale/CurrentSale.js";
 import { Sale, ShopfrontSaleState } from "./APIs/Sale/index.js";
 import {
+    DirectShopfrontCallbacks,
     DirectShopfrontEvent,
-    DirectShopfrontEventCallback,
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
     FromShopfrontReturns,
     isDirectShopfrontEvent,
-    ListenableFromShopfrontEvents,
+    ListenableFromShopfrontEvent,
     RegisterChangedEvent,
     SellScreenActionMode,
     SellScreenSummaryMode,
@@ -31,6 +31,13 @@ import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { AudioPermissionChange } from "./Events/AudioPermissionChange.js";
 import { AudioReady } from "./Events/AudioReady.js";
 import { BaseEvent } from "./Events/BaseEvent.js";
+import { SaleAddCustomer } from "./Events/DirectEvents/SaleAddCustomer.js";
+import { SaleAddProduct } from "./Events/DirectEvents/SaleAddProduct.js";
+import { SaleChangeQuantity } from "./Events/DirectEvents/SaleChangeQuantity.js";
+import { SaleClear } from "./Events/DirectEvents/SaleClear.js";
+import { SaleRemoveCustomer } from "./Events/DirectEvents/SaleRemoveCustomer.js";
+import { SaleRemoveProduct } from "./Events/DirectEvents/SaleRemoveProduct.js";
+import { SaleUpdateProducts } from "./Events/DirectEvents/SaleUpdateProducts.js";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";
 import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder.js";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder.js";
@@ -52,7 +59,7 @@ import { RequestTableColumns } from "./Events/RequestTableColumns.js";
 import { SaleComplete } from "./Events/SaleComplete.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
-import { MaybePromise } from "./Utilities/MiscTypes.js";
+import { AnyFunction, MaybePromise } from "./Utilities/MiscTypes.js";
 import { buildSaleData } from "./Utilities/SaleCreate.js";
 
 export class Application extends BaseApplication {
@@ -129,7 +136,7 @@ export class Application extends BaseApplication {
      * Calls any registered listeners for the received event
      */
     protected emit(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
         data: Record<string, unknown> = {},
         id: string
     ): MaybePromise<void> {
@@ -143,7 +150,7 @@ export class Application extends BaseApplication {
             const results = [];
 
             for(const e of listeners.values()) {
-                results.push(e());
+                results.push(e.emit(data));
             }
 
             return Promise.all(results)
@@ -247,31 +254,68 @@ export class Application extends BaseApplication {
     /**
      * @inheritDoc
      */
-    public addEventListener<E extends ListenableFromShopfrontEvents>(
+    public addEventListener<E extends ListenableFromShopfrontEvent>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
     /**
      * @inheritDoc
      */
-    public addEventListener(
-        event: DirectShopfrontEvent,
-        callback: DirectShopfrontEventCallback
+    public addEventListener<D extends DirectShopfrontEvent>(
+        event: D,
+        callback: DirectShopfrontCallbacks[D]
     ): void;
     /**
      * @inheritDoc
      */
     public addEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
-        callback: (...args: Array<unknown>) => void
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
+        callback: AnyFunction
     ): void {
         if(isDirectShopfrontEvent(event)) {
-            if(typeof this.directListeners[event] === "undefined") {
-                this.directListeners[event] = new Set();
+            let c;
+
+            switch(event) {
+                case "SALE_ADD_PRODUCT":
+                    c = new SaleAddProduct(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_REMOVE_PRODUCT":
+                    c = new SaleRemoveProduct(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_CHANGE_QUANTITY":
+                    c = new SaleChangeQuantity(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_UPDATE_PRODUCTS":
+                    c = new SaleUpdateProducts(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_ADD_CUSTOMER":
+                    c = new SaleAddCustomer(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_REMOVE_CUSTOMER":
+                    c = new SaleRemoveCustomer(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_CLEAR":
+                    c = new SaleClear(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.directListeners[event]!.add(callback);
+            if(typeof c === "undefined") {
+                throw new TypeError(`${event} has not been defined`);
+            }
 
             return;
         }
@@ -281,63 +325,63 @@ export class Application extends BaseApplication {
 
         switch(event) {
             case "READY":
-                c = new Ready(callback as FromShopfrontCallbacks["READY"]);
+                c = new Ready(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "REQUEST_SETTINGS":
-                c = new RequestSettings(callback as FromShopfrontCallbacks["REQUEST_SETTINGS"]);
+                c = new RequestSettings(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "REQUEST_BUTTONS":
-                c = new RequestButtons(callback as FromShopfrontCallbacks["REQUEST_BUTTONS"]);
+                c = new RequestButtons(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "REQUEST_TABLE_COLUMNS":
-                c = new RequestTableColumns(callback as FromShopfrontCallbacks["REQUEST_TABLE_COLUMNS"]);
+                c = new RequestTableColumns(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "REQUEST_SELL_SCREEN_OPTIONS":
-                c = new RequestSellScreenOptions(callback as FromShopfrontCallbacks["REQUEST_SELL_SCREEN_OPTIONS"]);
+                c = new RequestSellScreenOptions(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "INTERNAL_PAGE_MESSAGE":
-                c = new InternalPageMessage(callback as FromShopfrontCallbacks["INTERNAL_PAGE_MESSAGE"], this);
+                c = new InternalPageMessage(callback, this);
                 this.listeners[event].set(callback, c as InternalPageMessage);
                 break;
             case "REGISTER_CHANGED":
-                c = new RegisterChanged(callback as FromShopfrontCallbacks["REGISTER_CHANGED"]);
+                c = new RegisterChanged(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "REQUEST_CUSTOMER_LIST_OPTIONS":
-                c = new RequestCustomerListOptions(callback as FromShopfrontCallbacks["REQUEST_CUSTOMER_LIST_OPTIONS"]);
+                c = new RequestCustomerListOptions(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FORMAT_INTEGRATED_PRODUCT":
-                c = new FormatIntegratedProduct(callback as FromShopfrontCallbacks["FORMAT_INTEGRATED_PRODUCT"]);
+                c = new FormatIntegratedProduct(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "REQUEST_SALE_KEYS":
-                c = new RequestSaleKeys(callback as FromShopfrontCallbacks["REQUEST_SALE_KEYS"]);
+                c = new RequestSaleKeys(callback);
                 this.listeners[event].set(callback, c as RequestSaleKeys);
                 break;
             case "SALE_COMPLETE":
-                c = new SaleComplete(callback as FromShopfrontCallbacks["SALE_COMPLETE"]);
+                c = new SaleComplete(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "UI_PIPELINE":
-                c = new UIPipeline(callback as FromShopfrontCallbacks["UI_PIPELINE"]);
+                c = new UIPipeline(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "PAYMENT_METHODS_ENABLED":
-                c = new PaymentMethodsEnabled(callback as FromShopfrontCallbacks["PAYMENT_METHODS_ENABLED"]);
+                c = new PaymentMethodsEnabled(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "AUDIO_READY":
-                c = new AudioReady(callback as FromShopfrontCallbacks["AUDIO_READY"]);
+                c = new AudioReady(callback);
                 this.listeners[event].set(callback, c as AudioReady);
                 break;
             case "AUDIO_PERMISSION_CHANGE":
-                c = new AudioPermissionChange(callback as FromShopfrontCallbacks["AUDIO_PERMISSION_CHANGE"]);
+                c = new AudioPermissionChange(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_GET_ORDER":
@@ -345,31 +389,31 @@ export class Application extends BaseApplication {
                     throw new TypeError("Application already has 'FULFILMENT_GET_ORDER' event listener registered.");
                 }
 
-                c = new FulfilmentGetOrder(callback as FromShopfrontCallbacks["FULFILMENT_GET_ORDER"]);
+                c = new FulfilmentGetOrder(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_VOID_ORDER":
-                c = new FulfilmentVoidOrder(callback as FromShopfrontCallbacks["FULFILMENT_VOID_ORDER"]);
+                c = new FulfilmentVoidOrder(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_PROCESS_ORDER":
-                c = new FulfilmentProcessOrder(callback as FromShopfrontCallbacks["FULFILMENT_PROCESS_ORDER"]);
+                c = new FulfilmentProcessOrder(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_ORDER_APPROVAL":
-                c = new FulfilmentOrderApproval(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_APPROVAL"]);
+                c = new FulfilmentOrderApproval(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_ORDER_COLLECTED":
-                c = new FulfilmentCollectOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COLLECTED"]);
+                c = new FulfilmentCollectOrder(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "FULFILMENT_ORDER_COMPLETED":
-                c = new FulfilmentCompleteOrder(callback as FromShopfrontCallbacks["FULFILMENT_ORDER_COMPLETED"]);
+                c = new FulfilmentCompleteOrder(callback);
                 this.listeners[event].set(callback, c);
                 break;
             case "GIFT_CARD_CODE_CHECK":
-                c = new GiftCardCodeCheck(callback as FromShopfrontCallbacks["GIFT_CARD_CODE_CHECK"]);
+                c = new GiftCardCodeCheck(callback);
                 this.listeners[event].set(callback, c);
                 break;
         }
@@ -379,8 +423,7 @@ export class Application extends BaseApplication {
         }
 
         if(event === "READY" && this.isReady) {
-            c = c as Ready;
-            c.emit({
+            (c as Ready).emit({
                 outlet  : this.outlet,
                 register: this.register,
                 user    : this.user,
@@ -391,26 +434,26 @@ export class Application extends BaseApplication {
     /**
      * @inheritDoc
      */
-    public removeEventListener<E extends keyof FromShopfrontCallbacks>(
+    public removeEventListener<E extends ListenableFromShopfrontEvent>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
     /**
      * @inheritDoc
      */
-    public removeEventListener<D>(
-        event: DirectShopfrontEvent,
-        callback: (event: D) => MaybePromise<void>
+    public removeEventListener<D extends DirectShopfrontEvent>(
+        event: D,
+        callback: DirectShopfrontCallbacks[D]
     ): void;
     /**
      * @inheritDoc
      */
     public removeEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
-        callback: (...args: Array<unknown>) => MaybePromise<void>
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
+        callback: AnyFunction
     ): void {
         if(isDirectShopfrontEvent(event)) {
-            this.directListeners[event]?.delete(callback);
+            this.directListeners[event].delete(callback);
 
             return;
         }

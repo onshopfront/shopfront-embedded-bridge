@@ -1,14 +1,14 @@
 import { Sale } from "../APIs/Sale/index.js";
 import { Application } from "../Application.js";
 import {
+    DirectShopfrontCallbacks,
     DirectShopfrontEvent,
-    DirectShopfrontEventCallback,
     FromShopfront,
     FromShopfrontCallbacks,
     FromShopfrontInternal,
     FromShopfrontReturns,
     isDirectShopfrontEvent,
-    ListenableFromShopfrontEvents,
+    ListenableFromShopfrontEvent,
     RegisterChangedEvent,
     SellScreenActionMode,
     SellScreenSummaryMode,
@@ -22,6 +22,13 @@ import { BaseEmitableEvent } from "../EmitableEvents/BaseEmitableEvent.js";
 import { AudioPermissionChange } from "../Events/AudioPermissionChange.js";
 import { AudioReady } from "../Events/AudioReady.js";
 import { BaseEvent } from "../Events/BaseEvent.js";
+import { SaleAddCustomer } from "../Events/DirectEvents/SaleAddCustomer.js";
+import { SaleAddProduct } from "../Events/DirectEvents/SaleAddProduct.js";
+import { SaleChangeQuantity } from "../Events/DirectEvents/SaleChangeQuantity.js";
+import { SaleClear } from "../Events/DirectEvents/SaleClear.js";
+import { SaleRemoveCustomer } from "../Events/DirectEvents/SaleRemoveCustomer.js";
+import { SaleRemoveProduct } from "../Events/DirectEvents/SaleRemoveProduct.js";
+import { SaleUpdateProducts } from "../Events/DirectEvents/SaleUpdateProducts.js";
 import { FormatIntegratedProduct } from "../Events/FormatIntegratedProduct.js";
 import { FulfilmentCollectOrder } from "../Events/FulfilmentCollectOrder.js";
 import { FulfilmentCompleteOrder } from "../Events/FulfilmentCompleteOrder.js";
@@ -43,7 +50,7 @@ import { RequestTableColumns } from "../Events/RequestTableColumns.js";
 import { SaleComplete } from "../Events/SaleComplete.js";
 import { UIPipeline } from "../Events/UIPipeline.js";
 import ActionEventRegistrar from "../Utilities/ActionEventRegistrar.js";
-import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { AnyFunction, MaybePromise } from "../Utilities/MiscTypes.js";
 import { MockCurrentSale } from "./APIs/Sale/MockCurrentSale.js";
 import { MockDatabase } from "./Database/MockDatabase.js";
 import { MockBridge } from "./MockBridge.js";
@@ -132,7 +139,7 @@ export class MockApplication extends BaseApplication {
      * Calls any registered listeners for the received event
      */
     protected async emit(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
         data: Record<string, unknown> | string = {},
         id: string
     ): Promise<void> {
@@ -140,14 +147,13 @@ export class MockApplication extends BaseApplication {
             const listeners = this.directListeners[event];
 
             if(typeof listeners === "undefined") {
-                // Don't need to do anything here
-                return;
+                return this.bridge.sendMessage(ToShopfront.NOT_LISTENING_TO_EVENT);
             }
 
             const results = [];
 
             for(const e of listeners.values()) {
-                results.push(e());
+                results.push(e.emit(data));
             }
 
             await Promise.all(results);
@@ -181,31 +187,68 @@ export class MockApplication extends BaseApplication {
     /**
      * @inheritDoc
      */
-    public addEventListener<E extends ListenableFromShopfrontEvents>(
+    public addEventListener<E extends ListenableFromShopfrontEvent>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
     /**
      * @inheritDoc
      */
-    public addEventListener(
-        event: DirectShopfrontEvent,
-        callback: DirectShopfrontEventCallback
+    public addEventListener<D extends DirectShopfrontEvent>(
+        event: D,
+        callback: DirectShopfrontCallbacks[D]
     ): void;
     /**
      * @inheritDoc
      */
     public addEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
-        callback: (...args: Array<unknown>) => void
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
+        callback: AnyFunction
     ): void {
         if(isDirectShopfrontEvent(event)) {
-            if(typeof this.directListeners[event] === "undefined") {
-                this.directListeners[event] = new Set();
+            let c;
+
+            switch(event) {
+                case "SALE_ADD_PRODUCT":
+                    c = new SaleAddProduct(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_REMOVE_PRODUCT":
+                    c = new SaleRemoveProduct(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_CHANGE_QUANTITY":
+                    c = new SaleChangeQuantity(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_UPDATE_PRODUCTS":
+                    c = new SaleUpdateProducts(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_ADD_CUSTOMER":
+                    c = new SaleAddCustomer(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_REMOVE_CUSTOMER":
+                    c = new SaleRemoveCustomer(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
+                case "SALE_CLEAR":
+                    c = new SaleClear(callback);
+                    this.directListeners[event].set(callback, c);
+
+                    break;
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.directListeners[event]!.add(callback);
+            if(typeof c === "undefined") {
+                throw new TypeError(`${event} has not been defined`);
+            }
 
             return;
         }
@@ -328,26 +371,26 @@ export class MockApplication extends BaseApplication {
     /**
      * @inheritDoc
      */
-    public removeEventListener<E extends keyof FromShopfrontCallbacks>(
+    public removeEventListener<E extends ListenableFromShopfrontEvent>(
         event: E,
         callback: FromShopfrontCallbacks[E]
     ): void;
     /**
      * @inheritDoc
      */
-    public removeEventListener<D>(
-        event: DirectShopfrontEvent,
-        callback: (event: D) => MaybePromise<void>
+    public removeEventListener<D extends DirectShopfrontEvent>(
+        event: D,
+        callback: DirectShopfrontCallbacks[D]
     ): void;
     /**
      * @inheritDoc
      */
     public removeEventListener(
-        event: ListenableFromShopfrontEvents | DirectShopfrontEvent,
+        event: ListenableFromShopfrontEvent | DirectShopfrontEvent,
         callback: (...args: Array<unknown>) => MaybePromise<void>
     ): void {
         if(isDirectShopfrontEvent(event)) {
-            this.directListeners[event]?.delete(callback);
+            this.directListeners[event].delete(callback);
 
             return;
         }
@@ -443,7 +486,6 @@ export class MockApplication extends BaseApplication {
         let totalPaid = 0;
 
         for(const payment of payments) {
-            // TODO: Double check this is still the case
             if(payment.getCashout()) {
                 return {
                     success: false,
@@ -629,11 +671,38 @@ export class MockApplication extends BaseApplication {
      * Mocks an event being fired from Shopfront
      */
     public async fireEvent<
-        T extends ListenableFromShopfrontEvents,
+        T extends ListenableFromShopfrontEvent,
         HasParams extends (Parameters<FromShopfront[T]["emit"]> extends [never] ? false : true),
     >(
-        event: T | DirectShopfrontEvent,
+        event: T,
         ...data: HasParams extends true ? Parameters<FromShopfront[T]["emit"]> : [undefined]
+    ): Promise<void>;
+    /**
+     * Mocks an event being fired from Shopfront
+     */
+    public async fireEvent<
+        D extends DirectShopfrontEvent,
+        HasParams extends (Parameters<DirectShopfrontCallbacks[D]> extends [never] ? false : true),
+    >(
+        event: D,
+        ...data: HasParams extends true ? Parameters<DirectShopfrontCallbacks[D]> : [undefined]
+    ): Promise<void>;
+    /**
+     * Mocks an event being fired from Shopfront
+     */
+    public async fireEvent<
+        T extends ListenableFromShopfrontEvent,
+        D extends DirectShopfrontEvent,
+        HasParams extends (D extends DirectShopfrontEvent ?
+            Parameters<DirectShopfrontCallbacks[D]> extends [never] ? false : true :
+            Parameters<FromShopfront[T]["emit"]> extends [never] ? false : true),
+      >(
+        event: T | D,
+        ...data: HasParams extends true ?
+            D extends DirectShopfrontEvent ?
+                Parameters<DirectShopfrontCallbacks[D]> :
+                Parameters<FromShopfront[T]["emit"]>
+            : [undefined]
     ): Promise<void> {
         let params: Record<string, unknown> | string | undefined;
 

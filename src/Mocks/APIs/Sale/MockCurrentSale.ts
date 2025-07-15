@@ -6,7 +6,11 @@ import {
     SaleProduct,
     ShopfrontSaleState,
 } from "../../../APIs/Sale/index.js";
-import { DirectShopfrontEvent } from "../../../ApplicationEvents.js";
+import {
+    DirectShopfrontEvent,
+    DirectShopfrontEventData,
+} from "../../../ApplicationEvents.js";
+import { SaleEventProduct } from "../../../Events/DirectEvents/types/SaleEventData.js";
 import { MockApplication } from "../../MockApplication.js";
 
 const emptySaleState: ShopfrontSaleState = {
@@ -40,9 +44,56 @@ export class MockCurrentSale extends BaseCurrentSale {
     /**
      * Fires the event trigger
      */
-    protected async triggerEvent(event: DirectShopfrontEvent): Promise<void> {
+    protected async triggerEvent<Event extends DirectShopfrontEvent>(
+        event: Event,
+        data: DirectShopfrontEventData[Event]
+    ): Promise<void> {
         if(this.application instanceof MockApplication) {
-            await this.application.fireEvent(event);
+            switch(event) {
+                case "SALE_ADD_PRODUCT":
+                    await this.application.fireEvent(
+                        "SALE_ADD_PRODUCT",
+                        data as DirectShopfrontEventData["SALE_ADD_PRODUCT"]
+                    );
+
+                    break;
+                case "SALE_REMOVE_PRODUCT":
+                    await this.application.fireEvent(
+                        "SALE_REMOVE_PRODUCT",
+                        data as DirectShopfrontEventData["SALE_REMOVE_PRODUCT"]
+                    );
+
+                    break;
+                case "SALE_CHANGE_QUANTITY":
+                    await this.application.fireEvent(
+                        "SALE_CHANGE_QUANTITY",
+                        data as DirectShopfrontEventData["SALE_CHANGE_QUANTITY"]
+                    );
+
+                    break;
+                case "SALE_UPDATE_PRODUCTS":
+                    await this.application.fireEvent(
+                        "SALE_UPDATE_PRODUCTS",
+                        data as DirectShopfrontEventData["SALE_UPDATE_PRODUCTS"]
+                    );
+
+                    break;
+                case "SALE_ADD_CUSTOMER":
+                    await this.application.fireEvent(
+                        "SALE_ADD_CUSTOMER",
+                        data as DirectShopfrontEventData["SALE_ADD_CUSTOMER"]
+                    );
+
+                    break;
+                case "SALE_REMOVE_CUSTOMER":
+                    await this.application.fireEvent("SALE_REMOVE_CUSTOMER");
+
+                    break;
+                case "SALE_CLEAR":
+                    await this.application.fireEvent("SALE_CLEAR");
+
+                    break;
+            }
         } else {
             throw new Error("Manually firing events is only supported in the `MockApplication`");
         }
@@ -136,7 +187,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
             this.handleSaleProductPriceChange(index, currentPrice, newPrice);
 
-            await this.triggerEvent("SALE_UPDATE_PRODUCTS");
+            await this.triggerEvent("SALE_UPDATE_PRODUCTS", { products: [] });
 
             return;
         } catch(e) {
@@ -153,8 +204,14 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.updateSaleTotal(product.getPrice() || 0);
 
-        await this.triggerEvent("SALE_ADD_PRODUCT");
-        await this.triggerEvent("SALE_UPDATE_PRODUCTS");
+        await this.triggerEvent("SALE_ADD_PRODUCT", {
+            product     : this.generateSaleEventProduct(product),
+            indexAddress: product.getIndexAddress(),
+        });
+
+        await this.triggerEvent("SALE_UPDATE_PRODUCTS",  {
+            products: [ this.generateSaleEventProduct(product) ],
+        });
     }
 
     /**
@@ -180,7 +237,9 @@ export class MockCurrentSale extends BaseCurrentSale {
             this.products[i]["indexAddress"] = [ i ];
         }
 
-        await this.triggerEvent("SALE_REMOVE_PRODUCT");
+        await this.triggerEvent("SALE_REMOVE_PRODUCT", {
+            indexAddress: product.getIndexAddress(),
+        });
     }
 
     /**
@@ -202,7 +261,8 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         if(remaining <= 0) {
             this.clearSale();
-            await this.triggerEvent("SALE_CLEAR");
+
+            await this.triggerEvent("SALE_CLEAR", undefined);
         }
     }
 
@@ -237,7 +297,11 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.customer = customer;
 
-        await this.triggerEvent("SALE_ADD_CUSTOMER");
+        await this.triggerEvent("SALE_ADD_CUSTOMER", {
+            customer: {
+                uuid: customer.getId(),
+            },
+        });
     }
 
     /**
@@ -248,7 +312,7 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.customer = null;
 
-        await this.triggerEvent("SALE_REMOVE_CUSTOMER");
+        await this.triggerEvent("SALE_REMOVE_CUSTOMER", undefined);
     }
 
     /**
@@ -335,7 +399,9 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         product.clearModificationFlags();
 
-        await this.triggerEvent("SALE_UPDATE_PRODUCTS");
+        await this.triggerEvent("SALE_UPDATE_PRODUCTS", {
+            products: [ this.generateSaleEventProduct(product) ],
+        });
     }
 
     /**
@@ -390,6 +456,56 @@ export class MockCurrentSale extends BaseCurrentSale {
         clone["metaData"] = payment["metaData"];
 
         return clone;
+    }
+
+    /**
+     * Generates a SaleEventProduct from a SaleProduct
+     */
+    protected generateSaleEventProduct(product: SaleProduct): SaleEventProduct {
+        return {
+            uuid        : product.getId(),
+            type        : product.getType() ?? "Product",
+            name        : product.getName() ?? "Unknown Product",
+            caseQuantity: product.getCaseQuantity() ?? 1,
+            isCase      : (product.getCaseQuantity() ?? 1) / product.getQuantity() === 0,
+            quantity    : product.getQuantity(),
+            loyalty     : {
+                earn  : 0,
+                redeem: 0,
+            },
+            prices: {
+                price          : 0,
+                unlockedPrice  : 0,
+                normal         : 0,
+                base           : 0,
+                addPrice       : 0,
+                removePrice    : 0,
+                additionalPrice: 0,
+            },
+            tax: {
+                id    : "tax-rate-id",
+                amount: 0,
+            },
+            surcharge            : null,
+            products             : [],
+            defaultProducts      : [],
+            preventManualDiscount: false,
+            special              : false,
+            edited               : false,
+            promotions           : {},
+            rebates              : {},
+            giftCard             : null,
+            note                 : "",
+            userId               : null,
+            familyId             : null,
+            categoryId           : null,
+            tags                 : [],
+            canUnlock            : false,
+            lockQuantity         : false,
+            metaData             : product.getMetaData(),
+            lineId               : "",
+            priceList            : false,
+        };
     }
 
     /**
