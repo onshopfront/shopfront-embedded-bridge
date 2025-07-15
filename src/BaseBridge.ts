@@ -6,6 +6,7 @@ export abstract class BaseBridge {
     public url: URL;
     protected listeners: Array<ApplicationEventListener> = [];
     protected hasListener = false;
+    protected target: Window | null = null;
 
     protected constructor(key: string, url: string) {
         this.key = key;
@@ -15,9 +16,6 @@ export abstract class BaseBridge {
         } else {
             this.url = new URL(url);
         }
-
-        this.registerListeners();
-        this.sendMessage(ApplicationEvents.ToShopfront.READY);
     }
 
     /**

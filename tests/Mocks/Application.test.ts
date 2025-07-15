@@ -20,6 +20,7 @@ import { FormattedSaleProduct } from "../../src/Events/FormatIntegratedProduct.j
 import { CompletedSale } from "../../src/Events/SaleComplete.js";
 import { mockApplication } from "../../src/Mocks/index.js";
 import { MockApplication } from "../../src/Mocks/MockApplication.js";
+import { SaleEventProduct } from "../../src/Events/DirectEvents/types/SaleEventData.js";
 
 /**
  * Returns a new instance of a mocked Application
@@ -279,7 +280,10 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("SALE_ADD_PRODUCT", callback);
 
-                await application.fireEvent("SALE_ADD_PRODUCT");
+                await application.fireEvent("SALE_ADD_PRODUCT", {
+                    product: {} as SaleEventProduct,
+                    indexAddress: []
+                });
 
                 assert(callback.mock.calls.length).equals(1);
             });
@@ -289,7 +293,9 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("SALE_REMOVE_PRODUCT", callback);
 
-                await application.fireEvent("SALE_REMOVE_PRODUCT");
+                await application.fireEvent("SALE_REMOVE_PRODUCT", {
+                    indexAddress: []
+                });
 
                 assert(callback.mock.calls.length).equals(1);
             });
@@ -299,7 +305,9 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("SALE_UPDATE_PRODUCTS", callback);
 
-                await application.fireEvent("SALE_UPDATE_PRODUCTS");
+                await application.fireEvent("SALE_UPDATE_PRODUCTS", {
+                    products: []
+                });
 
                 assert(callback.mock.calls.length).equals(1);
             });
@@ -309,7 +317,11 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("SALE_CHANGE_QUANTITY", callback);
 
-                await application.fireEvent("SALE_CHANGE_QUANTITY");
+                await application.fireEvent("SALE_CHANGE_QUANTITY", {
+                    indexAddress: [],
+                    amount: 0,
+                    absolute: true
+                });
 
                 assert(callback.mock.calls.length).equals(1);
             });
@@ -319,7 +331,11 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 application.addEventListener("SALE_ADD_CUSTOMER", callback);
 
-                await application.fireEvent("SALE_ADD_CUSTOMER");
+                await application.fireEvent("SALE_ADD_CUSTOMER", {
+                    customer: {
+                        uuid: ""
+                    }
+                });
 
                 assert(callback.mock.calls.length).equals(1);
             });
@@ -354,9 +370,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 await application.fireEvent("READY", {
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
-                    // @ts-expect-error READY event is marked as emitting a REGISTER_CHANGED event, but that's not true
-                    user    : undefined,
-                    key     : "new-key-id",
+                    user    : "new-user-id"
                 });
 
                 // The `READY` event automatically fires when the listener is first registered
@@ -365,8 +379,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback).wasLastCalledWith({
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
-                    user    : undefined,
-                    // The `key` parameter is not passed into the callback
+                    user    : "new-user-id"
                 }, undefined); // The `READY` event passes in `undefined` to the `context` parameter
             });
 
