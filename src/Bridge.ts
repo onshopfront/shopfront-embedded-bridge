@@ -13,25 +13,6 @@ export type ApplicationEventListener = (
     id: string
 ) => void;
 
-export interface BridgeInterface {
-    /**
-     * Destroys the Bridge by unregistering all listeners
-     */
-    destroy(): void;
-    /**
-     * Sends an event to Shopfront
-     */
-    sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void;
-    /**
-     * Adds a listener for a Shopfront event
-     */
-    addEventListener(listener: ApplicationEventListener): void;
-    /**
-     * Removes a listener for a Shopfront event
-     */
-    removeEventListener(listener: ApplicationEventListener): void;
-}
-
 export class Bridge extends BaseBridge {
     /**
      * A static method for instantiating an Application
@@ -48,14 +29,15 @@ export class Bridge extends BaseBridge {
         return new Application(new Bridge(options.id, options.vendor));
     }
 
-    protected target: Window | null = null;
-
     constructor(key: string, url: string) {
         if(window.parent === window) {
             throw new Error("The bridge has not been initialised within a frame");
         }
 
         super(key, url);
+
+        this.registerListeners();
+        this.sendMessage(ApplicationEvents.ToShopfront.READY);
     }
 
     /**

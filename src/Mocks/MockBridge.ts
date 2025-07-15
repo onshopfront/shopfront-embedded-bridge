@@ -7,6 +7,9 @@ export class MockBridge extends BaseBridge {
 
     constructor(key: string, url: string) {
         super(key, url);
+
+        this.registerListeners();
+        this.sendMessage(ApplicationEvents.ToShopfront.READY);
     }
 
     /**
