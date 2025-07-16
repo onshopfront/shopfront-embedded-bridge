@@ -395,7 +395,7 @@ export abstract class BaseApplication {
     /**
      * Shows a loading screen in Shopfront
      */
-    public abstract load(): void;
+    public abstract load(): () => void;
 
     protected abstract handleEventCallback(data: { id?: string; data: unknown; }): void;
 
