@@ -19,8 +19,6 @@ jobs:
               uses: actions/setup-node@v4
               with:
                  node-version: 20.x
-                 registry-url: "https://npm.pkg.github.com"
-                 scope: "@onshopfront"
 
             - name: Configure NPM for GitHub registry (for dependencies)
               run: |

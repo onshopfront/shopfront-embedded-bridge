@@ -32,8 +32,8 @@
         "type-check:watch": "npm run-script type-check --watch",
         "build": "tsc",
         "watch": "tsc -w",
-        "lint": "npx code lint .",
-        "lint:commit:run": "npx code lint-commit",
+        "lint": "npx core lint .",
+        "lint:commit:run": "npx core lint-commit",
         "lint:pr:run": "npx core lint-pr --target-branch origin/master",
         "test": "npx @onshopfront/core test"
     },
