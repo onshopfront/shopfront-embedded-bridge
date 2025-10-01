@@ -1,21 +1,21 @@
 import { Sale } from "../APIs/Sale/index.js";
 import {
-    DirectShopfrontCallbacks,
-    DirectShopfrontEvent,
-    FromShopfront,
-    FromShopfrontInternal,
-    FromShopfrontReturns,
+    type DirectShopfrontCallbacks,
+    type DirectShopfrontEvent,
+    type FromShopfront,
+    type FromShopfrontInternal,
+    type FromShopfrontReturns,
     isDirectShopfrontEvent,
-    ListenableFromShopfrontEvent,
-    RegisterChangedEvent,
-    SellScreenActionMode,
-    SellScreenSummaryMode,
-    SoundEvents,
+    type ListenableFromShopfrontEvent,
+    type RegisterChangedEvent,
+    type SellScreenActionMode,
+    type SellScreenSummaryMode,
+    type SoundEvents,
     ToShopfront,
 } from "../ApplicationEvents.js";
-import { BaseApplication, ShopfrontEmbeddedVerificationToken } from "../BaseApplication.js";
+import { BaseApplication, type ShopfrontEmbeddedVerificationToken } from "../BaseApplication.js";
 import { Bridge } from "../Bridge.js";
-import { Serializable } from "../Common/Serializable.js";
+import { type Serializable } from "../Common/Serializable.js";
 import { BaseEmitableEvent } from "../EmitableEvents/BaseEmitableEvent.js";
 import ActionEventRegistrar from "../Utilities/ActionEventRegistrar.js";
 import { MockCurrentSale } from "./APIs/Sale/MockCurrentSale.js";

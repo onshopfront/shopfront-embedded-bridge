@@ -1,4 +1,4 @@
-import { InternalPageMessageMethod } from "../APIs/InternalMessages/InternalMessageSource.js";
+import { type InternalPageMessageMethod } from "../APIs/InternalMessages/InternalMessageSource.js";
 import { ToShopfront } from "../ApplicationEvents.js";
 import { BaseEmitableEvent } from "./BaseEmitableEvent.js";
 

@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "emitDeclarationOnly": true,
+        "noEmit": false,
+        "declarationDir": "lib-types",
+    },
+    "exclude": [
+        "node_modules",
+        "lib",
+        "vite.config.ts",
+        "tests/**/*"
+    ],
+}

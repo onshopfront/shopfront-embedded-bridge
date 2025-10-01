@@ -1,4 +1,4 @@
-import { FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import { type FromShopfrontCallbacks, type FromShopfrontReturns } from "../ApplicationEvents.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface CompletedSaleProduct {

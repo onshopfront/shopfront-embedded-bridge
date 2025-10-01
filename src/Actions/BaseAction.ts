@@ -1,5 +1,5 @@
 import { EventEmitter } from "../Common/EventEmitter.js";
-import { Serializable, SerializableStatic, Serialized } from "../Common/Serializable.js";
+import type { Serializable, SerializableStatic, Serialized } from "../Common/Serializable.js";
 import ActionEventRegistrar from "../Utilities/ActionEventRegistrar.js";
 import { staticImplements } from "../Utilities/Static.js";
 

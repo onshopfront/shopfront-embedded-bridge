@@ -1,10 +1,10 @@
-import { FromShopfront, FromShopfrontInternal, ToShopfront } from "../../ApplicationEvents.js";
+import { type FromShopfront, type FromShopfrontInternal, ToShopfront } from "../../ApplicationEvents.js";
 import { Bridge } from "../../Bridge.js";
 import {
     BaseDatabase,
-    DatabaseCallReturn,
-    DatabaseMethodName,
-    DatabaseTable,
+    type DatabaseCallReturn,
+    type DatabaseMethodName,
+    type DatabaseTable,
 } from "./BaseDatabase.js";
 
 export class Database extends BaseDatabase<Bridge> {

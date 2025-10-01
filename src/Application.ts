@@ -1,30 +1,30 @@
 import { Button } from "./Actions/Button.js";
 import { Database } from "./APIs/Database/Database.js";
 import { CurrentSale } from "./APIs/Sale/CurrentSale.js";
-import { Sale, ShopfrontSaleState } from "./APIs/Sale/index.js";
+import { Sale, type ShopfrontSaleState } from "./APIs/Sale/index.js";
 import {
-    DirectShopfrontEvent,
-    FromShopfront,
-    FromShopfrontInternal,
-    FromShopfrontReturns,
+    type DirectShopfrontEvent,
+    type FromShopfront,
+    type FromShopfrontInternal,
+    type FromShopfrontReturns,
     isDirectShopfrontEvent,
-    ListenableFromShopfrontEvent,
-    RegisterChangedEvent,
-    SellScreenActionMode,
-    SellScreenSummaryMode,
-    SoundEvents,
+    type ListenableFromShopfrontEvent,
+    type RegisterChangedEvent,
+    type SellScreenActionMode,
+    type SellScreenSummaryMode,
+    type SoundEvents,
     ToShopfront,
 } from "./ApplicationEvents.js";
 import {
     BaseApplication,
-    ShopfrontEmbeddedTokenError,
-    ShopfrontEmbeddedVerificationToken,
-    ShopfrontResponse,
+    type ShopfrontEmbeddedTokenError,
+    type ShopfrontEmbeddedVerificationToken,
+    type ShopfrontResponse,
     ShopfrontTokenDecodingError,
     ShopfrontTokenRequestError,
 } from "./BaseApplication.js";
-import { ApplicationEventListener, Bridge } from "./Bridge.js";
-import { Serializable } from "./Common/Serializable.js";
+import { type ApplicationEventListener, Bridge } from "./Bridge.js";
+import { type Serializable } from "./Common/Serializable.js";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";
 import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder.js";
@@ -38,7 +38,7 @@ import { RequestSettings } from "./Events/RequestSettings.js";
 import { RequestTableColumns } from "./Events/RequestTableColumns.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
-import { MaybePromise } from "./Utilities/MiscTypes.js";
+import { type MaybePromise } from "./Utilities/MiscTypes.js";
 import { buildSaleData } from "./Utilities/SaleCreate.js";
 
 export class Application extends BaseApplication {

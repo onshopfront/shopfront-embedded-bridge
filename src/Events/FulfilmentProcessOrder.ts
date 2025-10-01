@@ -1,6 +1,6 @@
-import { Sale, ShopfrontSaleState } from "../APIs/Sale/index.js";
-import { FromShopfrontCallbacks, FromShopfrontReturns, FulfilmentProcessEvent } from "../ApplicationEvents.js";
-import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { Sale, type ShopfrontSaleState } from "../APIs/Sale/index.js";
+import type { FromShopfrontCallbacks, FromShopfrontReturns, FulfilmentProcessEvent } from "../ApplicationEvents.js";
+import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface FulfilmentProcessOrderData {

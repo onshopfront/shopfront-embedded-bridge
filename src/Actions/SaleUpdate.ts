@@ -1,5 +1,5 @@
-import { ShopfrontSalePaymentStatus } from "../APIs/Sale/index.js";
-import { Serialized } from "../Common/Serializable.js";
+import type { ShopfrontSalePaymentStatus } from "../APIs/Sale/index.js";
+import type { Serialized } from "../Common/Serializable.js";
 import { BaseAction } from "./BaseAction.js";
 
 export interface SaleUpdateChanges {

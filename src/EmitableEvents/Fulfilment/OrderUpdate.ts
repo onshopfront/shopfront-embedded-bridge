@@ -1,4 +1,4 @@
-import { OrderSummaryDetails } from "../../APIs/Fulfilment/FulfilmentTypes.js";
+import { type OrderSummaryDetails } from "../../APIs/Fulfilment/FulfilmentTypes.js";
 import { ToShopfront } from "../../ApplicationEvents.js";
 import { BaseEmitableEvent } from "../BaseEmitableEvent.js";
 

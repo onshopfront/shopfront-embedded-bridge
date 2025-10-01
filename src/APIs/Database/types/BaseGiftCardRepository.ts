@@ -1,4 +1,4 @@
-import BaseRepository from "./BaseRepository.js";
+import type BaseRepository from "./BaseRepository.js";
 
 export interface LocalDatabaseGiftCard {
     client_id: string;

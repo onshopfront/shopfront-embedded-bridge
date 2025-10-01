@@ -1,4 +1,4 @@
-import BaseRepository from "./BaseRepository.js";
+import type BaseRepository from "./BaseRepository.js";
 
 export type KitchenDisplayRuleReady = "NOT_DONE" | "NOT_STARTED" | "STARTED" | "DONE";
 

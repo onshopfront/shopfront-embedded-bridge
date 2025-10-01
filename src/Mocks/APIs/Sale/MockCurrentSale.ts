@@ -4,13 +4,13 @@ import {
     SaleCustomer,
     SalePayment,
     SaleProduct,
-    ShopfrontSaleState,
+    type ShopfrontSaleState,
 } from "../../../APIs/Sale/index.js";
 import {
-    DirectShopfrontEvent,
-    DirectShopfrontEventData,
+    type DirectShopfrontEvent,
+    type DirectShopfrontEventData,
 } from "../../../ApplicationEvents.js";
-import { SaleEventProduct } from "../../../Events/DirectEvents/types/SaleEventData.js";
+import { type SaleEventProduct } from "../../../Events/DirectEvents/types/SaleEventData.js";
 import { MockApplication } from "../../MockApplication.js";
 
 const emptySaleState: ShopfrontSaleState = {

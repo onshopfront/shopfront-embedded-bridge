@@ -1,5 +1,5 @@
-import { LocalDatabaseContact } from "./BaseCustomerRepository.js";
-import BaseRepository from "./BaseRepository.js";
+import { type LocalDatabaseContact } from "./BaseCustomerRepository.js";
+import type BaseRepository from "./BaseRepository.js";
 
 export interface LocalDatabaseOutlet {
     loyalty_enabled: boolean;

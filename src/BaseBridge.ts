@@ -1,5 +1,5 @@
 import * as ApplicationEvents from "./ApplicationEvents.js";
-import { ApplicationEventListener } from "./Bridge.js";
+import { type ApplicationEventListener } from "./Bridge.js";
 
 export abstract class BaseBridge {
     public key: string;

@@ -1,4 +1,4 @@
-import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { type MaybePromise } from "../Utilities/MiscTypes.js";
 
 export class EventEmitter {
     protected supportedEvents: Array<string> = [];

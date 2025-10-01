@@ -1,4 +1,4 @@
-import { SaleUpdate, SaleUpdateChanges } from "../../Actions/SaleUpdate.js";
+import { SaleUpdate, type SaleUpdateChanges } from "../../Actions/SaleUpdate.js";
 import { BaseCurrentSale } from "./BaseCurrentSale.js";
 import { InvalidSaleDeviceError, SaleCancelledError } from "./Exceptions.js";
 import { SaleCustomer } from "./SaleCustomer.js";

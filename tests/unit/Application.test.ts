@@ -1,26 +1,26 @@
 import {
-    assert, 
+    assert,
     beforeAll,
     mock,
     suite,
     test,
 } from "@onshopfront/core/tests";
 import { noop } from "@onshopfront/core/utilities";
-import { OrderDetails } from "../../src/APIs/Fulfilment/FulfilmentTypes.js";
+import type { OrderDetails } from "../../src/APIs/Fulfilment/FulfilmentTypes.js";
 import { InternalMessageSource } from "../../src/APIs/InternalMessages/InternalMessageSource.js";
-import { SaleData } from "../../src/APIs/Sale/BaseSale.js";
+import type { SaleData } from "../../src/APIs/Sale/BaseSale.js";
 import { Sale } from "../../src/APIs/Sale/Sale.js";
 import { SaleCustomer } from "../../src/APIs/Sale/SaleCustomer.js";
 import { SalePayment } from "../../src/APIs/Sale/SalePayment.js";
 import { SaleProduct } from "../../src/APIs/Sale/SaleProduct.js";
-import { ShopfrontSaleState } from "../../src/APIs/Sale/ShopfrontSaleState.js";
+import type { ShopfrontSaleState } from "../../src/APIs/Sale/ShopfrontSaleState.js";
 import { Application } from "../../src/Application.js";
 import { Bridge } from "../../src/Bridge.js";
-import { FormattedSaleProduct } from "../../src/Events/FormatIntegratedProduct.js";
-import { CompletedSale } from "../../src/Events/SaleComplete.js";
+import type { FormattedSaleProduct } from "../../src/Events/FormatIntegratedProduct.js";
+import type { CompletedSale } from "../../src/Events/SaleComplete.js";
 import { mockApplication } from "../../src/Mocks/index.js";
 import { MockApplication } from "../../src/Mocks/MockApplication.js";
-import { SaleEventProduct } from "../../src/Events/DirectEvents/types/SaleEventData.js";
+import type { SaleEventProduct } from "../../src/Events/DirectEvents/types/SaleEventData.js";
 
 /**
  * Returns a new instance of a mocked Application
@@ -581,7 +581,7 @@ suite("Testing the methods of the mock `Application` class", () => {
             });
 
             test("The `UI_PIPELINE` event can be triggered", async () => {
-                const callback = mock.fn((...params) => ([]));
+                const callback = mock.fn((..._params) => ([]));
 
                 application.addEventListener("UI_PIPELINE", callback);
 

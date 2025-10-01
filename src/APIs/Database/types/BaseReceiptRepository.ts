@@ -1,4 +1,4 @@
-import BaseRepository from "./BaseRepository.js";
+import type BaseRepository from "./BaseRepository.js";
 
 export type ReceiptTypeUnion = "receipt-text" | "receipt-full" | "a4" | "email";
 

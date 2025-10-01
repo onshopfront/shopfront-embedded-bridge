@@ -1,9 +1,9 @@
 /* eslint @typescript-eslint/no-invalid-void-type: 0 */
 import { Button } from "./Actions/Button.js";
 import { SaleKey } from "./Actions/SaleKey.js";
-import { OrderDetails } from "./APIs/Fulfilment/FulfilmentTypes.js";
+import { type OrderDetails } from "./APIs/Fulfilment/FulfilmentTypes.js";
 import { InternalMessageSource } from "./APIs/InternalMessages/InternalMessageSource.js";
-import { Sale, ShopfrontSaleState } from "./APIs/Sale/index.js";
+import { Sale, type ShopfrontSaleState } from "./APIs/Sale/index.js";
 import { AudioPermissionChange } from "./Events/AudioPermissionChange.js";
 import { AudioReady } from "./Events/AudioReady.js";
 import { Callback } from "./Events/Callback.js";
@@ -14,8 +14,8 @@ import { SaleClear } from "./Events/DirectEvents/SaleClear.js";
 import { SaleRemoveCustomer } from "./Events/DirectEvents/SaleRemoveCustomer.js";
 import { SaleRemoveProduct } from "./Events/DirectEvents/SaleRemoveProduct.js";
 import { SaleUpdateProducts } from "./Events/DirectEvents/SaleUpdateProducts.js";
-import { SaleEventProduct } from "./Events/DirectEvents/types/SaleEventData.js";
-import { FormatIntegratedProduct, FormattedSaleProduct } from "./Events/FormatIntegratedProduct.js";
+import { type SaleEventProduct } from "./Events/DirectEvents/types/SaleEventData.js";
+import { FormatIntegratedProduct, type FormattedSaleProduct } from "./Events/FormatIntegratedProduct.js";
 import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder.js";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder.js";
 import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder.js";
@@ -28,14 +28,14 @@ import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled.js";
 import { Ready } from "./Events/Ready.js";
 import { RegisterChanged } from "./Events/RegisterChanged.js";
 import { RequestButtons } from "./Events/RequestButtons.js";
-import { RequestCustomerListOptions, SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions.js";
+import { RequestCustomerListOptions, type SellScreenCustomerListOption } from "./Events/RequestCustomerListOptions.js";
 import { RequestSaleKeys } from "./Events/RequestSaleKeys.js";
-import { RequestSellScreenOptions, SellScreenOption } from "./Events/RequestSellScreenOptions.js";
+import { RequestSellScreenOptions, type SellScreenOption } from "./Events/RequestSellScreenOptions.js";
 import { RequestSettings } from "./Events/RequestSettings.js";
 import { RequestTableColumns } from "./Events/RequestTableColumns.js";
-import { CompletedSale, SaleComplete } from "./Events/SaleComplete.js";
+import { type CompletedSale, SaleComplete } from "./Events/SaleComplete.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
-import { MaybePromise } from "./Utilities/MiscTypes.js";
+import { type MaybePromise } from "./Utilities/MiscTypes.js";
 
 export enum ToShopfront {
     READY = "READY",

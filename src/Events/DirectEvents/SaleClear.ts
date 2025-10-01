@@ -1,4 +1,4 @@
-import { DirectShopfrontCallbacks, DirectShopfrontEventData } from "../../ApplicationEvents.js";
+import { type DirectShopfrontCallbacks, type DirectShopfrontEventData } from "../../ApplicationEvents.js";
 import { BaseDirectEvent } from "./BaseDirectEvent.js";
 
 export class SaleClear extends BaseDirectEvent<"SALE_CLEAR"> {

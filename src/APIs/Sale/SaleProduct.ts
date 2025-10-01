@@ -1,8 +1,8 @@
 import UUID from "../../Utilities/UUID.js";
 import {
-    ShopfrontSaleProduct,
-    ShopfrontSaleProductPromotions,
-    ShopfrontSaleProductType,
+    type ShopfrontSaleProduct,
+    type ShopfrontSaleProductPromotions,
+    type ShopfrontSaleProductType,
 } from "./ShopfrontSaleState.js";
 
 export class SaleProduct {

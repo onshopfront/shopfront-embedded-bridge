@@ -1,14 +1,14 @@
 import {
-    FromShopfrontCallbacks,
-    FromShopfrontReturns,
+    type FromShopfrontCallbacks,
+    type FromShopfrontReturns,
     ToShopfront,
-    UIPipelineBaseContext,
-    UIPipelineContext,
-    UIPipelineResponse,
+    type UIPipelineBaseContext,
+    type UIPipelineContext,
+    type UIPipelineResponse,
 } from "../ApplicationEvents.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { Bridge } from "../Bridge.js";
-import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface UIPPipelineIncomingData {

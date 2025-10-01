@@ -4,7 +4,7 @@ import { Sale } from "./Sale.js";
 import { SaleCustomer } from "./SaleCustomer.js";
 import { SalePayment } from "./SalePayment.js";
 import { SaleProduct } from "./SaleProduct.js";
-import { ShopfrontSaleState } from "./ShopfrontSaleState.js";
+import { type ShopfrontSaleState } from "./ShopfrontSaleState.js";
 
 export abstract class BaseCurrentSale extends BaseSale {
     protected application: BaseApplication;

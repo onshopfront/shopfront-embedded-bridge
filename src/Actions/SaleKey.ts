@@ -1,4 +1,4 @@
-import { Serialized } from "../Common/Serializable.js";
+import type { Serialized } from "../Common/Serializable.js";
 import { BaseAction } from "./BaseAction.js";
 
 export class SaleKey extends BaseAction<SaleKey> {
