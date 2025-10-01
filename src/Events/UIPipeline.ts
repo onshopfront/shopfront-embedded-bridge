@@ -30,8 +30,6 @@ export class UIPipeline extends BaseEvent<
 
     /**
      * @inheritDoc
-     * @param data
-     * @param bridge
      */
     public async emit(
         data: UIPPipelineIncomingData,
@@ -60,9 +58,6 @@ export class UIPipeline extends BaseEvent<
 
     /**
      * Sends the response data to Shopfront
-     * @param bridge
-     * @param data
-     * @param id
      */
     public static async respond(
         bridge: BaseBridge,

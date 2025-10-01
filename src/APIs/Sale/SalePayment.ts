@@ -2,8 +2,8 @@ import UUID from "../../Utilities/UUID.js";
 import { ShopfrontSalePayment } from "./ShopfrontSaleState.js";
 
 export enum SalePaymentStatus {
-    APPROVED  = "completed",
-    DECLINED  = "failed",
+    APPROVED = "completed",
+    DECLINED = "failed",
     CANCELLED = "cancelled",
 }
 
@@ -21,10 +21,10 @@ export class SalePayment {
     constructor(id: string, amount: number, cashout?: number, status?: SalePaymentStatus) {
         this.internalId = UUID.generate();
 
-        this.id      = id;
-        this.amount  = amount;
+        this.id = id;
+        this.amount = amount;
         this.cashout = cashout;
-        this.status  = status;
+        this.status = status;
     }
 
     /**
@@ -57,7 +57,7 @@ export class SalePayment {
      * @internal
      */
     public setInternal(data: ShopfrontSalePayment): void {
-        this.type     = data.type;
+        this.type = data.type;
         this.rounding = data.rounding;
         this.metaData = JSON.parse(data.metadata);
     }

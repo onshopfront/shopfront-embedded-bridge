@@ -62,9 +62,9 @@ export class MockApplication extends BaseApplication {
         id: string
     ): Promise<void> => {
         if(event === "READY") {
-            this.isReady  = true;
-            this.key      = data.key as string;
-            this.outlet   = data.outlet as string;
+            this.isReady = true;
+            this.key = data.key as string;
+            this.outlet = data.outlet as string;
             this.register = data.register as string;
 
             data = {
@@ -329,7 +329,9 @@ export class MockApplication extends BaseApplication {
      * @inheritDoc
      */
     protected async sendAudioRequest(
-        type: SoundEvents, data?: unknown, options?: AudioRequestOptions
+        _type: SoundEvents,
+        _data?: unknown,
+        options?: AudioRequestOptions
     ): Promise<{ success: boolean; message?: string; }> {
         if(options) {
             if(!options.hasPermission) {
@@ -449,13 +451,13 @@ export class MockApplication extends BaseApplication {
         HasParams extends (D extends DirectShopfrontEvent ?
             Parameters<DirectShopfrontCallbacks[D]> extends [never] ? false : true :
             Parameters<FromShopfront[T]["emit"]> extends [never] ? false : true),
-      >(
+    >(
         event: T | D,
         ...data: HasParams extends true ?
             D extends DirectShopfrontEvent ?
                 Parameters<DirectShopfrontCallbacks[D]> :
-                Parameters<FromShopfront[T]["emit"]>
-            : [undefined]
+                Parameters<FromShopfront[T]["emit"]> :
+            [undefined]
     ): Promise<void> {
         let params: Record<string, unknown> | string | undefined;
 

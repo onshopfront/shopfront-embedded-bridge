@@ -22,7 +22,7 @@ export class SaleKey extends BaseAction<SaleKey> {
         })(), SaleKey);
 
         if(typeof name === "undefined" && typeof id !== "string") {
-            this.id   = id.properties[0] as string;
+            this.id = id.properties[0] as string;
             this.name = id.properties[1] as string;
         } else {
             this.id = id as string;

@@ -66,12 +66,13 @@ export interface LocalDatabaseCustomer {
     uuid: string;
 }
 
-export interface BaseCustomerRepository extends BaseRepository<
-    LocalDatabaseCustomer
->, BaseSearchableRepository<
-    LocalDatabaseCustomer,
-    CustomerRepositorySearchOptions
-> {
+export interface BaseCustomerRepository extends
+    BaseRepository<LocalDatabaseCustomer>,
+    BaseSearchableRepository<
+        LocalDatabaseCustomer,
+        CustomerRepositorySearchOptions
+    >
+{
     /**
      * Retrieve all customers with the specified customer group ID
      * @param customerGroupId

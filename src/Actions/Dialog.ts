@@ -34,18 +34,18 @@ export class Dialog extends BaseAction<Dialog> {
         })(), Dialog);
 
         if(typeof header === "undefined") {
-            type           = type as Serialized<Dialog>;
-            this.type      = type.properties[0] as DialogType;
+            type = type as Serialized<Dialog>;
+            this.type = type.properties[0] as DialogType;
             this.closeable = type.properties[1] as boolean;
-            this.header    = type.properties[2] as string;
-            this.content   = type.properties[3] as string;
-            this.buttons   = type.properties[4] as Array<Button>; // Note: This should be deserialized
+            this.header = type.properties[2] as string;
+            this.content = type.properties[3] as string;
+            this.buttons = type.properties[4] as Array<Button>; // Note: This should be deserialized
         } else {
-            this.type      = type as DialogType;
+            this.type = type as DialogType;
             this.closeable = closeable as boolean;
-            this.header    = header    as string;
-            this.content   = content   as string;
-            this.buttons   = buttons   as Array<Button>;
+            this.header = header as string;
+            this.content = content as string;
+            this.buttons = buttons as Array<Button>;
         }
     }
 }

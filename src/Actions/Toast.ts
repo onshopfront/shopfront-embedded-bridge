@@ -24,11 +24,11 @@ export class Toast extends BaseAction<Toast> {
         })(), Toast);
 
         if(typeof message === "undefined") {
-            type         = type as Serialized<Toast>;
-            this.type    = type.properties[0] as ToastType;
+            type = type as Serialized<Toast>;
+            this.type = type.properties[0] as ToastType;
             this.message = type.properties[1] as string;
         } else {
-            this.type    = type as ToastType;
+            this.type = type as ToastType;
             this.message = message;
         }
     }

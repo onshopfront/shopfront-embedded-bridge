@@ -130,12 +130,12 @@ export abstract class BaseApplication {
     public database: BaseDatabase;
 
     protected constructor(bridge: BaseBridge, database: BaseDatabase) {
-        this.bridge   = bridge;
-        this.isReady  = false;
-        this.key      = "";
+        this.bridge = bridge;
+        this.isReady = false;
+        this.key = "";
         this.register = null;
-        this.outlet   = null;
-        this.user     = null;
+        this.outlet = null;
+        this.user = null;
         this.database = database;
     }
 

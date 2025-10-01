@@ -12,7 +12,6 @@ interface BaseActionConstructor<T> {
 export class BaseAction<T> extends EventEmitter {
     protected target: string;
     protected events: Array<{
-        // eslint-disable-next-line jsdoc/require-jsdoc
         callback: (...args: Array<unknown>) => void; type: string; id: string;
     }>;
     protected properties: Array<unknown>;
@@ -26,8 +25,8 @@ export class BaseAction<T> extends EventEmitter {
 
         super();
 
-        this.target     = serialized.type;
-        this.events     = [];
+        this.target = serialized.type;
+        this.events = [];
         this.properties = serialized.properties;
 
         // Ensure that we are registered in the registry

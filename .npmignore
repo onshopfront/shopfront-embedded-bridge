@@ -1,4 +1,10 @@
 src/
 tests/
 tsconfig.json
-bitbucket-pipelines.yml
+.husky
+.github
+.eslintcache
+*.tgz
+.core
+.idea
+CHANGELOG.md

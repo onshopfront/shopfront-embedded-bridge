@@ -66,8 +66,8 @@ export class Application extends BaseApplication {
     ): void => {
         if(event === "READY") {
             this.isReady = true;
-            this.key     = data.key as string;
-            this.outlet  = data.outlet as string;
+            this.key = data.key as string;
+            this.outlet = data.outlet as string;
             this.register = data.register as string;
 
             data = {
@@ -319,7 +319,6 @@ export class Application extends BaseApplication {
         const saleRequest = `SaleRequest-${Date.now().toString()}`;
 
         const promise = new Promise<ShopfrontSaleState | false>(res => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
                 data: Record<string, unknown>
@@ -384,7 +383,6 @@ export class Application extends BaseApplication {
             success: boolean;
             message?: string;
         }>(res => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
                 data: Record<string, unknown>
@@ -449,7 +447,6 @@ export class Application extends BaseApplication {
             outlet: string | null;
             user: string | null;
         }>(res => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
                 data: Record<string, unknown>
@@ -537,7 +534,6 @@ export class Application extends BaseApplication {
         const request = `AudioRequest-${type}-${Date.now().toString()}`;
 
         const promise = new Promise<ShopfrontResponse>(res => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
                 data: Record<string, unknown>
@@ -622,7 +618,6 @@ export class Application extends BaseApplication {
         const request = `OptionRequest-${Date.now().toString()}`;
 
         const promise = new Promise<TValueType | undefined>(res => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
                 data: Record<string, unknown>
@@ -758,7 +753,6 @@ export class Application extends BaseApplication {
 
         const request = `TokenRequest-${Date.now().toString()}`;
         const promise = new Promise<[BufferSource, BufferSource]>(res => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener: ApplicationEventListener = (event, data) => {
                 if(event !== "RESPONSE_SECURE_KEY") {
                     return;

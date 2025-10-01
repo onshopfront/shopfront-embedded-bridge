@@ -18,7 +18,7 @@ export abstract class BaseCurrentSale extends BaseSale {
         super(Sale.buildSaleData(saleState));
 
         this.application = application;
-        this.cancelled   = false;
+        this.cancelled = false;
     }
 
     /**

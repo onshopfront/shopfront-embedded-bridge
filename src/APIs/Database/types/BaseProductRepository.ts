@@ -127,12 +127,13 @@ export type ProductClassificationUnion = "category" |
     "supplier" |
     "supplier_code";
 
-export interface BaseProductRepository extends BaseRepository<
-    LocalDatabaseProduct
->, BaseSearchableRepository<
-    ProductSearchResultType,
-    ProductRepositorySearchOptions
-> {
+export interface BaseProductRepository extends
+    BaseRepository<LocalDatabaseProduct>,
+    BaseSearchableRepository<
+        ProductSearchResultType,
+        ProductRepositorySearchOptions
+    >
+{
     /**
      * Retrieve all products with the specified classification type and classification ID
      */
