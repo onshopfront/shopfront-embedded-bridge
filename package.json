@@ -19,18 +19,41 @@
     "type": "module",
     "private": false,
     "devDependencies": {
-        "@onshopfront/core": "^0.1.89",
+        "@auto-it/all-contributors": "^11.3.0",
+        "@auto-it/jira": "^11.3.0",
+        "@onshopfront/core": "^0.1.97",
+        "auto": "^11.3.0",
+        "husky": "^9.1.7",
         "ts-jest-resolver": "^2.0.1",
-        "typescript": "^5.5.4",
-        "typescript-eslint": "^8.34.0"
+        "typescript": "^5.9.3"
     },
     "scripts": {
         "type-check": "tsc --noEmit",
         "type-check:watch": "npm run-script type-check --watch",
         "build": "tsc",
         "watch": "tsc -w",
-        "lint": "eslint . --fix",
-        "test": "npx @onshopfront/core test",
-        "prepublishOnly": "npm run build"
+        "lint": "npx code lint .",
+        "lint:commit:run": "npx code lint-commit",
+        "lint:pr:run": "npx core lint-pr --target-branch origin/master",
+        "test": "npx @onshopfront/core test"
+    },
+    "auto": {
+        "plugins": [
+            "npm",
+            "all-contributors",
+            [
+                "jira",
+                "https://onshopfront.atlassian.net"
+            ],
+            "released"
+        ],
+        "author": {
+            "name": "Auto Release",
+            "email": "nick@shopfront.com.au"
+        }
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org",
+        "access": "public"
     }
 }
