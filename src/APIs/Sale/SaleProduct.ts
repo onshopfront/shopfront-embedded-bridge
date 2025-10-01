@@ -29,14 +29,14 @@ export class SaleProduct {
     constructor(id: string, quantity: number, price?: number, indexAddress?: Array<number>) {
         this.internalId = UUID.generate();
 
-        this.id           = id;
-        this.quantity     = quantity;
-        this.price        = price;
+        this.id = id;
+        this.quantity = quantity;
+        this.price = price;
         this.indexAddress = indexAddress || [];
 
         this.contains = [];
-        this.edited   = typeof price !== "undefined";
-        this.note     = "";
+        this.edited = typeof price !== "undefined";
+        this.note = "";
 
         this.quantityModified = false;
         this.priceModified = false;
@@ -69,15 +69,15 @@ export class SaleProduct {
      * @internal
      */
     public setInternal(data: ShopfrontSaleProduct, indexAddress: Array<number>): void {
-        this.name          = data.name;
-        this.type          = data.type;
+        this.name = data.name;
+        this.type = data.type;
         this.taxRateAmount = data.tax?.amount || 0;
-        this.note          = data.note;
-        this.edited        = data.edited;
-        this.caseQuantity  = data.caseQuantity;
-        this.promotions    = data.promotions;
-        this.metaData      = data.metaData;
-        this.mapped        = data.mapped;
+        this.note = data.note;
+        this.edited = data.edited;
+        this.caseQuantity = data.caseQuantity;
+        this.promotions = data.promotions;
+        this.metaData = data.metaData;
+        this.mapped = data.mapped;
 
         for(let i = 0, l = data.products.length; i < l; i++) {
             this.appendProduct(SaleProduct.HydrateFromState(data.products[i], [

@@ -209,7 +209,7 @@ export class MockCurrentSale extends BaseCurrentSale {
             indexAddress: product.getIndexAddress(),
         });
 
-        await this.triggerEvent("SALE_UPDATE_PRODUCTS",  {
+        await this.triggerEvent("SALE_UPDATE_PRODUCTS", {
             products: [ this.generateSaleEventProduct(product) ],
         });
     }

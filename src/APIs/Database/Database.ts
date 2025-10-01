@@ -28,7 +28,6 @@ export class Database extends BaseDatabase<Bridge> {
         const databaseRequest = `DatabaseRequest-${Math.random()}-${Date.now()}`;
 
         const promise = new Promise<ExpectedResult>((res, rej) => {
-            // eslint-disable-next-line jsdoc/require-jsdoc
             const listener = (
                 event: keyof FromShopfrontInternal | keyof FromShopfront,
                 data: Record<string, unknown>

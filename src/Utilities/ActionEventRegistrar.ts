@@ -9,8 +9,6 @@ class ActionEventRegistrar {
 
     /**
      * Registers an event action listener
-     * @param id
-     * @param action
      */
     public add(id: string, action: BaseAction<undefined>): void {
         this.events[id] = action;
@@ -18,7 +16,6 @@ class ActionEventRegistrar {
 
     /**
      * Removes an event action listener
-     * @param id
      */
     public remove(id: string) {
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -27,8 +24,6 @@ class ActionEventRegistrar {
 
     /**
      * Invokes the registered action event listener
-     * @param id
-     * @param data
      */
     public fire(id: string, data: unknown) {
         if(typeof this.events[id] === "undefined") {

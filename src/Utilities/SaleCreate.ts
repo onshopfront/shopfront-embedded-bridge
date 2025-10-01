@@ -29,7 +29,6 @@ export interface SaleData extends BaseSaleData {
 
 /**
  * Builds a Shopfront sale product from the embedded product data
- * @param product
  */
 function buildSaleProductData(product: SaleProduct): SaleProductData {
     const price = product.getPrice();
@@ -57,7 +56,6 @@ function buildSaleProductData(product: SaleProduct): SaleProductData {
 
 /**
  * Builds a Shopfront sale from the embedded sale data
- * @param sale
  */
 export function buildSaleData(sale: Sale): SaleData {
     const customer = sale.getCustomer();

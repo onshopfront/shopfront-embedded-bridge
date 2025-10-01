@@ -23,7 +23,7 @@ export class Button extends BaseAction<Button> {
 
         if(typeof icon === "undefined" && typeof label !== "string") {
             this.label = label.properties[0] as string;
-            this.icon  = label.properties[1] as string;
+            this.icon = label.properties[1] as string;
         } else {
             this.label = label as string;
 
