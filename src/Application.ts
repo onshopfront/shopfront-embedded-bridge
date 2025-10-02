@@ -23,7 +23,8 @@ import {
     ShopfrontTokenDecodingError,
     ShopfrontTokenRequestError,
 } from "./BaseApplication.js";
-import { type ApplicationEventListener, Bridge } from "./Bridge.js";
+import { type ApplicationEventListener } from "./BaseBridge.js";
+import type { Bridge } from "./Bridge.js";
 import { type Serializable } from "./Common/Serializable.js";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";

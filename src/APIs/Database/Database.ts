@@ -1,5 +1,5 @@
 import { type FromShopfront, type FromShopfrontInternal, ToShopfront } from "../../ApplicationEvents.js";
-import { Bridge } from "../../Bridge.js";
+import type { Bridge } from "../../Bridge.js";
 import {
     BaseDatabase,
     type DatabaseCallReturn,

@@ -1,5 +1,10 @@
 import * as ApplicationEvents from "./ApplicationEvents.js";
-import { type ApplicationEventListener } from "./Bridge.js";
+
+export type ApplicationEventListener = (
+    event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+    data: Record<string, unknown>,
+    id: string
+) => void;
 
 export abstract class BaseBridge {
     public key: string;
@@ -8,10 +13,12 @@ export abstract class BaseBridge {
     protected hasListener = false;
     protected target: Window | null = null;
 
-    protected constructor(key: string, url: string) {
+    protected constructor(key: string, url: string | null) {
         this.key = key;
 
-        if(url.split(".").length === 1) {
+        if(!url) {
+            this.url = new URL("communicator://javascript"); // This isn't used in this scenario
+        } else if(url.split(".").length === 1) {
             this.url = new URL(`https://${url}.onshopfront.com`);
         } else {
             this.url = new URL(url);

@@ -1,10 +1,10 @@
-import { BaseApplication } from "../../BaseApplication.js";
+import type { BaseApplication } from "../../BaseApplication.js";
 import { BaseSale } from "./BaseSale.js";
 import { Sale } from "./Sale.js";
-import { SaleCustomer } from "./SaleCustomer.js";
-import { SalePayment } from "./SalePayment.js";
-import { SaleProduct } from "./SaleProduct.js";
-import { type ShopfrontSaleState } from "./ShopfrontSaleState.js";
+import type { SaleCustomer } from "./SaleCustomer.js";
+import type { SalePayment } from "./SalePayment.js";
+import type { SaleProduct } from "./SaleProduct.js";
+import type { ShopfrontSaleState } from "./ShopfrontSaleState.js";
 
 export abstract class BaseCurrentSale extends BaseSale {
     protected application: BaseApplication;

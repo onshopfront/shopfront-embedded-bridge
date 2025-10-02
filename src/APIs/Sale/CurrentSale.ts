@@ -1,9 +1,9 @@
 import { SaleUpdate, type SaleUpdateChanges } from "../../Actions/SaleUpdate.js";
 import { BaseCurrentSale } from "./BaseCurrentSale.js";
 import { InvalidSaleDeviceError, SaleCancelledError } from "./Exceptions.js";
-import { SaleCustomer } from "./SaleCustomer.js";
-import { SalePayment } from "./SalePayment.js";
-import { SaleProduct } from "./SaleProduct.js";
+import type { SaleCustomer } from "./SaleCustomer.js";
+import type { SalePayment } from "./SalePayment.js";
+import type { SaleProduct } from "./SaleProduct.js";
 
 export class CurrentSale extends BaseCurrentSale {
     /**

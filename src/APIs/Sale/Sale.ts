@@ -1,9 +1,9 @@
-import { Application } from "../../Application.js";
+import type { Application } from "../../Application.js";
 import { BaseSale, type SaleData } from "./BaseSale.js";
 import { SaleCustomer } from "./SaleCustomer.js";
 import { SalePayment } from "./SalePayment.js";
 import { SaleProduct } from "./SaleProduct.js";
-import { type ShopfrontSaleState } from "./ShopfrontSaleState.js";
+import type { ShopfrontSaleState } from "./ShopfrontSaleState.js";
 
 export class Sale extends BaseSale {
     protected created = false;

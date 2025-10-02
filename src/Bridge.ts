@@ -1,17 +1,38 @@
 import { Application } from "./Application.js";
 import * as ApplicationEvents from "./ApplicationEvents.js";
-import { BaseBridge } from "./BaseBridge.js";
+import { type ApplicationEventListener, BaseBridge } from "./BaseBridge.js";
 
-interface ApplicationOptions {
+interface FrameApplicationOptions {
     id: string; // The Client ID
     vendor: string; // The Vendor's URL
+    communicator?: "frame";
 }
 
-export type ApplicationEventListener = (
-    event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+interface JavaScriptApplicationOptions {
+    id: string; // The Client ID
+    communicator: "javascript";
+}
+
+type ApplicationOptions = FrameApplicationOptions | JavaScriptApplicationOptions;
+
+type JavaScriptSendMessageCallback = (message: {
+    key: string;
+    type: string;
+    data: unknown;
+    id?: string;
+}) => void;
+
+type JavaScriptReceiveMessageCallback = (
+    type: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
     data: Record<string, unknown>,
     id: string
 ) => void;
+
+interface JavaScriptCommunicator {
+    execute: () => void;
+    registerSendMessage: (callback: JavaScriptSendMessageCallback) => void;
+    onReceiveMessage: JavaScriptReceiveMessageCallback;
+}
 
 export class Bridge extends BaseBridge {
     /**
@@ -22,16 +43,60 @@ export class Bridge extends BaseBridge {
             throw new TypeError("You must specify the ID for the application");
         }
 
-        if(typeof options.vendor === "undefined") {
+        if(options.communicator !== "javascript" && typeof options.vendor === "undefined") {
             throw new TypeError("You must specify the Vendor for the application");
         }
 
-        return new Application(new Bridge(options.id, options.vendor));
+        return new Application(
+            new Bridge(
+                options.id,
+                options.communicator === "javascript" ? null : options.vendor,
+                options.communicator ?? "frame"
+            )
+        );
     }
 
-    constructor(key: string, url: string) {
-        if(window.parent === window) {
+    protected javascriptIsReady = false;
+    protected javascriptSendMessageCallback?: JavaScriptSendMessageCallback;
+
+    /**
+     * The JavaScript communicator instance
+     */
+    public get communicator(): JavaScriptCommunicator {
+        if(this.communicateVia !== "javascript") {
+            throw new Error("The communicator can only be accessed when communicating via JavaScript");
+        }
+
+        return {
+            /**
+             * This is called when the application is ready to communicate, essentially this is the same as the READY
+             * event when calling through the frame
+             */
+            execute: () => {
+                // This is the equivalent of calling the ready event
+                this.javascriptIsReady = true;
+                this.sendMessageViaJavaScript(ApplicationEvents.ToShopfront.READY);
+            },
+            registerSendMessage: (callback) => {
+                this.javascriptSendMessageCallback = callback;
+            },
+            onReceiveMessage: (type, data, id) => {
+                this.emitToListeners(type, data, id);
+            },
+        };
+    }
+
+    constructor(key: string, url: string | null, protected communicateVia: "frame" | "javascript") {
+        if(communicateVia === "frame" && window.parent === window) {
             throw new Error("The bridge has not been initialised within a frame");
+        }
+
+        if(communicateVia === "frame" && url === null) {
+            throw new Error("The subdomain of the vendor has not been specified");
+        }
+
+        if(communicateVia === "javascript" && url !== null) {
+            throw new Error("You cannot specify a subdomain when using the JavaScript communicator");
         }
 
         super(key, url);
@@ -52,20 +117,43 @@ export class Bridge extends BaseBridge {
      * @inheritDoc
      */
     protected registerListeners(): void {
-        window.addEventListener("message", this.handleMessage, false);
+        if(this.communicateVia === "javascript") {
+            return;
+        }
+
+        window.addEventListener("message", this.handleMessageFromFrame, false);
     }
 
     /**
      * @inheritDoc
      */
     protected unregisterListeners(): void {
-        window.removeEventListener("message", this.handleMessage);
+        if(this.communicateVia === "javascript") {
+            return;
+        }
+
+        window.removeEventListener("message", this.handleMessageFromFrame);
     }
 
     /**
-     * @inheritDoc
+     * Emit an event to the currently registered listeners
      */
-    protected handleMessage = (event: MessageEvent): void => {
+    protected emitToListeners(
+        type: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+        data: Record<string, unknown>,
+        id: string
+    ): void {
+        const listeners = this.listeners;
+
+        for(let i = 0, l = listeners.length; i < l; i++) {
+            listeners[i](type, data, id);
+        }
+    }
+
+    /**
+     * Receive a message from the application frame and distribute it to the correct listener
+     */
+    protected handleMessageFromFrame = (event: MessageEvent): void => {
         if(event.origin !== this.url.origin) {
             return;
         }
@@ -107,17 +195,37 @@ export class Bridge extends BaseBridge {
         }
 
         // Emit the event
-        const listeners = this.listeners;
-
-        for(let i = 0, l = listeners.length; i < l; i++) {
-            listeners[i](event.data.type, event.data.data, event.data.id);
-        }
+        this.emitToListeners(event.data.type, event.data.data, event.data.id);
     };
+
+    /**
+     * Send a message via the JavaScript communicator
+     */
+    protected sendMessageViaJavaScript(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
+        if(!this.javascriptIsReady) {
+            throw new Error("We haven't received notification from Shopfront that the application is ready yet");
+        }
+
+        if(typeof this.javascriptSendMessageCallback === "undefined") {
+            throw new Error("Attempting to send a message to Shopfront before the module has been imported");
+        }
+
+        this.javascriptSendMessageCallback({
+            key: this.key,
+            type,
+            data,
+            id,
+        });
+    }
 
     /**
      * @inheritDoc
      */
     public sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
+        if(this.communicateVia === "javascript") {
+            return this.sendMessageViaJavaScript(type, data, id);
+        }
+
         if(type === ApplicationEvents.ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
