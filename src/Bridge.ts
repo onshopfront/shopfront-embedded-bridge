@@ -22,13 +22,13 @@ type JavaScriptSendMessageCallback = (message: {
     id?: string;
 }) => void;
 
-type JavaScriptReceiveMessageCallback = (
+export type JavaScriptReceiveMessageCallback = (
     type: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
     data: Record<string, unknown>,
     id: string
 ) => void;
 
-interface JavaScriptCommunicator {
+export interface JavaScriptCommunicatorExports {
     execute: () => void;
     registerSendMessage: (callback: JavaScriptSendMessageCallback) => void;
     onReceiveMessage: JavaScriptReceiveMessageCallback;
@@ -62,7 +62,7 @@ export class Bridge extends BaseBridge {
     /**
      * The JavaScript communicator instance
      */
-    public get communicator(): JavaScriptCommunicator {
+    public get communicator(): JavaScriptCommunicatorExports {
         if(this.communicateVia !== "javascript") {
             throw new Error("The communicator can only be accessed when communicating via JavaScript");
         }
@@ -202,6 +202,11 @@ export class Bridge extends BaseBridge {
      * Send a message via the JavaScript communicator
      */
     protected sendMessageViaJavaScript(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
+        if(!this.javascriptIsReady && type === ApplicationEvents.ToShopfront.READY) {
+            // The ready event is automatically called due to the application frame needing it
+            return;
+        }
+
         if(!this.javascriptIsReady) {
             throw new Error("We haven't received notification from Shopfront that the application is ready yet");
         }

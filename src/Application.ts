@@ -24,7 +24,7 @@ import {
     ShopfrontTokenRequestError,
 } from "./BaseApplication.js";
 import { type ApplicationEventListener } from "./BaseBridge.js";
-import type { Bridge } from "./Bridge.js";
+import { Bridge, type JavaScriptCommunicatorExports } from "./Bridge.js";
 import { type Serializable } from "./Common/Serializable.js";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";
@@ -48,6 +48,19 @@ export class Application extends BaseApplication {
 
         this.bridge.addEventListener(this.handleEvent);
         this.addEventListener("REGISTER_CHANGED", this.handleLocationChanged);
+    }
+
+    /**
+     * Get the communicator when using the JavaScript communication method
+     */
+    public get communicator(): JavaScriptCommunicatorExports {
+        if(this.bridge instanceof Bridge) {
+            return this.bridge.communicator;
+        }
+
+        throw new Error(
+            "The provided bridge for the application doesn't support the JavaScript communicator"
+        );
     }
 
     /**
