@@ -1,6 +1,6 @@
-import { BaseBridge } from "../../BaseBridge.js";
-import { AnyFunction } from "../../Utilities/MiscTypes.js";
-import { DataSourceTables } from "./types/DataSourceTables.js";
+import type { BaseBridge } from "../../BaseBridge.js";
+import type { AnyFunction } from "../../Utilities/MiscTypes.js";
+import type { DataSourceTables } from "./types/DataSourceTables.js";
 
 export type DatabaseTable = keyof DataSourceTables;
 

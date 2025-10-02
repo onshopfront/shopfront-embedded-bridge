@@ -1,7 +1,7 @@
 import {
-    FromShopfrontCallbacks,
-    FromShopfrontReturns,
-    FulfilmentApprovalEvent,
+    type FromShopfrontCallbacks,
+    type FromShopfrontReturns,
+    type FulfilmentApprovalEvent,
 } from "../ApplicationEvents.js";
 import { BaseEvent } from "./BaseEvent.js";
 

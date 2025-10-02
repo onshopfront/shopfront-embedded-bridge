@@ -1,4 +1,4 @@
-import { AudioPermissionChangeEvent, FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import type { AudioPermissionChangeEvent, FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class AudioPermissionChange extends BaseEvent<AudioPermissionChangeEvent> {

@@ -1,6 +1,6 @@
-import { SaleCustomer } from "./SaleCustomer.js";
-import { SalePayment } from "./SalePayment.js";
-import { SaleProduct } from "./SaleProduct.js";
+import type { SaleCustomer } from "./SaleCustomer.js";
+import type { SalePayment } from "./SalePayment.js";
+import type { SaleProduct } from "./SaleProduct.js";
 
 export interface BaseSaleData {
     register: string | undefined;

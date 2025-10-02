@@ -1,6 +1,5 @@
 import * as ApplicationEvents from "../ApplicationEvents.js";
-import { BaseBridge } from "../BaseBridge.js";
-import { ApplicationEventListener } from "../Bridge.js";
+import { type ApplicationEventListener, BaseBridge } from "../BaseBridge.js";
 
 export class MockBridge extends BaseBridge {
     protected isReady = false;

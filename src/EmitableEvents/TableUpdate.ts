@@ -1,4 +1,4 @@
-import { FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import { type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
 import { BaseEmitableEvent } from "./BaseEmitableEvent.js";
 
 export class TableUpdate extends BaseEmitableEvent<{

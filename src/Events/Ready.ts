@@ -1,4 +1,4 @@
-import { FromShopfrontCallbacks, FromShopfrontReturns, RegisterChangedEvent } from "../ApplicationEvents.js";
+import type { FromShopfrontCallbacks, FromShopfrontReturns, RegisterChangedEvent } from "../ApplicationEvents.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface ReadyData {

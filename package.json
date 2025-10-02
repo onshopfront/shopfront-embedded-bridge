@@ -1,41 +1,54 @@
 {
     "name": "@shopfront/bridge",
-    "version": "2.0.8",
-    "main": "./lib/index.js",
-    "license": "ISC",
+    "version": "3.0.0",
     "description": "The bridge used to embed your application within Shopfront",
-    "homepage": "https://developer.onshopfront.com/documentation/Embedded/Introduction",
-    "bugs": "https://github.com/onshopfront/shopfront-embedded-bridge/issues",
+    "private": false,
+    "type": "module",
+    "main": "./lib/index.mjs",
+    "module": "./lib/index.mjs",
+    "exports": {
+        ".": {
+            "import": "./lib/index.mjs",
+            "types": "./lib/index.d.ts"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/onshopfront/shopfront-embedded-bridge.git"
     },
+    "scripts": {
+        "build:types": "tsc -p tsconfig.build.json",
+        "build:bridge": "vite build",
+        "build": "node ./build.mjs",
+        "lint": "npx core lint .",
+        "lint:pr:run": "npx core lint-pr --target-branch origin/master",
+        "lint:commit:run": "npx core lint-commit",
+        "type-check": "tsc --noEmit",
+        "prepare": "husky || true",
+        "test": "npx @onshopfront/core test"
+    },
     "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
+    "license": "ISC",
     "contributors": [
         "Nicholas Clark",
         "Adam Simpkins",
         "Zachary Stanford"
     ],
-    "type": "module",
-    "private": false,
     "devDependencies": {
         "@auto-it/all-contributors": "^11.3.0",
         "@auto-it/jira": "^11.3.0",
         "@onshopfront/core": "^0.1.97",
         "auto": "^11.3.0",
         "husky": "^9.1.7",
-        "ts-jest-resolver": "^2.0.1",
-        "typescript": "^5.9.3"
+        "typescript": "^5.9.3",
+        "vite": "^7.1.7"
     },
-    "scripts": {
-        "type-check": "tsc --noEmit",
-        "type-check:watch": "npm run-script type-check --watch",
-        "build": "tsc",
-        "watch": "tsc -w",
-        "lint": "npx core lint .",
-        "lint:commit:run": "npx core lint-commit",
-        "lint:pr:run": "npx core lint-pr --target-branch origin/master",
-        "test": "npx @onshopfront/core test"
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org",
+        "access": "public"
+    },
+    "bugs": {
+        "url": "https://github.com/onshopfront/shopfront-embedded-bridge/issues"
     },
     "auto": {
         "plugins": [
@@ -52,8 +65,6 @@
             "email": "nick@shopfront.com.au"
         }
     },
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org",
-        "access": "public"
-    }
+    "readme": "README.md",
+    "homepage": "https://developer.onshopfront.com/documentation/Embedded/Introduction"
 }

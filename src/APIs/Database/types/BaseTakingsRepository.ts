@@ -1,5 +1,5 @@
-import { PaymentMethodTypeUnion } from "./BasePaymentMethodRepository.js";
-import BaseRepository from "./BaseRepository.js";
+import { type PaymentMethodTypeUnion } from "./BasePaymentMethodRepository.js";
+import type BaseRepository from "./BaseRepository.js";
 
 export interface LocalDatabaseTakings {
     amount: number;

@@ -1,5 +1,5 @@
 import UUID from "../../Utilities/UUID.js";
-import { ShopfrontSalePayment } from "./ShopfrontSaleState.js";
+import { type ShopfrontSalePayment } from "./ShopfrontSaleState.js";
 
 export enum SalePaymentStatus {
     APPROVED = "completed",

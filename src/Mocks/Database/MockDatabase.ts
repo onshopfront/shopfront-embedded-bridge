@@ -1,37 +1,39 @@
 import {
     BaseDatabase,
-    DatabaseCallReturn,
-    DatabaseMethodName,
-    DatabaseTable,
+    type DatabaseCallReturn,
+    type DatabaseMethodName,
+    type DatabaseTable,
 } from "../../APIs/Database/BaseDatabase.js";
-import { LocalDatabaseBarcodeTemplate } from "../../APIs/Database/types/BaseBarcodeTemplateRepository.js";
-import { LocalDatabaseClassification } from "../../APIs/Database/types/BaseClassificationRepository.js";
-import { LocalDatabaseCustomerDisplay } from "../../APIs/Database/types/BaseCustomerDisplayRepository.js";
-import { LocalDatabaseCustomerGroup } from "../../APIs/Database/types/BaseCustomerGroupRepository.js";
-import { LocalDatabaseCustomer } from "../../APIs/Database/types/BaseCustomerRepository.js";
-import { LocalDatabaseEnterprise } from "../../APIs/Database/types/BaseEnterpriseRepository.js";
-import { LocalDatabaseGiftCard } from "../../APIs/Database/types/BaseGiftCardRepository.js";
-import { LocalDatabaseLoyalty } from "../../APIs/Database/types/BaseLoyaltyRepository.js";
-import { LocalDatabaseMovement } from "../../APIs/Database/types/BaseMovementRepository.js";
-import { LocalDatabaseOutlet } from "../../APIs/Database/types/BaseOutletRepository.js";
-import { LocalDatabasePaymentMethod } from "../../APIs/Database/types/BasePaymentMethodRepository.js";
-import { LocalDatabasePriceList } from "../../APIs/Database/types/BasePriceListRepository.js";
-import { LocalDatabasePriceSet } from "../../APIs/Database/types/BasePriceSetRepository.js";
-import { LocalDatabaseProduct } from "../../APIs/Database/types/BaseProductRepository.js";
-import { LocalDatabasePromotionCategory } from "../../APIs/Database/types/BasePromotionCategoryRepository.js";
-import { LocalDatabasePromotion } from "../../APIs/Database/types/BasePromotionRepository.js";
-import { LocalDatabaseReceipt } from "../../APIs/Database/types/BaseReceiptRepository.js";
-import { LocalDatabaseRegister } from "../../APIs/Database/types/BaseRegisterRepository.js";
-import { LocalDatabaseSaleKeys } from "../../APIs/Database/types/BaseSalesKeyRepository.js";
-import { LocalDatabaseSale } from "../../APIs/Database/types/BaseSalesRepository.js";
-import { LocalDatabaseStocktakeAccumulated } from "../../APIs/Database/types/BaseStocktakeAccumulatedRepository.js";
-import { LocalDatabaseStocktake } from "../../APIs/Database/types/BaseStocktakeRepository.js";
-import { LocalDatabaseStocktakeScanned } from "../../APIs/Database/types/BaseStocktakeScannedRepository.js";
-import { LocalDatabaseSupplier } from "../../APIs/Database/types/BaseSupplierRepository.js";
-import { LocalDatabaseTakings } from "../../APIs/Database/types/BaseTakingsRepository.js";
-import { LocalDatabaseTaxRate } from "../../APIs/Database/types/BaseTaxRateRepository.js";
-import { LocalDatabaseTransferee } from "../../APIs/Database/types/BaseTransfereeRepository.js";
-import { LocalDatabaseVendorConnection } from "../../APIs/Database/types/BaseVendorConnectionRepository.js";
+import type { LocalDatabaseBarcodeTemplate } from "../../APIs/Database/types/BaseBarcodeTemplateRepository.js";
+import type { LocalDatabaseClassification } from "../../APIs/Database/types/BaseClassificationRepository.js";
+import type { LocalDatabaseCustomerDisplay } from "../../APIs/Database/types/BaseCustomerDisplayRepository.js";
+import type { LocalDatabaseCustomerGroup } from "../../APIs/Database/types/BaseCustomerGroupRepository.js";
+import type { LocalDatabaseCustomer } from "../../APIs/Database/types/BaseCustomerRepository.js";
+import type { LocalDatabaseEnterprise } from "../../APIs/Database/types/BaseEnterpriseRepository.js";
+import type { LocalDatabaseGiftCard } from "../../APIs/Database/types/BaseGiftCardRepository.js";
+import type { LocalDatabaseLoyalty } from "../../APIs/Database/types/BaseLoyaltyRepository.js";
+import type { LocalDatabaseMovement } from "../../APIs/Database/types/BaseMovementRepository.js";
+import type { LocalDatabaseOutlet } from "../../APIs/Database/types/BaseOutletRepository.js";
+import type { LocalDatabasePaymentMethod } from "../../APIs/Database/types/BasePaymentMethodRepository.js";
+import type { LocalDatabasePriceList } from "../../APIs/Database/types/BasePriceListRepository.js";
+import type { LocalDatabasePriceSet } from "../../APIs/Database/types/BasePriceSetRepository.js";
+import type { LocalDatabaseProduct } from "../../APIs/Database/types/BaseProductRepository.js";
+import type { LocalDatabasePromotionCategory } from "../../APIs/Database/types/BasePromotionCategoryRepository.js";
+import type { LocalDatabasePromotion } from "../../APIs/Database/types/BasePromotionRepository.js";
+import type { LocalDatabaseReceipt } from "../../APIs/Database/types/BaseReceiptRepository.js";
+import type { LocalDatabaseRegister } from "../../APIs/Database/types/BaseRegisterRepository.js";
+import type { LocalDatabaseSaleKeys } from "../../APIs/Database/types/BaseSalesKeyRepository.js";
+import type { LocalDatabaseSale } from "../../APIs/Database/types/BaseSalesRepository.js";
+import type {
+    LocalDatabaseStocktakeAccumulated,
+} from "../../APIs/Database/types/BaseStocktakeAccumulatedRepository.js";
+import type { LocalDatabaseStocktake } from "../../APIs/Database/types/BaseStocktakeRepository.js";
+import type { LocalDatabaseStocktakeScanned } from "../../APIs/Database/types/BaseStocktakeScannedRepository.js";
+import type { LocalDatabaseSupplier } from "../../APIs/Database/types/BaseSupplierRepository.js";
+import type { LocalDatabaseTakings } from "../../APIs/Database/types/BaseTakingsRepository.js";
+import type { LocalDatabaseTaxRate } from "../../APIs/Database/types/BaseTaxRateRepository.js";
+import type { LocalDatabaseTransferee } from "../../APIs/Database/types/BaseTransfereeRepository.js";
+import type { LocalDatabaseVendorConnection } from "../../APIs/Database/types/BaseVendorConnectionRepository.js";
 import { MockBridge } from "../MockBridge.js";
 
 interface MockedDatabase {

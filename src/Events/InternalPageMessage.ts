@@ -1,10 +1,10 @@
 import { InternalMessageSource } from "../APIs/InternalMessages/InternalMessageSource.js";
 import { Application } from "../Application.js";
 import {
-    FromShopfront,
-    FromShopfrontCallbacks,
-    FromShopfrontReturns,
-    InternalPageMessageEvent,
+    type FromShopfront,
+    type FromShopfrontCallbacks,
+    type FromShopfrontReturns,
+    type InternalPageMessageEvent,
 } from "../ApplicationEvents.js";
 import { BaseEvent } from "./BaseEvent.js";
 

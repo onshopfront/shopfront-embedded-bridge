@@ -1,5 +1,5 @@
-import BaseRepository from "./BaseRepository.js";
-import { BaseSearchableRepository } from "./BaseSearchableRepository.js";
+import type BaseRepository from "./BaseRepository.js";
+import { type BaseSearchableRepository } from "./BaseSearchableRepository.js";
 
 export interface LocalDatabaseVendorConnection {
     uuid: string;

@@ -1,4 +1,4 @@
-import BaseRepository from "./BaseRepository.js";
+import type BaseRepository from "./BaseRepository.js";
 
 export interface LocalDatabaseStocktake {
     display_expected: boolean;

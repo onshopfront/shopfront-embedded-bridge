@@ -1,27 +1,27 @@
-import { BaseDatabase } from "./APIs/Database/BaseDatabase.js";
-import { BaseCurrentSale } from "./APIs/Sale/BaseCurrentSale.js";
-import { Sale } from "./APIs/Sale/index.js";
-import { Application } from "./Application.js";
+import type { BaseDatabase } from "./APIs/Database/BaseDatabase.js";
+import type { BaseCurrentSale } from "./APIs/Sale/BaseCurrentSale.js";
+import type { Sale } from "./APIs/Sale/index.js";
+import type { Application } from "./Application.js";
 import {
-    DirectShopfront,
-    DirectShopfrontCallbacks,
-    DirectShopfrontEvent,
-    FromShopfront,
-    FromShopfrontCallbacks,
-    FromShopfrontInternal,
+    type DirectShopfront,
+    type DirectShopfrontCallbacks,
+    type DirectShopfrontEvent,
+    type FromShopfront,
+    type FromShopfrontCallbacks,
+    type FromShopfrontInternal,
     isDirectShopfrontEvent,
-    ListenableFromShopfrontEvent,
-    RegisterChangedEvent,
-    SellScreenActionMode,
-    SellScreenSummaryMode,
-    SoundEvents,
+    type ListenableFromShopfrontEvent,
+    type RegisterChangedEvent,
+    type SellScreenActionMode,
+    type SellScreenSummaryMode,
+    type SoundEvents,
 } from "./ApplicationEvents.js";
-import { BaseBridge } from "./BaseBridge.js";
-import { Serializable } from "./Common/Serializable.js";
-import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
+import type { BaseBridge } from "./BaseBridge.js";
+import type { Serializable } from "./Common/Serializable.js";
+import type { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { AudioPermissionChange } from "./Events/AudioPermissionChange.js";
 import { AudioReady } from "./Events/AudioReady.js";
-import { BaseEvent } from "./Events/BaseEvent.js";
+import type { BaseEvent } from "./Events/BaseEvent.js";
 import { SaleAddCustomer } from "./Events/DirectEvents/SaleAddCustomer.js";
 import { SaleAddProduct } from "./Events/DirectEvents/SaleAddProduct.js";
 import { SaleChangeQuantity } from "./Events/DirectEvents/SaleChangeQuantity.js";
@@ -49,7 +49,7 @@ import { RequestSettings } from "./Events/RequestSettings.js";
 import { RequestTableColumns } from "./Events/RequestTableColumns.js";
 import { SaleComplete } from "./Events/SaleComplete.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
-import { AnyFunction, MaybePromise } from "./Utilities/MiscTypes.js";
+import type { AnyFunction, MaybePromise } from "./Utilities/MiscTypes.js";
 
 export interface ShopfrontResponse {
     success: boolean;

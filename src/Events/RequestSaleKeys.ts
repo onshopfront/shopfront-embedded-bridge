@@ -1,7 +1,7 @@
 import { SaleKey } from "../Actions/SaleKey.js";
-import { FromShopfrontCallbacks, FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import { type FromShopfrontCallbacks, type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
 import { BaseBridge } from "../BaseBridge.js";
-import { MaybePromise } from "../Utilities/MiscTypes.js";
+import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class RequestSaleKeys extends BaseEvent<undefined, MaybePromise<Array<SaleKey>>, Array<SaleKey>> {
