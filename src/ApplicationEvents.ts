@@ -98,9 +98,10 @@ export type SoundEvents = ToShopfront.AUDIO_REQUEST_PERMISSION | ToShopfront.AUD
 export interface FromShopfrontReturns {
     READY: unknown;
     REQUEST_SETTINGS: {
-        logo: null | string;
-        description: null | string;
-        url: null | string;
+        logo?: string;
+        description?: string;
+        url?: string;
+        html?: string;
     };
     REQUEST_BUTTONS: Array<Button>;
     REQUEST_TABLE_COLUMNS: null | {
