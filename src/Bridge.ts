@@ -1,5 +1,5 @@
 import { Application } from "./Application.js";
-import * as ApplicationEvents from "./ApplicationEvents.js";
+import { type FromShopfront, type FromShopfrontInternal, ToShopfront } from "./ApplicationEvents/ToShopfront.js";
 import { type ApplicationEventListener, BaseBridge } from "./BaseBridge.js";
 
 interface FrameApplicationOptions {
@@ -23,7 +23,7 @@ type JavaScriptSendMessageCallback = (message: {
 }) => void;
 
 export type JavaScriptReceiveMessageCallback = (
-    type: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+    type: keyof FromShopfront | keyof FromShopfrontInternal,
     data: Record<string, unknown>,
     id: string
 ) => void;
@@ -75,7 +75,7 @@ export class Bridge extends BaseBridge {
             execute: () => {
                 // This is the equivalent of calling the ready event
                 this.javascriptIsReady = true;
-                this.sendMessageViaJavaScript(ApplicationEvents.ToShopfront.READY);
+                this.sendMessageViaJavaScript(ToShopfront.READY);
             },
             registerSendMessage: (callback) => {
                 this.javascriptSendMessageCallback = callback;
@@ -102,7 +102,7 @@ export class Bridge extends BaseBridge {
         super(key, url);
 
         this.registerListeners();
-        this.sendMessage(ApplicationEvents.ToShopfront.READY);
+        this.sendMessage(ToShopfront.READY);
     }
 
     /**
@@ -139,7 +139,7 @@ export class Bridge extends BaseBridge {
      * Emit an event to the currently registered listeners
      */
     protected emitToListeners(
-        type: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+        type: keyof FromShopfront | keyof FromShopfrontInternal,
         data: Record<string, unknown>,
         id: string
     ): void {
@@ -201,8 +201,8 @@ export class Bridge extends BaseBridge {
     /**
      * Send a message via the JavaScript communicator
      */
-    protected sendMessageViaJavaScript(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
-        if(!this.javascriptIsReady && type === ApplicationEvents.ToShopfront.READY) {
+    protected sendMessageViaJavaScript(type: ToShopfront, data?: unknown, id?: string): void {
+        if(!this.javascriptIsReady && type === ToShopfront.READY) {
             // The ready event is automatically called due to the application frame needing it
             return;
         }
@@ -226,12 +226,12 @@ export class Bridge extends BaseBridge {
     /**
      * @inheritDoc
      */
-    public sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void {
+    public sendMessage(type: ToShopfront, data?: unknown, id?: string): void {
         if(this.communicateVia === "javascript") {
             return this.sendMessageViaJavaScript(type, data, id);
         }
 
-        if(type === ApplicationEvents.ToShopfront.READY) {
+        if(type === ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
             }
@@ -279,7 +279,7 @@ export class Bridge extends BaseBridge {
         this.listeners.push(listener);
 
         if(!this.hasListener) {
-            this.sendMessage(ApplicationEvents.ToShopfront.READY);
+            this.sendMessage(ToShopfront.READY);
             this.hasListener = true;
         }
     }

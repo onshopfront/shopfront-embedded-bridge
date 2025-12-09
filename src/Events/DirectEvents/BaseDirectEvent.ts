@@ -2,7 +2,7 @@ import type {
     DirectShopfrontCallbacks,
     DirectShopfrontEvent,
     DirectShopfrontEventData,
-} from "../../ApplicationEvents.js";
+} from "../../ApplicationEvents/DirectShopfront.js";
 
 export abstract class BaseDirectEvent<
     TEvent extends DirectShopfrontEvent,

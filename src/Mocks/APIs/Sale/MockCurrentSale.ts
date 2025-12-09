@@ -6,10 +6,10 @@ import {
     SaleProduct,
     type ShopfrontSaleState,
 } from "../../../APIs/Sale/index.js";
-import {
-    type DirectShopfrontEvent,
-    type DirectShopfrontEventData,
-} from "../../../ApplicationEvents.js";
+import type {
+    DirectShopfrontEvent,
+    DirectShopfrontEventData,
+} from "../../../ApplicationEvents/DirectShopfront.js";
 import { type SaleEventProduct } from "../../../Events/DirectEvents/types/SaleEventData.js";
 import { MockApplication } from "../../MockApplication.js";
 

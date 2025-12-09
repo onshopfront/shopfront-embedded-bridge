@@ -1,4 +1,7 @@
-import { type DirectShopfrontCallbacks, type DirectShopfrontEventData } from "../../ApplicationEvents.js";
+import type {
+    DirectShopfrontCallbacks,
+    DirectShopfrontEventData,
+} from "../../ApplicationEvents/DirectShopfront.js";
 import { BaseDirectEvent } from "./BaseDirectEvent.js";
 
 export class SaleChangeQuantity extends BaseDirectEvent<"SALE_CHANGE_QUANTITY"> {

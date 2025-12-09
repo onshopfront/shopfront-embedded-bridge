@@ -1,8 +1,8 @@
 import {
     type FromShopfrontCallbacks,
-    type FromShopfrontReturns,
+    type FromShopfrontResponse,
     ToShopfront,
-} from "../ApplicationEvents.js";
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -83,8 +83,8 @@ interface FormattedIntegratedProductData {
 
 export class FormatIntegratedProduct extends BaseEvent<
     FormattedIntegratedProductData,
-    MaybePromise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
-    FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"],
+    MaybePromise<FromShopfrontResponse["FORMAT_INTEGRATED_PRODUCT"]>,
+    FromShopfrontResponse["FORMAT_INTEGRATED_PRODUCT"],
     FormattedIntegratedProductData["data"],
     Record<string, never>
 > {
@@ -98,7 +98,7 @@ export class FormatIntegratedProduct extends BaseEvent<
      */
     public async emit(
         data: FormattedIntegratedProductData
-    ): Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]> {
+    ): Promise<FromShopfrontResponse["FORMAT_INTEGRATED_PRODUCT"]> {
         const result = await this.callback(data.data, data.context);
 
         if(typeof result !== "object" || result === null) {
@@ -113,7 +113,7 @@ export class FormatIntegratedProduct extends BaseEvent<
      */
     public static async respond(
         bridge: BaseBridge,
-        data: Array<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>,
+        data: Array<FromShopfrontResponse["FORMAT_INTEGRATED_PRODUCT"]>,
         id: string
     ): Promise<void> {
         if(data.length > 1) {

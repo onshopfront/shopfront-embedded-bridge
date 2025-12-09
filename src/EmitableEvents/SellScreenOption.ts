@@ -1,4 +1,4 @@
-import { ToShopfront } from "../ApplicationEvents.js";
+import { ToShopfront } from "../ApplicationEvents/ToShopfront.js";
 import type { SellScreenOption as Option } from "../Events/RequestSellScreenOptions.js";
 import { RequestSellScreenOptions } from "../Events/RequestSellScreenOptions.js";
 import { BaseEmitableEvent } from "./BaseEmitableEvent.js";

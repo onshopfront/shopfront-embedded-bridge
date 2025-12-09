@@ -1,4 +1,7 @@
-import { type FromShopfrontCallbacks, type FromShopfrontReturns } from "../ApplicationEvents.js";
+import type {
+    FromShopfrontCallbacks,
+    FromShopfrontResponse,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface RegisterChangedData {
@@ -15,7 +18,7 @@ export class RegisterChanged extends BaseEvent {
     /**
      * @inheritDoc
      */
-    public async emit(data: RegisterChangedData): Promise<FromShopfrontReturns["REGISTER_CHANGED"]> {
+    public async emit(data: RegisterChangedData): Promise<FromShopfrontResponse["REGISTER_CHANGED"]> {
         return this.callback(data, undefined);
     }
 }

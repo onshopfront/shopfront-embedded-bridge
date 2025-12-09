@@ -1,5 +1,9 @@
 import { Button } from "../Actions/Button.js";
-import { type FromShopfrontCallbacks, type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import {
+    type FromShopfrontCallbacks,
+    type FromShopfrontResponse,
+    ToShopfront,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -12,8 +16,8 @@ interface RequestButtonsData {
 
 export class RequestButtons extends BaseEvent<
     RequestButtonsData,
-    MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
-    MaybePromise<FromShopfrontReturns["REQUEST_BUTTONS"]>,
+    MaybePromise<FromShopfrontResponse["REQUEST_BUTTONS"]>,
+    MaybePromise<FromShopfrontResponse["REQUEST_BUTTONS"]>,
     string,
     unknown
 > {
@@ -24,7 +28,7 @@ export class RequestButtons extends BaseEvent<
     /**
      * @inheritDoc
      */
-    public async emit(data: RequestButtonsData): Promise<FromShopfrontReturns["REQUEST_BUTTONS"]> {
+    public async emit(data: RequestButtonsData): Promise<FromShopfrontResponse["REQUEST_BUTTONS"]> {
         let result = await this.callback(data.location, data.context);
 
         if(!Array.isArray(result)) {

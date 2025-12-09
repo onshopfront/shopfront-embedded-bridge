@@ -2,18 +2,23 @@ import { Sale } from "../APIs/Sale/index.js";
 import {
     type DirectShopfrontCallbacks,
     type DirectShopfrontEvent,
+    isDirectShopfrontEvent,
+} from "../ApplicationEvents/DirectShopfront.js";
+import {
     type FromShopfront,
     type FromShopfrontInternal,
-    type FromShopfrontReturns,
-    isDirectShopfrontEvent,
+    type FromShopfrontResponse,
     type ListenableFromShopfrontEvent,
     type RegisterChangedEvent,
-    type SellScreenActionMode,
-    type SellScreenSummaryMode,
     type SoundEvents,
     ToShopfront,
-} from "../ApplicationEvents.js";
-import { BaseApplication, type ShopfrontEmbeddedVerificationToken } from "../BaseApplication.js";
+} from "../ApplicationEvents/ToShopfront.js";
+import {
+    BaseApplication,
+    type SellScreenActionMode,
+    type SellScreenSummaryMode,
+    type ShopfrontEmbeddedVerificationToken,
+} from "../BaseApplication.js";
 import { Bridge } from "../Bridge.js";
 import { type Serializable } from "../Common/Serializable.js";
 import { BaseEmitableEvent } from "../EmitableEvents/BaseEmitableEvent.js";
@@ -128,7 +133,7 @@ export class MockApplication extends BaseApplication {
             return;
         }
 
-        const results: Array<Promise<FromShopfrontReturns[typeof event]>> = [];
+        const results: Array<Promise<FromShopfrontResponse[typeof event]>> = [];
 
         if(typeof this.listeners[event] === "undefined") {
             // Don't need to do anything here

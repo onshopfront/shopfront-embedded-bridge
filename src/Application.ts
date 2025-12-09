@@ -2,21 +2,20 @@ import { Button } from "./Actions/Button.js";
 import { Database } from "./APIs/Database/Database.js";
 import { CurrentSale } from "./APIs/Sale/CurrentSale.js";
 import { Sale, type ShopfrontSaleState } from "./APIs/Sale/index.js";
+import { type DirectShopfrontEvent, isDirectShopfrontEvent } from "./ApplicationEvents/DirectShopfront.js";
 import {
-    type DirectShopfrontEvent,
     type FromShopfront,
     type FromShopfrontInternal,
-    type FromShopfrontReturns,
-    isDirectShopfrontEvent,
+    type FromShopfrontResponse,
     type ListenableFromShopfrontEvent,
     type RegisterChangedEvent,
-    type SellScreenActionMode,
-    type SellScreenSummaryMode,
     type SoundEvents,
     ToShopfront,
-} from "./ApplicationEvents.js";
+} from "./ApplicationEvents/ToShopfront.js";
 import {
     BaseApplication,
+    type SellScreenActionMode,
+    type SellScreenSummaryMode,
     type ShopfrontEmbeddedTokenError,
     type ShopfrontEmbeddedVerificationToken,
     type ShopfrontResponse,
@@ -163,79 +162,79 @@ export class Application extends BaseApplication {
         }
 
         for(const e of this.listeners[event].values()) {
-            results.push(e.emit(data, this.bridge) as Promise<FromShopfrontReturns[typeof event]>);
+            results.push(e.emit(data, this.bridge) as Promise<FromShopfrontResponse[typeof event]>);
         }
 
         // Respond if necessary
         switch(event) {
             case "REQUEST_BUTTONS":
-                results = results as Array<Promise<FromShopfrontReturns["REQUEST_BUTTONS"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["REQUEST_BUTTONS"]>>;
 
                 return Promise.all(results)
                     .then((res: Array<Array<Button>>) => {
                         return RequestButtons.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_SETTINGS":
-                results = results as Array<Promise<FromShopfrontReturns["REQUEST_SETTINGS"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["REQUEST_SETTINGS"]>>;
 
                 return Promise.all(results)
-                    .then((res: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>) => {
+                    .then((res: Array<FromShopfrontResponse["REQUEST_SETTINGS"]>) => {
                         return RequestSettings.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_TABLE_COLUMNS":
-                results = results as Array<Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["REQUEST_TABLE_COLUMNS"]>>;
 
                 return Promise.all(results)
-                    .then((res: Array<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>) => {
+                    .then((res: Array<FromShopfrontResponse["REQUEST_TABLE_COLUMNS"]>) => {
                         return RequestTableColumns.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_SELL_SCREEN_OPTIONS":
-                results = results as Array<Promise<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["REQUEST_SELL_SCREEN_OPTIONS"]>>;
 
                 return Promise.all(results)
-                    .then((res: Array<FromShopfrontReturns["REQUEST_SELL_SCREEN_OPTIONS"]>) => {
+                    .then((res: Array<FromShopfrontResponse["REQUEST_SELL_SCREEN_OPTIONS"]>) => {
                         return RequestSellScreenOptions.respond(this.bridge, res.flat(), id);
                     });
             case "FORMAT_INTEGRATED_PRODUCT":
-                results = results as Array<Promise<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["FORMAT_INTEGRATED_PRODUCT"]>>;
 
                 return Promise.all(results)
-                    .then((res: Array<FromShopfrontReturns["FORMAT_INTEGRATED_PRODUCT"]>) => {
+                    .then((res: Array<FromShopfrontResponse["FORMAT_INTEGRATED_PRODUCT"]>) => {
                         return FormatIntegratedProduct.respond(this.bridge, res.flat(), id);
                     });
             case "REQUEST_CUSTOMER_LIST_OPTIONS":
-                results = results as Array<Promise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["REQUEST_CUSTOMER_LIST_OPTIONS"]>>;
 
                 return Promise.all(results)
                     .then(res => RequestCustomerListOptions.respond(this.bridge, res.flat(), id));
             case "REQUEST_SALE_KEYS":
-                results = results as Array<Promise<FromShopfrontReturns["REQUEST_SALE_KEYS"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["REQUEST_SALE_KEYS"]>>;
 
                 return Promise.all(results)
                     .then(res => RequestSaleKeys.respond(this.bridge, res.flat(), id));
             case "UI_PIPELINE":
-                results = results as Array<Promise<FromShopfrontReturns["UI_PIPELINE"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["UI_PIPELINE"]>>;
 
                 return Promise.all(results)
                     .then(res => {
                         return UIPipeline.respond(this.bridge, res.flat(), id);
                     });
             case "GIFT_CARD_CODE_CHECK":
-                results = results as Array<Promise<FromShopfrontReturns["GIFT_CARD_CODE_CHECK"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["GIFT_CARD_CODE_CHECK"]>>;
 
                 return Promise.all(results)
                     .then(res => {
                         return GiftCardCodeCheck.respond(this.bridge, res[0], id);
                     });
             case "PAYMENT_METHODS_ENABLED":
-                results = results as Array<Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["PAYMENT_METHODS_ENABLED"]>>;
 
                 return Promise.all(results)
                     .then(res => {
                         return PaymentMethodsEnabled.respond(this.bridge, res.flat(), id);
                     });
             case "FULFILMENT_GET_ORDER":
-                results = results as Array<Promise<FromShopfrontReturns["FULFILMENT_GET_ORDER"]>>;
+                results = results as Array<Promise<FromShopfrontResponse["FULFILMENT_GET_ORDER"]>>;
 
                 return Promise.all(results)
                     .then(res => {

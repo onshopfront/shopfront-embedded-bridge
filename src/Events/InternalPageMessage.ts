@@ -1,11 +1,11 @@
 import { InternalMessageSource } from "../APIs/InternalMessages/InternalMessageSource.js";
 import { Application } from "../Application.js";
-import {
-    type FromShopfront,
-    type FromShopfrontCallbacks,
-    type FromShopfrontReturns,
-    type InternalPageMessageEvent,
-} from "../ApplicationEvents.js";
+import type {
+    FromShopfront,
+    FromShopfrontCallbacks,
+    FromShopfrontResponse,
+    InternalPageMessageEvent,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
@@ -34,7 +34,7 @@ export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
     /**
      * @inheritDoc
      */
-    public async emit(data: InternalPageMessageEvent): Promise<FromShopfrontReturns["INTERNAL_PAGE_MESSAGE"]> {
+    public async emit(data: InternalPageMessageEvent): Promise<FromShopfrontResponse["INTERNAL_PAGE_MESSAGE"]> {
         return this.callback({
             method   : data.method,
             url      : data.url,

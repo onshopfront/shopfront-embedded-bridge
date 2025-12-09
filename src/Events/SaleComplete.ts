@@ -1,4 +1,7 @@
-import { type FromShopfrontCallbacks, type FromShopfrontReturns } from "../ApplicationEvents.js";
+import type {
+    FromShopfrontCallbacks,
+    FromShopfrontResponse,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface CompletedSaleProduct {
@@ -119,7 +122,7 @@ export class SaleComplete extends BaseEvent {
     /**
      * @inheritDoc
      */
-    public async emit(data: CompletedSale): Promise<FromShopfrontReturns["SALE_COMPLETE"]> {
+    public async emit(data: CompletedSale): Promise<FromShopfrontResponse["SALE_COMPLETE"]> {
         return this.callback(data, undefined);
     }
 }

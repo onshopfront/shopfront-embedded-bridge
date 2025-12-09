@@ -1,5 +1,9 @@
 import { SaleKey } from "../Actions/SaleKey.js";
-import { type FromShopfrontCallbacks, type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import {
+    type FromShopfrontCallbacks,
+    type FromShopfrontResponse,
+    ToShopfront,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -12,7 +16,7 @@ export class RequestSaleKeys extends BaseEvent<undefined, MaybePromise<Array<Sal
     /**
      * @inheritDoc
      */
-    public async emit(): Promise<FromShopfrontReturns["REQUEST_SALE_KEYS"]> {
+    public async emit(): Promise<FromShopfrontResponse["REQUEST_SALE_KEYS"]> {
         let result = await this.callback(undefined, undefined);
 
         if(!Array.isArray(result)) {
