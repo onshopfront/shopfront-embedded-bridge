@@ -1,7 +1,7 @@
-import * as ApplicationEvents from "./ApplicationEvents.js";
+import { type FromShopfront, type FromShopfrontInternal, ToShopfront } from "./ApplicationEvents/ToShopfront.js";
 
 export type ApplicationEventListener = (
-    event: keyof ApplicationEvents.FromShopfront | keyof ApplicationEvents.FromShopfrontInternal,
+    event: keyof FromShopfront | keyof FromShopfrontInternal,
     data: Record<string, unknown>,
     id: string
 ) => void;
@@ -43,7 +43,7 @@ export abstract class BaseBridge {
     /**
      * Sends an event to Shopfront
      */
-    public abstract sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): void;
+    public abstract sendMessage(type: ToShopfront, data?: unknown, id?: string): void;
 
     /**
      * Adds a listener for a Shopfront event

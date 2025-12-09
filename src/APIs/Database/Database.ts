@@ -1,4 +1,4 @@
-import { type FromShopfront, type FromShopfrontInternal, ToShopfront } from "../../ApplicationEvents.js";
+import { type FromShopfront, type FromShopfrontInternal, ToShopfront } from "../../ApplicationEvents/ToShopfront.js";
 import type { Bridge } from "../../Bridge.js";
 import {
     BaseDatabase,

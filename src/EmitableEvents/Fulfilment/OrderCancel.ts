@@ -1,4 +1,4 @@
-import { ToShopfront } from "../../ApplicationEvents.js";
+import { ToShopfront } from "../../ApplicationEvents/ToShopfront.js";
 import { BaseEmitableEvent } from "../BaseEmitableEvent.js";
 
 export class OrderCancel extends BaseEmitableEvent<{

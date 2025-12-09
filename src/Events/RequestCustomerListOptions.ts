@@ -1,5 +1,9 @@
 import { CustomerListOption } from "../Actions/CustomerListOption.js";
-import { type FromShopfrontCallbacks, type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import {
+    type FromShopfrontCallbacks,
+    type FromShopfrontResponse,
+    ToShopfront,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -11,8 +15,8 @@ export interface SellScreenCustomerListOption {
 
 export class RequestCustomerListOptions extends BaseEvent<
     Record<string, unknown>,
-    MaybePromise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
-    FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"],
+    MaybePromise<FromShopfrontResponse["REQUEST_CUSTOMER_LIST_OPTIONS"]>,
+    FromShopfrontResponse["REQUEST_CUSTOMER_LIST_OPTIONS"],
     undefined
 > {
     constructor(callback: FromShopfrontCallbacks["REQUEST_CUSTOMER_LIST_OPTIONS"]) {
@@ -22,7 +26,7 @@ export class RequestCustomerListOptions extends BaseEvent<
     /**
      * @inheritDoc
      */
-    public async emit(_: Record<string, unknown>): Promise<FromShopfrontReturns["REQUEST_CUSTOMER_LIST_OPTIONS"]> {
+    public async emit(_: Record<string, unknown>): Promise<FromShopfrontResponse["REQUEST_CUSTOMER_LIST_OPTIONS"]> {
         let result = await this.callback(undefined, undefined);
 
         if(!Array.isArray(result)) {

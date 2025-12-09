@@ -6,16 +6,16 @@ import {
     type DirectShopfront,
     type DirectShopfrontCallbacks,
     type DirectShopfrontEvent,
+    isDirectShopfrontEvent,
+} from "./ApplicationEvents/DirectShopfront.js";
+import {
     type FromShopfront,
     type FromShopfrontCallbacks,
     type FromShopfrontInternal,
-    isDirectShopfrontEvent,
     type ListenableFromShopfrontEvent,
     type RegisterChangedEvent,
-    type SellScreenActionMode,
-    type SellScreenSummaryMode,
     type SoundEvents,
-} from "./ApplicationEvents.js";
+} from "./ApplicationEvents/ToShopfront.js";
 import type { BaseBridge } from "./BaseBridge.js";
 import type { Serializable } from "./Common/Serializable.js";
 import type { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
@@ -75,6 +75,18 @@ export interface ShopfrontEmbeddedTokenError {
 export class ShopfrontTokenDecodingError extends Error {}
 
 export class ShopfrontTokenRequestError extends Error {}
+
+export type SellScreenActionMode =
+    "search" |
+    "keys" |
+    "held-sales" |
+    "payment" |
+    "customers" |
+    "promotions" |
+    "show-backorders" |
+    "fulfilment-orders";
+
+export type SellScreenSummaryMode = "transaction" | "payments" | "receipts";
 
 export abstract class BaseApplication {
     protected bridge: BaseBridge;

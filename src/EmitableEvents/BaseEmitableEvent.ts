@@ -1,4 +1,4 @@
-import { ToShopfront } from "../ApplicationEvents.js";
+import { ToShopfront } from "../ApplicationEvents/ToShopfront.js";
 
 export class BaseEmitableEvent<T> {
     protected eventName: ToShopfront;

@@ -1,5 +1,5 @@
 import { Application } from "../../Application.js";
-import { type FromShopfront } from "../../ApplicationEvents.js";
+import { type FromShopfront } from "../../ApplicationEvents/ToShopfront.js";
 import { InternalMessage } from "../../EmitableEvents/InternalMessage.js";
 
 export type InternalPageMessageMethod = keyof FromShopfront | "EXTERNAL_APPLICATION";

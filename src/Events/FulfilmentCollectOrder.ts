@@ -1,4 +1,4 @@
-import { type FromShopfrontCallbacks, type FromShopfrontReturns } from "../ApplicationEvents.js";
+import type { FromShopfrontCallbacks, FromShopfrontResponse } from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class FulfilmentCollectOrder extends BaseEvent {
@@ -9,7 +9,7 @@ export class FulfilmentCollectOrder extends BaseEvent {
     /**
      * @inheritDoc
      */
-    public async emit(data: string): Promise<FromShopfrontReturns["FULFILMENT_ORDER_COLLECTED"]> {
+    public async emit(data: string): Promise<FromShopfrontResponse["FULFILMENT_ORDER_COLLECTED"]> {
         return this.callback(data, undefined);
     }
 }

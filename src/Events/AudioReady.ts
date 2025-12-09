@@ -1,4 +1,4 @@
-import { type FromShopfrontCallbacks, type FromShopfrontReturns } from "../ApplicationEvents.js";
+import { type FromShopfrontCallbacks, type FromShopfrontResponse } from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class AudioReady extends BaseEvent<undefined> {
@@ -9,7 +9,7 @@ export class AudioReady extends BaseEvent<undefined> {
     /**
      * @inheritDoc
      */
-    public async emit(): Promise<FromShopfrontReturns["AUDIO_READY"]> {
+    public async emit(): Promise<FromShopfrontResponse["AUDIO_READY"]> {
         return this.callback(undefined, undefined);
     }
 }

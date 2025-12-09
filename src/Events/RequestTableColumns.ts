@@ -1,4 +1,8 @@
-import { type FromShopfrontCallbacks, type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import {
+    type FromShopfrontCallbacks,
+    type FromShopfrontResponse,
+    ToShopfront,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -10,8 +14,8 @@ interface RequestTableColumnsData {
 
 export class RequestTableColumns extends BaseEvent<
     RequestTableColumnsData,
-    MaybePromise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
-    FromShopfrontReturns["REQUEST_TABLE_COLUMNS"],
+    MaybePromise<FromShopfrontResponse["REQUEST_TABLE_COLUMNS"]>,
+    FromShopfrontResponse["REQUEST_TABLE_COLUMNS"],
     string,
     unknown
 > {
@@ -22,7 +26,7 @@ export class RequestTableColumns extends BaseEvent<
     /**
      * @inheritDoc
      */
-    public async emit(data: RequestTableColumnsData): Promise<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]> {
+    public async emit(data: RequestTableColumnsData): Promise<FromShopfrontResponse["REQUEST_TABLE_COLUMNS"]> {
         const result = await this.callback(data.location, data.context);
 
         if(typeof result !== "object") {
@@ -37,7 +41,7 @@ export class RequestTableColumns extends BaseEvent<
      */
     public static async respond(
         bridge: BaseBridge,
-        columns: Array<FromShopfrontReturns["REQUEST_TABLE_COLUMNS"]>,
+        columns: Array<FromShopfrontResponse["REQUEST_TABLE_COLUMNS"]>,
         id: string
     ): Promise<void> {
         columns = columns.filter(column => column !== null);

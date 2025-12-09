@@ -1,7 +1,7 @@
 export type {
-    SaleData,
-    SalePaymentData,
-    SaleProductData,
+    SaleData as SaleCreateData,
+    SalePaymentData as SaleCreatePaymentData,
+    SaleProductData as SaleCreateProductData,
 } from "../../Utilities/SaleCreate.js";
 export { BaseSale } from "./BaseSale.js";
 export * as Exceptions from "./Exceptions.js";

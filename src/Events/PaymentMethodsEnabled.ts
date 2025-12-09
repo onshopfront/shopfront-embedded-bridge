@@ -1,10 +1,10 @@
 import {
     type FromShopfrontCallbacks,
-    type FromShopfrontReturns,
+    type FromShopfrontResponse,
     type PaymentMethodEnabledContext,
     type SellScreenPaymentMethod,
     ToShopfront,
-} from "../ApplicationEvents.js";
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
@@ -16,8 +16,8 @@ interface PaymentMethodsEnabledData {
 
 export class PaymentMethodsEnabled extends BaseEvent<
     PaymentMethodsEnabledData,
-    MaybePromise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]>,
-    FromShopfrontReturns["PAYMENT_METHODS_ENABLED"],
+    MaybePromise<FromShopfrontResponse["PAYMENT_METHODS_ENABLED"]>,
+    FromShopfrontResponse["PAYMENT_METHODS_ENABLED"],
     Array<SellScreenPaymentMethod>,
     PaymentMethodEnabledContext
 > {
@@ -28,7 +28,7 @@ export class PaymentMethodsEnabled extends BaseEvent<
     /**
      * @inheritDoc
      */
-    public async emit(data: PaymentMethodsEnabledData): Promise<FromShopfrontReturns["PAYMENT_METHODS_ENABLED"]> {
+    public async emit(data: PaymentMethodsEnabledData): Promise<FromShopfrontResponse["PAYMENT_METHODS_ENABLED"]> {
         const result = await this.callback(data.data, data.context);
 
         if(typeof result !== "object" || result === null) {
@@ -43,7 +43,7 @@ export class PaymentMethodsEnabled extends BaseEvent<
      */
     public static async respond(
         bridge: BaseBridge,
-        data: FromShopfrontReturns["PAYMENT_METHODS_ENABLED"],
+        data: FromShopfrontResponse["PAYMENT_METHODS_ENABLED"],
         id: string
     ): Promise<void> {
         bridge.sendMessage(ToShopfront.RESPONSE_UI_PIPELINE, data, id);

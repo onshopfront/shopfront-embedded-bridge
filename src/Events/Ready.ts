@@ -1,4 +1,8 @@
-import type { FromShopfrontCallbacks, FromShopfrontReturns, RegisterChangedEvent } from "../ApplicationEvents.js";
+import type {
+    FromShopfrontCallbacks,
+    FromShopfrontResponse,
+    RegisterChangedEvent,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface ReadyData {
@@ -15,7 +19,7 @@ export class Ready extends BaseEvent<RegisterChangedEvent> {
     /**
      * @inheritDoc
      */
-    public async emit(data: ReadyData): Promise<FromShopfrontReturns["READY"]> {
+    public async emit(data: ReadyData): Promise<FromShopfrontResponse["READY"]> {
         return this.callback({
             outlet  : data.outlet,
             register: data.register,

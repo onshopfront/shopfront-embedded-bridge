@@ -1,4 +1,8 @@
-import type { AudioPermissionChangeEvent, FromShopfrontCallbacks, FromShopfrontReturns } from "../ApplicationEvents.js";
+import type {
+    AudioPermissionChangeEvent,
+    FromShopfrontCallbacks,
+    FromShopfrontResponse,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class AudioPermissionChange extends BaseEvent<AudioPermissionChangeEvent> {
@@ -9,7 +13,7 @@ export class AudioPermissionChange extends BaseEvent<AudioPermissionChangeEvent>
     /**
      * @inheritDoc
      */
-    public async emit(data: AudioPermissionChangeEvent): Promise<FromShopfrontReturns["AUDIO_PERMISSION_CHANGE"]> {
+    public async emit(data: AudioPermissionChangeEvent): Promise<FromShopfrontResponse["AUDIO_PERMISSION_CHANGE"]> {
         return this.callback(data, undefined);
     }
 }

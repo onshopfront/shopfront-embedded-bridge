@@ -1,4 +1,4 @@
-import * as ApplicationEvents from "../ApplicationEvents.js";
+import { ToShopfront } from "../ApplicationEvents/ToShopfront.js";
 import { type ApplicationEventListener, BaseBridge } from "../BaseBridge.js";
 
 export class MockBridge extends BaseBridge {
@@ -8,7 +8,7 @@ export class MockBridge extends BaseBridge {
         super(key, url);
 
         this.registerListeners();
-        this.sendMessage(ApplicationEvents.ToShopfront.READY);
+        this.sendMessage(ToShopfront.READY);
     }
 
     /**
@@ -35,8 +35,8 @@ export class MockBridge extends BaseBridge {
     /**
      * @inheritDoc
      */
-    public async sendMessage(type: ApplicationEvents.ToShopfront, data?: unknown, id?: string): Promise<void> {
-        if(type === ApplicationEvents.ToShopfront.READY) {
+    public async sendMessage(type: ToShopfront, data?: unknown, id?: string): Promise<void> {
+        if(type === ToShopfront.READY) {
             if(typeof data !== "undefined") {
                 throw new TypeError("The `data` parameter must be undefined when requesting ready state");
             }
@@ -74,7 +74,7 @@ export class MockBridge extends BaseBridge {
 
         // If this is a READY event listener, we can fire off a Ready event immediately
         if(!this.hasListener) {
-            this.sendMessage(ApplicationEvents.ToShopfront.READY);
+            this.sendMessage(ToShopfront.READY);
             this.hasListener = true;
         }
     }

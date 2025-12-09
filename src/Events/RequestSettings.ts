@@ -1,12 +1,16 @@
-import { type FromShopfrontCallbacks, type FromShopfrontReturns, ToShopfront } from "../ApplicationEvents.js";
+import {
+    type FromShopfrontCallbacks,
+    type FromShopfrontResponse,
+    ToShopfront,
+} from "../ApplicationEvents/ToShopfront.js";
 import { BaseBridge } from "../BaseBridge.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 export class RequestSettings extends BaseEvent<
     undefined,
-    MaybePromise<FromShopfrontReturns["REQUEST_SETTINGS"]>,
-    FromShopfrontReturns["REQUEST_SETTINGS"]
+    MaybePromise<FromShopfrontResponse["REQUEST_SETTINGS"]>,
+    FromShopfrontResponse["REQUEST_SETTINGS"]
 > {
     constructor(callback: FromShopfrontCallbacks["REQUEST_SETTINGS"]) {
         super(callback);
@@ -15,7 +19,7 @@ export class RequestSettings extends BaseEvent<
     /**
      * @inheritDoc
      */
-    public async emit(_: never): Promise<FromShopfrontReturns["REQUEST_SETTINGS"]> {
+    public async emit(_: never): Promise<FromShopfrontResponse["REQUEST_SETTINGS"]> {
         const result = await this.callback(undefined, undefined);
 
         if(typeof result !== "object" || result === null) {
@@ -30,7 +34,7 @@ export class RequestSettings extends BaseEvent<
      */
     public static async respond(
         bridge: BaseBridge,
-        settings: Array<FromShopfrontReturns["REQUEST_SETTINGS"]>,
+        settings: Array<FromShopfrontResponse["REQUEST_SETTINGS"]>,
         id: string
     ): Promise<void> {
         if(settings.length > 1) {
