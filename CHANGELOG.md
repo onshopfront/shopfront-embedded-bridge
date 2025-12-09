@@ -1,3 +1,15 @@
+# v3.0.3 (Tue Dec 09 2025)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9313](https://onshopfront.atlassian.net/SHOPFRONT-9313): Embedded Bridge - Export all modules from the main `in… [#21](https://github.com/onshopfront/shopfront-embedded-bridge/pull/21) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.2 (Mon Oct 20 2025)
 
 #### 🐛 Bug Fix
