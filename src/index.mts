@@ -6,8 +6,8 @@ export * from "./ApplicationEvents/index.js";
 export {
     BaseApplication,
     type ShopfrontEmbeddedVerificationToken,
-    type ShopfrontTokenDecodingError,
-    type ShopfrontTokenRequestError,
+    ShopfrontTokenDecodingError,
+    ShopfrontTokenRequestError,
 } from "./BaseApplication.js";
 export { BaseBridge } from "./BaseBridge.js";
 export { Bridge } from "./Bridge.js";
