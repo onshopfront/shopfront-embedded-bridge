@@ -730,7 +730,7 @@ export class Application extends BaseApplication {
 
         let loadedUrl = location.href;
 
-        if(typeof import.meta !== "undefined" && window.parent !== window) {
+        if(typeof import.meta !== "undefined" && window.parent === window) {
             loadedUrl = import.meta.url;
         }
 
