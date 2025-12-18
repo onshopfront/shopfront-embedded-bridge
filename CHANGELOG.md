@@ -1,3 +1,15 @@
+# v3.0.4 (Thu Dec 18 2025)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9368](https://onshopfront.atlassian.net/SHOPFRONT-9368): Embedded API - `getToken` call doesn't decode when using the JavaScript communicator [#22](https://github.com/onshopfront/shopfront-embedded-bridge/pull/22) ([@g4ther](https://github.com/g4ther))
+
+#### Authors: 1
+
+- Nicholas Clark ([@g4ther](https://github.com/g4ther))
+
+---
+
 # v3.0.3 (Tue Dec 09 2025)
 
 #### 🐛 Bug Fix
