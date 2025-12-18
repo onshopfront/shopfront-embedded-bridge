@@ -1,6 +1,6 @@
 {
     "name": "@shopfront/bridge",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "description": "The bridge used to embed your application within Shopfront",
     "private": false,
     "type": "module",
