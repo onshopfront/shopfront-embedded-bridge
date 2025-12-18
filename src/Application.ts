@@ -728,7 +728,13 @@ export class Application extends BaseApplication {
             throw new ShopfrontTokenDecodingError();
         }
 
-        if(decoded.url.loaded !== location.href) {
+        let loadedUrl = location.href;
+
+        if(typeof import.meta !== "undefined" && window.parent !== window) {
+            loadedUrl = import.meta.url;
+        }
+
+        if(decoded.url.loaded !== loadedUrl) {
             throw new ShopfrontTokenDecodingError();
         }
 
