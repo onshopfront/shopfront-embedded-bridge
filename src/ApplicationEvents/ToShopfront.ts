@@ -209,6 +209,12 @@ export interface InternalPageMessageEvent {
     reference: InternalMessageSource;
 }
 
+export interface ReadyEvent {
+    register: null | string;
+    outlet: null | string;
+    vendor: string;
+}
+
 export interface RegisterChangedEvent {
     register: null | string;
     outlet: null | string;
@@ -262,7 +268,7 @@ export interface PaymentMethodEnabledContext {
 }
 
 export interface FromShopfrontCallbacks {
-    READY: (event: RegisterChangedEvent) => MaybePromise<FromShopfrontResponse["READY"]>;
+    READY: (event: ReadyEvent) => MaybePromise<FromShopfrontResponse["READY"]>;
     REQUEST_SETTINGS: () => MaybePromise<FromShopfrontResponse["REQUEST_SETTINGS"]>;
     REQUEST_BUTTONS: (location: string, context: unknown) => MaybePromise<FromShopfrontResponse["REQUEST_BUTTONS"]>;
     REQUEST_TABLE_COLUMNS: (

@@ -95,6 +95,7 @@ export abstract class BaseApplication {
     protected register: string | null;
     protected outlet: string | null;
     protected user: string | null;
+    protected vendor = "";
     protected signingKey: CryptoKeyPair | undefined;
     protected listeners: {
         [key in ListenableFromShopfrontEvent]: Map<
@@ -349,11 +350,10 @@ export abstract class BaseApplication {
         }
 
         if(event === "READY" && this.isReady) {
-            c = c as Ready;
-            c.emit({
+            (c as Ready).emit({
                 outlet  : this.outlet,
                 register: this.register,
-                user    : this.user,
+                vendor  : this.vendor,
             });
         }
     }

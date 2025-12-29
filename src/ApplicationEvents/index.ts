@@ -18,6 +18,7 @@ export type {
     PaymentMethodEnabledContext,
     PaymentMethodsEnabledEvent,
     PaymentMethodsEnabledResponse,
+    ReadyEvent,
     RegisterChangedEvent,
     RequestButtonsResponse,
     RequestCustomerListOptionsResponse,
