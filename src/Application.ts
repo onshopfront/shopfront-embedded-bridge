@@ -82,6 +82,7 @@ export class Application extends BaseApplication {
             this.key = data.key as string;
             this.outlet = data.outlet as string;
             this.register = data.register as string;
+            this.vendor = data.vendor as string;
 
             data = {
                 outlet  : data.outlet,
