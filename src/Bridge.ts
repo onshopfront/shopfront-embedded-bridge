@@ -22,8 +22,8 @@ type JavaScriptSendMessageCallback = (message: {
     id?: string;
 }) => void;
 
-// All the keys must have callbacks defined inline (not using types) at the top level otherwise re-exporting requires
-// additional imports - see SHOPFRONT-9314
+// All the keys must have callbacks defined inline (not using exported type aliases) at the top level otherwise
+// re-exporting requires additional imports - see SHOPFRONT-9314
 export interface JavaScriptCommunicatorExports {
     execute: () => void;
     registerSendMessage: (callback: JavaScriptSendMessageCallback) => void;
