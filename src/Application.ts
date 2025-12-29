@@ -86,6 +86,7 @@ export class Application extends BaseApplication {
             data = {
                 outlet  : data.outlet,
                 register: data.register,
+                vendor  : data.vendor,
             };
         }
 

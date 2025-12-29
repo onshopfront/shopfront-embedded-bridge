@@ -1,17 +1,17 @@
 import type {
     FromShopfrontCallbacks,
     FromShopfrontResponse,
-    RegisterChangedEvent,
+    ReadyEvent,
 } from "../ApplicationEvents/ToShopfront.js";
 import { BaseEvent } from "./BaseEvent.js";
 
 interface ReadyData {
     outlet: string | null;
     register: string | null;
-    user: string | null;
+    vendor: string;
 }
 
-export class Ready extends BaseEvent<RegisterChangedEvent> {
+export class Ready extends BaseEvent<ReadyEvent> {
     constructor(callback: FromShopfrontCallbacks["READY"]) {
         super(callback);
     }
@@ -23,7 +23,7 @@ export class Ready extends BaseEvent<RegisterChangedEvent> {
         return this.callback({
             outlet  : data.outlet,
             register: data.register,
-            user    : data.user,
+            vendor  : data.vendor,
         }, undefined);
     }
 }
