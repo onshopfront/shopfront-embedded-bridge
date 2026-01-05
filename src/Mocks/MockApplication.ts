@@ -48,6 +48,7 @@ export class MockApplication extends BaseApplication {
             key     : "embedded-key",
             outlet  : "outlet-id",
             register: "register-id",
+            vendor  : "vendor",
         }, "");
     }
 
@@ -75,6 +76,7 @@ export class MockApplication extends BaseApplication {
             data = {
                 outlet  : data.outlet,
                 register: data.register,
+                vendor  : data.vendor,
             };
         }
 
