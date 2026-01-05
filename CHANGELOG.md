@@ -1,3 +1,15 @@
+# v3.0.7 (Mon Jan 05 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9319](https://onshopfront.atlassian.net/SHOPFRONT-9319): Embedded Bridge - Allow JavaScript applications to retrieve the vendor [#25](https://github.com/onshopfront/shopfront-embedded-bridge/pull/25) ([@g4ther](https://github.com/g4ther))
+
+#### Authors: 1
+
+- Nicholas Clark ([@g4ther](https://github.com/g4ther))
+
+---
+
 # v3.0.6 (Mon Jan 05 2026)
 
 #### 🐛 Bug Fix
