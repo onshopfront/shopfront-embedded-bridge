@@ -1,3 +1,15 @@
+# v3.0.6 (Mon Jan 05 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9314](https://onshopfront.atlassian.net/SHOPFRONT-9314): Embedded Bridge - `onReceiveMessage` throws `inferred type cannot be named` error [#24](https://github.com/onshopfront/shopfront-embedded-bridge/pull/24) ([@g4ther](https://github.com/g4ther))
+
+#### Authors: 1
+
+- Nicholas Clark ([@g4ther](https://github.com/g4ther))
+
+---
+
 # v3.0.5 (Mon Jan 05 2026)
 
 #### 🐛 Bug Fix
