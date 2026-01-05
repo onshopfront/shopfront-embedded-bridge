@@ -38,3 +38,17 @@ export const execute = application.communicator.execute;
 export const registerSendMessage = application.communicator.registerSendMessage;
 export const onReceiveMessage = application.communicator.onReceiveMessage;
 ```
+
+Alternatively, you can export the application as the default item and Shopfront will automatically infer the functions 
+from it.
+
+```javascript
+import { Bridge } from "@shopfront/bridge";
+
+const application = Bridge.createApplication({
+    id          : "<< my client id >>",
+    communicator: "javascript",
+});
+
+export default application;
+```

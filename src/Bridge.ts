@@ -22,16 +22,16 @@ type JavaScriptSendMessageCallback = (message: {
     id?: string;
 }) => void;
 
-export type JavaScriptReceiveMessageCallback = (
-    type: keyof FromShopfront | keyof FromShopfrontInternal,
-    data: Record<string, unknown>,
-    id: string
-) => void;
-
+// All the keys must have callbacks defined inline (not using exported type aliases) at the top level otherwise
+// re-exporting requires additional imports - see SHOPFRONT-9314
 export interface JavaScriptCommunicatorExports {
     execute: () => void;
     registerSendMessage: (callback: JavaScriptSendMessageCallback) => void;
-    onReceiveMessage: JavaScriptReceiveMessageCallback;
+    onReceiveMessage: (
+        type: keyof FromShopfront | keyof FromShopfrontInternal,
+        data: Record<string, unknown>,
+        id: string
+    ) => void;
 }
 
 export class Bridge extends BaseBridge {
