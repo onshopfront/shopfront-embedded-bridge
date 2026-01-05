@@ -40,7 +40,7 @@ export const onReceiveMessage = application.communicator.onReceiveMessage;
 ```
 
 Alternatively, you can export the application as the default item and Shopfront will automatically infer the functions 
-from it. When using this method, it can be the only item exported from the module.
+from it.
 
 ```javascript
 import { Bridge } from "@shopfront/bridge";
