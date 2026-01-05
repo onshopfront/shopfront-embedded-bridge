@@ -1,3 +1,15 @@
+# v3.0.5 (Mon Jan 05 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9381](https://onshopfront.atlassian.net/SHOPFRONT-9381): Embedded Bridge - `BaseCurrentSale` and `SaleCompletedEvent` are not exported [#23](https://github.com/onshopfront/shopfront-embedded-bridge/pull/23) ([@g4ther](https://github.com/g4ther))
+
+#### Authors: 1
+
+- Nicholas Clark ([@g4ther](https://github.com/g4ther))
+
+---
+
 # v3.0.4 (Thu Dec 18 2025)
 
 #### 🐛 Bug Fix
