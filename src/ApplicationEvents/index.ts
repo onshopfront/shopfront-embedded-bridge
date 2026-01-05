@@ -25,6 +25,7 @@ export type {
     RequestSellScreenOptionsResponse,
     RequestSettingsResponse,
     RequestTableColumnsResponse,
+    SaleCompletedEvent,
     UIPipelineContext,
     UIPipelineEvent,
     UIPipelineResponse,
