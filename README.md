@@ -53,7 +53,7 @@ export const onReceiveMessage = application.communicator.onReceiveMessage;
 
 > [!NOTE]
 > When exporting the methods individually, you may receive the TypeScript error "TS2742: The inferred type of 
-> onReceiveMessage cannot be named without a referencve to Bridge". You can resolve this by specifying the type 
+> onReceiveMessage cannot be named without a reference to Bridge". You can resolve this by specifying the type 
 > directly:
 > ```javascript
 > export const onReceiveMessage: typeof application.communicator.onReceiveMessage = application.communicator.onReceiveMessage;
