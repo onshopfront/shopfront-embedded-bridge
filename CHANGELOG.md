@@ -1,3 +1,15 @@
+# v3.0.8 (Thu Jan 08 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9314](https://onshopfront.atlassian.net/SHOPFRONT-9314): Changed which method was recommended and provided details on how to resolve the inferred type correctly [#26](https://github.com/onshopfront/shopfront-embedded-bridge/pull/26) ([@g4ther](https://github.com/g4ther))
+
+#### Authors: 1
+
+- Nicholas Clark ([@g4ther](https://github.com/g4ther))
+
+---
+
 # v3.0.7 (Mon Jan 05 2026)
 
 #### 🐛 Bug Fix
