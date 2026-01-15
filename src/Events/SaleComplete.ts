@@ -107,7 +107,7 @@ export interface CompletedSale {
     userId: string;
     orderReference: string;
     refundReason: string;
-    status: "COMPLETED";
+    status: "COMPLETED" | "CANCELLED";
     id: string;
     invoiceId: string;
     createdAt: string;
