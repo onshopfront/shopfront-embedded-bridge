@@ -1,3 +1,15 @@
+# v3.0.9 (Thu Jan 15 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9350](https://onshopfront.atlassian.net/SHOPFRONT-9350): Embedded Bridge - CompletedSale can have a `CANCELLE… [#27](https://github.com/onshopfront/shopfront-embedded-bridge/pull/27) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.8 (Thu Jan 08 2026)
 
 #### 🐛 Bug Fix
