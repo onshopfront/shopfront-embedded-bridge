@@ -15,3 +15,4 @@ export * from "./EmitableEvents/index.js";
 export type { SaleEventProduct } from "./Events/DirectEvents/types/SaleEventData.js";
 export type { CompletedSale } from "./Events/SaleComplete.js";
 export * from "./Mocks/index.js";
+export * from "./Utilities/UUID.js";
