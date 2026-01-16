@@ -36,6 +36,7 @@ import { RequestSaleKeys } from "./Events/RequestSaleKeys.js";
 import { RequestSellScreenOptions } from "./Events/RequestSellScreenOptions.js";
 import { RequestSettings } from "./Events/RequestSettings.js";
 import { RequestTableColumns } from "./Events/RequestTableColumns.js";
+import { SalePreFinishPipeline } from "./Events/SalePreFinishPipeline.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
 import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
 import { type MaybePromise } from "./Utilities/MiscTypes.js";
@@ -241,6 +242,13 @@ export class Application extends BaseApplication {
                 return Promise.all(results)
                     .then(res => {
                         return FulfilmentGetOrder.respond(this.bridge, res[0], id);
+                    });
+            case "SALE_PRE_FINISH_PIPELINE":
+                results = results as Array<Promise<FromShopfrontResponse["SALE_PRE_FINISH_PIPELINE"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return SalePreFinishPipeline.respond(this.bridge, res[0], id);
                     });
         }
     }

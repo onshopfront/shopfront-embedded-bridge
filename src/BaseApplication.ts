@@ -48,6 +48,7 @@ import { RequestSellScreenOptions } from "./Events/RequestSellScreenOptions.js";
 import { RequestSettings } from "./Events/RequestSettings.js";
 import { RequestTableColumns } from "./Events/RequestTableColumns.js";
 import { SaleComplete } from "./Events/SaleComplete.js";
+import { SalePreFinishPipeline } from "./Events/SalePreFinishPipeline.js";
 import { UIPipeline } from "./Events/UIPipeline.js";
 import type { AnyFunction, MaybePromise } from "./Utilities/MiscTypes.js";
 
@@ -125,6 +126,7 @@ export abstract class BaseApplication {
         FULFILMENT_ORDER_COLLECTED   : new Map(),
         FULFILMENT_ORDER_COMPLETED   : new Map(),
         GIFT_CARD_CODE_CHECK         : new Map(),
+        SALE_PRE_FINISH_PIPELINE     : new Map(),
     };
     protected directListeners: {
         [key in DirectShopfrontEvent]: Map<
@@ -341,6 +343,16 @@ export abstract class BaseApplication {
                 break;
             case "GIFT_CARD_CODE_CHECK":
                 c = new GiftCardCodeCheck(callback as FromShopfrontCallbacks["GIFT_CARD_CODE_CHECK"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "SALE_PRE_FINISH_PIPELINE":
+                if(this.listeners[event].size !== 0) {
+                    throw new TypeError(
+                        "Application already has 'SALE_PRE_FINISH_PIPELINE' event listener registered."
+                    );
+                }
+
+                c = new SalePreFinishPipeline(callback as FromShopfrontCallbacks["SALE_PRE_FINISH_PIPELINE"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
