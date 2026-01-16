@@ -25,6 +25,7 @@ import { RequestSellScreenOptions, type SellScreenOption } from "../Events/Reque
 import { RequestSettings } from "../Events/RequestSettings.js";
 import { RequestTableColumns } from "../Events/RequestTableColumns.js";
 import { type CompletedSale, SaleComplete } from "../Events/SaleComplete.js";
+import type { SalePreFinishPipeline } from "../Events/SalePreFinishPipeline.js";
 import { UIPipeline } from "../Events/UIPipeline.js";
 import { type MaybePromise } from "../Utilities/MiscTypes.js";
 
@@ -149,6 +150,8 @@ export interface GiftCardCodeCheckResponse {
     message: string | null;
 }
 
+export type SalePreFinishPipelineResponse = ShopfrontSaleState | false;
+
 interface InternalShopfrontResponse {
     requestId: string;
 }
@@ -200,6 +203,7 @@ export interface FromShopfrontResponse {
     FULFILMENT_ORDER_COMPLETED: unknown;
     RESPONSE_CREATE_SALE: ResponseCreateSaleResponse;
     GIFT_CARD_CODE_CHECK: GiftCardCodeCheckResponse;
+    SALE_PRE_FINISH_PIPELINE: SalePreFinishPipelineResponse;
 }
 
 export interface InternalPageMessageEvent {
@@ -225,6 +229,8 @@ export interface GiftCardCodeCheckEvent {
     code: string;
     message: string | null;
 }
+
+export type SalePreFinishPipelineEvent = ShopfrontSaleState | false;
 
 export interface FormatIntegratedProductEvent {
     product: FormattedSaleProduct;
@@ -265,6 +271,11 @@ export interface PaymentMethodEnabledContext {
     customer: false | {
         uuid: string;
     };
+}
+
+export interface SalePreFinishPipelineContext {
+    user: string | false;
+    register: string;
 }
 
 export interface FromShopfrontCallbacks {
@@ -313,6 +324,10 @@ export interface FromShopfrontCallbacks {
         event: GiftCardCodeCheckEvent,
         context: unknown
     ) => MaybePromise<FromShopfrontResponse["GIFT_CARD_CODE_CHECK"]>;
+    SALE_PRE_FINISH_PIPELINE: (
+        event: SalePreFinishPipelineEvent,
+        context: SalePreFinishPipelineContext
+    ) => MaybePromise<FromShopfrontResponse["SALE_PRE_FINISH_PIPELINE"]>;
 }
 
 export interface FromShopfront {
@@ -339,6 +354,7 @@ export interface FromShopfront {
     FULFILMENT_ORDER_COLLECTED: FulfilmentCollectOrder;
     FULFILMENT_ORDER_COMPLETED: FulfilmentCompleteOrder;
     GIFT_CARD_CODE_CHECK: GiftCardCodeCheck;
+    SALE_PRE_FINISH_PIPELINE: SalePreFinishPipeline;
 }
 
 export type ListenableFromShopfrontEvent = keyof Omit<FromShopfront, "CALLBACK">;
