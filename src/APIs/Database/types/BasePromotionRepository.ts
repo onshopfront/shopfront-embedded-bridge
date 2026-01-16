@@ -10,7 +10,7 @@ export type LocalDatabaseCriteriaTypeUnion =
     "sell-rate" |
     "quantity-only";
 
-interface LocalDatabaseCriteriaItem {
+export interface LocalDatabaseCriteriaItem {
     uuid: string;
     rebate: string | number;
 }

@@ -4,7 +4,10 @@ export default defineConfig({
     build: {
         target: "esnext",
         lib   : {
-            entry   : "./src/index.mts",
+            entry: {
+                "index"   : "./src/index.mts",
+                "database": "./src/APIs/Database/index.mts",
+            },
             name    : "@shopfront/bridge",
             formats : [ "es" ],
             fileName: (_, entryName) => `${entryName}.mjs`,

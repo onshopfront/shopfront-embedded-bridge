@@ -203,7 +203,7 @@ export interface FromShopfrontResponse {
 }
 
 export interface InternalPageMessageEvent {
-    method: "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS" | "EXTERNAL_APPLICATION";
+    method: "REQUEST_SETTINGS" | "REQUEST_SELL_SCREEN_OPTIONS" | "PAYMENT_API" | "EXTERNAL_APPLICATION";
     url: string;
     message: unknown;
     reference: InternalMessageSource;

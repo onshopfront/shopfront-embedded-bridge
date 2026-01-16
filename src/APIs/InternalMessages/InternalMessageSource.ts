@@ -2,7 +2,7 @@ import { Application } from "../../Application.js";
 import { type FromShopfront } from "../../ApplicationEvents/ToShopfront.js";
 import { InternalMessage } from "../../EmitableEvents/InternalMessage.js";
 
-export type InternalPageMessageMethod = keyof FromShopfront | "EXTERNAL_APPLICATION";
+export type InternalPageMessageMethod = keyof FromShopfront | "EXTERNAL_APPLICATION" | "PAYMENT_API";
 
 export class InternalMessageSource {
     protected application: Application;

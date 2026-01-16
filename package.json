@@ -9,7 +9,11 @@
     "exports": {
         ".": {
             "import": "./lib/index.mjs",
-            "types": "./lib/index.d.ts"
+            "types": "./lib/index.d.mts"
+        },
+        "./database": {
+            "import": "./lib/database.mjs",
+            "types": "./lib/APIs/Database/index.d.mts"
         }
     },
     "repository": {

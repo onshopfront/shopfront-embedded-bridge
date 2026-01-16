@@ -21,7 +21,7 @@ export class InternalPageMessage extends BaseEvent<InternalPageMessageEvent> {
      * Creates and returns a new internal message source
      */
     protected createReference(
-        method: keyof FromShopfront | "EXTERNAL_APPLICATION",
+        method: keyof FromShopfront | "EXTERNAL_APPLICATION" | "PAYMENT_API",
         url: string
     ): InternalMessageSource {
         return new InternalMessageSource(
