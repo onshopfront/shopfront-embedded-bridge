@@ -1,3 +1,15 @@
+# v3.0.10 (Fri Jan 16 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9284](https://onshopfront.atlassian.net/SHOPFRONT-9284): Embedded Bridge - Add the PAYMENT_API method to `Int… [#28](https://github.com/onshopfront/shopfront-embedded-bridge/pull/28) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.9 (Thu Jan 15 2026)
 
 #### 🐛 Bug Fix
