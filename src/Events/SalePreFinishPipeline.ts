@@ -31,7 +31,7 @@ export class SalePreFinishPipeline extends BaseEvent<
     public async emit(data: SalePreFinishPipelineData): Promise<FromShopfrontResponse["SALE_PRE_FINISH_PIPELINE"]> {
         const result = await this.callback(data.data, data.context);
 
-        if(typeof result !== "object" && result) {
+        if(result !== false && (typeof result !== "object" || result === null)) {
             throw new TypeError("Callback must return an object or false");
         }
 
