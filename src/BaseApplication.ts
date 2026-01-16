@@ -346,6 +346,12 @@ export abstract class BaseApplication {
                 this.listeners[event].set(callback, c);
                 break;
             case "SALE_PRE_FINISH_PIPELINE":
+                if(this.listeners[event].size !== 0) {
+                    throw new TypeError(
+                        "Application already has 'SALE_PRE_FINISH_PIPELINE' event listener registered."
+                    );
+                }
+
                 c = new SalePreFinishPipeline(callback as FromShopfrontCallbacks["SALE_PRE_FINISH_PIPELINE"]);
                 this.listeners[event].set(callback, c);
                 break;
