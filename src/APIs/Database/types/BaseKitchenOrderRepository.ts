@@ -1,13 +1,13 @@
 import type BaseRepository from "./BaseRepository.js";
 
-interface KitchenOrderItemComponent {
+export interface KitchenOrderItemComponent {
     id: string;
     name: string;
     quantity: number;
     components: Array<KitchenOrderItemComponent>;
 }
 
-interface KitchenOrderItem {
+export interface KitchenOrderItem {
     id: string; // This is a unique ID for the item on the order
     product: string; // The general ID of the item
     ready: boolean;
@@ -19,7 +19,7 @@ interface KitchenOrderItem {
     components: Array<KitchenOrderItemComponent>;
 }
 
-interface KitchenOrder {
+export interface KitchenOrder {
     id: string; // This is a unique ID for the order, not necessarily the sale ID
     register: string;
     outlet: string;

@@ -1,6 +1,6 @@
 import type BaseRepository from "./BaseRepository.js";
 
-type SaleActionType =
+export type SaleActionType =
     "PRODUCT_SCAN" |
     "PRODUCT_SEARCH_ADD" |
     "PRODUCT_KEY_ADD" |
@@ -15,7 +15,7 @@ type SaleActionType =
     "ADD_PAYMENT" |
     "REMOVE_PAYMENT";
 
-interface SaleAction {
+export interface SaleAction {
     timestamp: string;
     action: SaleActionType;
     value: string;
@@ -25,7 +25,7 @@ interface SaleAction {
 
 export type LocalDatabaseSalePaymentStatus = "cancelled" | "completed" | "failed";
 
-type SaleStatus = "COMPLETED" | "CANCELLED" | "PARKED" | "INCOMPLETE" | "UNPARKED";
+export type SaleStatus = "COMPLETED" | "CANCELLED" | "PARKED" | "INCOMPLETE" | "UNPARKED";
 
 export interface LocalDatabaseSaleItemTypeProduct {
     id: string;
