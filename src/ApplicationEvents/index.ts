@@ -27,6 +27,8 @@ export type {
     RequestSettingsResponse,
     RequestTableColumnsResponse,
     SaleCompletedEvent,
+    SalePreFinishPipelineContext,
+    SalePreFinishPipelineEvent,
     UIPipelineContext,
     UIPipelineEvent,
     UIPipelineResponse,
