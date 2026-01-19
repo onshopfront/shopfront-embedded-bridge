@@ -1,3 +1,15 @@
+# v3.0.11 (Mon Jan 19 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9509](https://onshopfront.atlassian.net/SHOPFRONT-9509): Embedded Bridge - Add support for the new `SALE_PRE_FI… [#29](https://github.com/onshopfront/shopfront-embedded-bridge/pull/29) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.10 (Fri Jan 16 2026)
 
 #### 🐛 Bug Fix
