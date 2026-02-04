@@ -17,4 +17,5 @@ export type {
     ShopfrontSaleProduct,
     ShopfrontSaleProductType,
     ShopfrontSaleState,
+    ShopfrontSaleStatus,
 } from "./ShopfrontSaleState.js";
