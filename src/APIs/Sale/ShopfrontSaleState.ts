@@ -1,5 +1,6 @@
 export type ShopfrontSalePaymentStatus = "completed" | "cancelled" | "failed";
 export type ShopfrontSaleProductType = "Normal" | "Basket" | "Package" | "Component" | "Voucher";
+export type ShopfrontSaleStatus = "COMPLETED" | "CANCELLED" | "PARKED" | "INCOMPLETE";
 
 export type ShopfrontSaleProductPromotions = Record<string, {
     name: string;
@@ -44,6 +45,7 @@ export interface ShopfrontSalePayment {
 }
 
 export interface ShopfrontSaleState {
+    status?: ShopfrontSaleStatus;
     clientId?: string;
     register?: string;
     products: Array<ShopfrontSaleProduct>;
