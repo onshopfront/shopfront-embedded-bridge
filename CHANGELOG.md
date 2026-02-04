@@ -1,3 +1,15 @@
+# v3.0.12 (Wed Feb 04 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9591](https://onshopfront.atlassian.net/SHOPFRONT-9591): Embedded Bridge - ShopfrontSaleState interface is missing some properties [#30](https://github.com/onshopfront/shopfront-embedded-bridge/pull/30) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.11 (Mon Jan 19 2026)
 
 #### 🐛 Bug Fix
