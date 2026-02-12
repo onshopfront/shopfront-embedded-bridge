@@ -1,3 +1,15 @@
+# v3.0.13 (Thu Feb 12 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9635](https://onshopfront.atlassian.net/SHOPFRONT-9635): Embedded API - Allow more options to be passed when adding a payment to the sale [#31](https://github.com/onshopfront/shopfront-embedded-bridge/pull/31) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.12 (Wed Feb 04 2026)
 
 #### 🐛 Bug Fix
