@@ -10,11 +10,8 @@ export enum SalePaymentStatus {
 export interface SalePaymentOptions {
     exact?: boolean;
     rounding?: number | "auto";
-    // TODO: Do we add support for this as well?
-    // giftcard?: GiftCardPayment | "auto";
-    refund: boolean;
+    refund?: boolean;
     loyalty?: number | "auto";
-    // TODO: Do we add support for the Array<SaleVoucherProduct> type from Shopfront?
     vouchers?: boolean;
     approve?: boolean;
     remove?: Array<number>;
@@ -23,7 +20,7 @@ export interface SalePaymentOptions {
     reverting?: boolean;
     voucherRefund?: boolean;
     metaData?: Record<string, unknown>;
-    source: string;
+    source?: string;
     subtype?: string;
 }
 
