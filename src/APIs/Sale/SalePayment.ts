@@ -34,14 +34,14 @@ export class SalePayment {
     protected cashout?: number;
     protected rounding?: number;
     protected metaData: Record<string, unknown> = {};
-    protected options?: Partial<SalePaymentOptions>;
+    protected options?: SalePaymentOptions;
 
     constructor(
         id: string,
         amount: number,
         cashout?: number,
         status?: SalePaymentStatus,
-        options?: Partial<SalePaymentOptions>
+        options?: SalePaymentOptions
     ) {
         this.internalId = UUID.generate();
 
@@ -139,7 +139,7 @@ export class SalePayment {
     /**
      * Get the options attached to this payment method
      */
-    public getOptions(): Partial<SalePaymentOptions> | undefined {
+    public getOptions(): SalePaymentOptions | undefined {
         return this.options;
     }
 }

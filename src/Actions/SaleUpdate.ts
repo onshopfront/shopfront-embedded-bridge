@@ -21,7 +21,7 @@ export interface SaleUpdateChanges {
         amount: number;
         cashout?: number | boolean;
         status?: ShopfrontSalePaymentStatus;
-        options?: Partial<SalePaymentOptions>;
+        options?: SalePaymentOptions;
     };
     PAYMENT_REVERSE: {
         id: string;
