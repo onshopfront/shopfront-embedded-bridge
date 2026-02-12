@@ -7,6 +7,23 @@ export enum SalePaymentStatus {
     CANCELLED = "cancelled",
 }
 
+export interface SalePaymentOptions {
+    exact?: boolean;
+    rounding?: number | "auto";
+    refund?: boolean;
+    loyalty?: number | "auto";
+    vouchers?: boolean;
+    approve?: boolean;
+    remove?: Array<number>;
+    removeAmount?: number;
+    receipt?: string;
+    reverting?: boolean;
+    voucherRefund?: boolean;
+    metaData?: Record<string, unknown>;
+    source?: string;
+    subtype?: string;
+}
+
 export class SalePayment {
     public readonly internalId: string;
 
@@ -17,14 +34,22 @@ export class SalePayment {
     protected cashout?: number;
     protected rounding?: number;
     protected metaData: Record<string, unknown> = {};
+    protected options?: SalePaymentOptions;
 
-    constructor(id: string, amount: number, cashout?: number, status?: SalePaymentStatus) {
+    constructor(
+        id: string,
+        amount: number,
+        cashout?: number,
+        status?: SalePaymentStatus,
+        options?: SalePaymentOptions
+    ) {
         this.internalId = UUID.generate();
 
         this.id = id;
         this.amount = amount;
         this.cashout = cashout;
         this.status = status;
+        this.options = options;
     }
 
     /**
@@ -109,5 +134,12 @@ export class SalePayment {
      */
     public getMetaData(): Record<string, unknown> {
         return this.metaData;
+    }
+
+    /**
+     * Get the options attached to this payment method
+     */
+    public getOptions(): SalePaymentOptions | undefined {
+        return this.options;
     }
 }

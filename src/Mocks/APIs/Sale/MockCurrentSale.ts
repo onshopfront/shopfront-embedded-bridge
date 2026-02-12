@@ -450,7 +450,8 @@ export class MockCurrentSale extends BaseCurrentSale {
             payment.getId(),
             updatedAmount,
             payment.getCashout(),
-            payment.getStatus()
+            payment.getStatus(),
+            payment.getOptions()
         );
 
         clone["metaData"] = payment["metaData"];
