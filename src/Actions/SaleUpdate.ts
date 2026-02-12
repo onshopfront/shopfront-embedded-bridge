@@ -1,4 +1,5 @@
 import type { ShopfrontSalePaymentStatus } from "../APIs/Sale/index.js";
+import type { SalePaymentOptions } from "../APIs/Sale/SalePayment.js";
 import type { Serialized } from "../Common/Serializable.js";
 import { BaseAction } from "./BaseAction.js";
 
@@ -20,6 +21,7 @@ export interface SaleUpdateChanges {
         amount: number;
         cashout?: number | boolean;
         status?: ShopfrontSalePaymentStatus;
+        options?: Partial<SalePaymentOptions>;
     };
     PAYMENT_REVERSE: {
         id: string;

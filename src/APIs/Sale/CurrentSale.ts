@@ -80,6 +80,7 @@ export class CurrentSale extends BaseCurrentSale {
             amount : payment.getAmount(),
             cashout: payment.getCashout(),
             status : payment.getStatus(),
+            options: payment.getOptions(),
         }));
     }
 
