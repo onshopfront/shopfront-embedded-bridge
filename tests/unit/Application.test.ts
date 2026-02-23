@@ -21,6 +21,7 @@ import type { CompletedSale } from "../../src/Events/SaleComplete.js";
 import { mockApplication } from "../../src/Mocks/index.js";
 import { MockApplication } from "../../src/Mocks/MockApplication.js";
 import type { SaleEventProduct } from "../../src/Events/DirectEvents/types/SaleEventData.js";
+import UUID from "../../src/Utilities/UUID.js";
 
 /**
  * Returns a new instance of a mocked Application
@@ -30,6 +31,7 @@ const createMockedApplication = (): MockApplication => {
 };
 
 const blankSaleData: SaleData = {
+    internalId: UUID.generate(),
     products: [],
     payments: [],
     customer: null,
@@ -370,7 +372,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 await application.fireEvent("READY", {
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
-                    user    : "new-user-id"
+                    vendor  : "new-vendor-id"
                 });
 
                 // The `READY` event automatically fires when the listener is first registered
@@ -379,7 +381,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback).wasLastCalledWith({
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
-                    user    : "new-user-id"
+                    vendor  : "new-vendor-id"
                 }, undefined); // The `READY` event passes in `undefined` to the `context` parameter
             });
 
@@ -678,6 +680,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 const callback = mock.fn(() => undefined);
 
                 const sale: ShopfrontSaleState = {
+                    internalId: UUID.generate(),
                     products: [],
                     payments: [],
                     customer: false,

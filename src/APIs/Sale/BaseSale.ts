@@ -3,6 +3,7 @@ import type { SalePayment } from "./SalePayment.js";
 import type { SaleProduct } from "./SaleProduct.js";
 
 export interface BaseSaleData {
+    internalId: string;
     register: string | undefined;
     clientId: string | undefined;
     notes: {
@@ -82,8 +83,8 @@ export abstract class BaseSale {
     /**
      * Get the client id.
      */
-    public getClientId(): string | undefined {
-        return this.sale.clientId;
+    public getClientId(): string {
+        return this.sale.internalId;
     }
 
     /**

@@ -157,6 +157,7 @@ export class Sale extends BaseSale {
      */
     public static buildSaleData(saleState: ShopfrontSaleState): SaleData {
         return {
+            internalId    : saleState.internalId,
             register      : saleState.register,
             clientId      : saleState.clientId,
             notes         : saleState.notes,

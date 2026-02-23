@@ -61,9 +61,10 @@ export function buildSaleData(sale: Sale): SaleData {
     const customer = sale.getCustomer();
 
     return {
-        register: sale.getRegister(),
-        clientId: sale.getClientId(),
-        notes   : {
+        internalId: sale.getClientId(),
+        register  : sale.getRegister(),
+        clientId  : sale.getClientId(),
+        notes     : {
             internal: sale.getInternalNote(),
             sale    : sale.getExternalNote(),
         },
