@@ -5,7 +5,6 @@ import type { SaleProduct } from "./SaleProduct.js";
 export interface BaseSaleData {
     internalId: string;
     register: string | undefined;
-    clientId: string | undefined;
     notes: {
         internal: string;
         sale: string;

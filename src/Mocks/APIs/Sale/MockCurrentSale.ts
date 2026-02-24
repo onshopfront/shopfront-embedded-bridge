@@ -16,7 +16,6 @@ import { MockApplication } from "../../MockApplication.js";
 
 const emptySaleState: ShopfrontSaleState = {
     internalId: "",
-    clientId  : undefined,
     register  : undefined,
     products  : [],
     customer  : false,
@@ -528,7 +527,6 @@ export class MockCurrentSale extends BaseCurrentSale {
         this.sale = {
             internalId: UUID.generate(),
             register  : undefined,
-            clientId  : undefined,
             notes     : {
                 sale    : "",
                 internal: "",

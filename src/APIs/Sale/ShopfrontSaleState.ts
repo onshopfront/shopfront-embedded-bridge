@@ -47,7 +47,6 @@ export interface ShopfrontSalePayment {
 export interface ShopfrontSaleState {
     internalId: string;
     status?: ShopfrontSaleStatus;
-    clientId?: string;
     register?: string;
     products: Array<ShopfrontSaleProduct>;
     customer: false | ShopfrontSaleCustomer;

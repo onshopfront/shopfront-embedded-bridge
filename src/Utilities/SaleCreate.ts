@@ -63,7 +63,6 @@ export function buildSaleData(sale: Sale): SaleData {
     return {
         internalId: sale.getClientId(),
         register  : sale.getRegister(),
-        clientId  : sale.getClientId(),
         notes     : {
             internal: sale.getInternalNote(),
             sale    : sale.getExternalNote(),

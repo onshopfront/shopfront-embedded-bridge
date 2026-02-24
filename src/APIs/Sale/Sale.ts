@@ -159,7 +159,6 @@ export class Sale extends BaseSale {
         return {
             internalId    : saleState.internalId,
             register      : saleState.register,
-            clientId      : saleState.clientId,
             notes         : saleState.notes,
             totals        : saleState.totals,
             linkedTo      : saleState.linkedTo,

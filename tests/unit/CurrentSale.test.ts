@@ -29,9 +29,9 @@ let application: MockApplication;
 const createBlankSale = (application: MockApplication): MockCurrentSale => {
     return new MockCurrentSale(application, {
         internalId: UUID.generate(),
-        products: [],
-        payments: [],
-        totals  : {
+        products  : [],
+        payments  : [],
+        totals    : {
             sale    : 0,
             paid    : 0,
             discount: 0,
