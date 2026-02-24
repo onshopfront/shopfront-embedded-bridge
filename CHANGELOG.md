@@ -1,3 +1,15 @@
+# v3.0.14 (Tue Feb 24 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9722](https://onshopfront.atlassian.net/SHOPFRONT-9722): Embedded API - Expose the internalId of the `Current… [#32](https://github.com/onshopfront/shopfront-embedded-bridge/pull/32) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.13 (Thu Feb 12 2026)
 
 #### 🐛 Bug Fix
