@@ -41,7 +41,7 @@
     "devDependencies": {
         "@auto-it/all-contributors": "^11.3.0",
         "@auto-it/jira": "^11.3.0",
-        "@onshopfront/core": "^0.1.148",
+        "@onshopfront/core": "^0.1.97",
         "auto": "^11.3.0",
         "husky": "^9.1.7",
         "typescript": "^5.9.3",
