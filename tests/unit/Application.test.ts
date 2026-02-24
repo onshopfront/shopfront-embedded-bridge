@@ -16,11 +16,12 @@ import { SaleProduct } from "../../src/APIs/Sale/SaleProduct.js";
 import type { ShopfrontSaleState } from "../../src/APIs/Sale/ShopfrontSaleState.js";
 import { Application } from "../../src/Application.js";
 import { Bridge } from "../../src/Bridge.js";
+import type { SaleEventProduct } from "../../src/Events/DirectEvents/types/SaleEventData.js";
 import type { FormattedSaleProduct } from "../../src/Events/FormatIntegratedProduct.js";
 import type { CompletedSale } from "../../src/Events/SaleComplete.js";
 import { mockApplication } from "../../src/Mocks/index.js";
 import { MockApplication } from "../../src/Mocks/MockApplication.js";
-import type { SaleEventProduct } from "../../src/Events/DirectEvents/types/SaleEventData.js";
+import UUID from "../../src/Utilities/UUID.js";
 
 /**
  * Returns a new instance of a mocked Application
@@ -30,16 +31,16 @@ const createMockedApplication = (): MockApplication => {
 };
 
 const blankSaleData: SaleData = {
-    products: [],
-    payments: [],
-    customer: null,
-    totals  : {
+    internalId: UUID.generate(),
+    products  : [],
+    payments  : [],
+    customer  : null,
+    totals    : {
         sale    : 0,
         paid    : 0,
         discount: 0,
         savings : 0,
     },
-    clientId: "",
     register: "register-id",
     priceSet: "",
     notes   : {
@@ -57,7 +58,7 @@ suite("Testing the methods of the mock `Application` class", () => {
         test("When `mock` is `true`, a mocked Application is returned", () => {
             const application = mockApplication("application-id", "testing");
 
-            assert(application instanceof MockApplication);
+            assert(application instanceof MockApplication).equals(true);
         });
 
         test("When no `id` is provided, an error is thrown", () => {
@@ -281,8 +282,8 @@ suite("Testing the methods of the mock `Application` class", () => {
                 application.addEventListener("SALE_ADD_PRODUCT", callback);
 
                 await application.fireEvent("SALE_ADD_PRODUCT", {
-                    product: {} as SaleEventProduct,
-                    indexAddress: []
+                    product     : {} as SaleEventProduct,
+                    indexAddress: [],
                 });
 
                 assert(callback.mock.calls.length).equals(1);
@@ -294,7 +295,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 application.addEventListener("SALE_REMOVE_PRODUCT", callback);
 
                 await application.fireEvent("SALE_REMOVE_PRODUCT", {
-                    indexAddress: []
+                    indexAddress: [],
                 });
 
                 assert(callback.mock.calls.length).equals(1);
@@ -306,7 +307,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 application.addEventListener("SALE_UPDATE_PRODUCTS", callback);
 
                 await application.fireEvent("SALE_UPDATE_PRODUCTS", {
-                    products: []
+                    products: [],
                 });
 
                 assert(callback.mock.calls.length).equals(1);
@@ -319,8 +320,8 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 await application.fireEvent("SALE_CHANGE_QUANTITY", {
                     indexAddress: [],
-                    amount: 0,
-                    absolute: true
+                    amount      : 0,
+                    absolute    : true,
                 });
 
                 assert(callback.mock.calls.length).equals(1);
@@ -333,8 +334,8 @@ suite("Testing the methods of the mock `Application` class", () => {
 
                 await application.fireEvent("SALE_ADD_CUSTOMER", {
                     customer: {
-                        uuid: ""
-                    }
+                        uuid: "",
+                    },
                 });
 
                 assert(callback.mock.calls.length).equals(1);
@@ -370,7 +371,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 await application.fireEvent("READY", {
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
-                    user    : "new-user-id"
+                    vendor  : "new-vendor-id",
                 });
 
                 // The `READY` event automatically fires when the listener is first registered
@@ -379,7 +380,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback).wasLastCalledWith({
                     outlet  : "new-outlet-id",
                     register: "new-register-id",
-                    user    : "new-user-id"
+                    vendor  : "new-vendor-id",
                 }, undefined); // The `READY` event passes in `undefined` to the `context` parameter
             });
 
@@ -598,11 +599,10 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback.mock.calls[0][0]).equals([]);
 
                 // Because of how we need to check for the trigger, we'll also check location in the same way
-                assert("location" in callback.mock.calls[0][1]);
-                assert(callback.mock.calls[0][1].location).equals("location-id");
+                assert("location" in callback.mock.calls[0][1]).equals("location-id");
 
                 // No real easy way to check for equivalence with the trigger, so as long as it exists we're good
-                assert("trigger" in callback.mock.calls[0][1]);
+                assert("trigger" in callback.mock.calls[0][1]).isDefined();
             });
 
             test("The `PAYMENT_METHODS_ENABLED` event can be triggered", async () => {
@@ -678,10 +678,11 @@ suite("Testing the methods of the mock `Application` class", () => {
                 const callback = mock.fn(() => undefined);
 
                 const sale: ShopfrontSaleState = {
-                    products: [],
-                    payments: [],
-                    customer: false,
-                    totals  : {
+                    internalId: UUID.generate(),
+                    products  : [],
+                    payments  : [],
+                    customer  : false,
+                    totals    : {
                         sale    : 0,
                         paid    : 0,
                         savings : 0,
@@ -791,7 +792,7 @@ suite("Testing the methods of the mock `Application` class", () => {
                 register: "register-id",
                 user    : "user-id",
             });
-        })
+        });
 
         test("If valid sale data is provided, method returns a successful response", async () => {
             const sale = new Sale(blankSaleData);

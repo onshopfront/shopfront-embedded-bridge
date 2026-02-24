@@ -11,15 +11,16 @@ import type {
     DirectShopfrontEventData,
 } from "../../../ApplicationEvents/DirectShopfront.js";
 import { type SaleEventProduct } from "../../../Events/DirectEvents/types/SaleEventData.js";
+import UUID from "../../../Utilities/UUID.js";
 import { MockApplication } from "../../MockApplication.js";
 
 const emptySaleState: ShopfrontSaleState = {
-    clientId: undefined,
-    register: undefined,
-    products: [],
-    customer: false,
-    payments: [],
-    notes   : {
+    internalId: "",
+    register  : undefined,
+    products  : [],
+    customer  : false,
+    payments  : [],
+    notes     : {
         sale    : "",
         internal: "",
     },
@@ -38,7 +39,10 @@ const emptySaleState: ShopfrontSaleState = {
 
 export class MockCurrentSale extends BaseCurrentSale {
     constructor(application: MockApplication, saleState?: ShopfrontSaleState) {
-        super(application, saleState ?? emptySaleState);
+        super(application, saleState ?? {
+            ...emptySaleState,
+            internalId: UUID.generate(),
+        });
     }
 
     /**
@@ -521,9 +525,9 @@ export class MockCurrentSale extends BaseCurrentSale {
 
         this.customer = null;
         this.sale = {
-            register: undefined,
-            clientId: undefined,
-            notes   : {
+            internalId: UUID.generate(),
+            register  : undefined,
+            notes     : {
                 sale    : "",
                 internal: "",
             },

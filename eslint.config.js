@@ -5,7 +5,6 @@ export default [
     {
         ignores: [
             "lib/**",
-            "tests/**",
             "**/*.js",
         ],
     }, {

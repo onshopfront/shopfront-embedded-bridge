@@ -12,6 +12,7 @@ import { SalePayment } from "../../src/APIs/Sale/SalePayment.js";
 import { SaleProduct } from "../../src/APIs/Sale/SaleProduct.js";
 import { MockCurrentSale } from "../../src/Mocks/APIs/Sale/MockCurrentSale.js";
 import { MockApplication, mockApplication } from "../../src/Mocks/index.js";
+import UUID from "../../src/Utilities/UUID.js";
 
 /**
  * Creates a new Application instance to use in tests
@@ -27,9 +28,10 @@ let application: MockApplication;
  */
 const createBlankSale = (application: MockApplication): MockCurrentSale => {
     return new MockCurrentSale(application, {
-        products: [],
-        payments: [],
-        totals  : {
+        internalId: UUID.generate(),
+        products  : [],
+        payments  : [],
+        totals    : {
             sale    : 0,
             paid    : 0,
             discount: 0,
@@ -354,7 +356,8 @@ suite("Testing the mocked `CurrentSale` class behaves properly", () => {
             assert(sale.getProducts()).equals([]);
             assert(sale.getPayments()).equals([]);
 
-            assert(sale.getClientId()).not.isDefined();
+            // The `clientId` just points to the `internalId` of the sale as they both end up being the same
+            assert(sale.getClientId()).equals("test-uuid");
             assert(sale.getRegister()).not.isDefined();
             assert(sale.getCustomer()).equals(null);
             assert(sale.getInternalNote()).equals("");
