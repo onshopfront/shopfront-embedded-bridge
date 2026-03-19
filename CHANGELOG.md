@@ -1,3 +1,15 @@
+# v3.0.15 (Thu Mar 19 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9803](https://onshopfront.atlassian.net/SHOPFRONT-9803): Embedded API - Allow integrations to prevent a sale fr… [#33](https://github.com/onshopfront/shopfront-embedded-bridge/pull/33) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.14 (Tue Feb 24 2026)
 
 #### 🐛 Bug Fix
