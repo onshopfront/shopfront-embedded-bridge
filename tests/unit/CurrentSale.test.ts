@@ -6,7 +6,7 @@ import {
     suite,
     test,
 } from "@onshopfront/core/tests";
-import { SaleCancelledError } from "../../src/APIs/Sale/Exceptions.js";
+import { SaleCancelledError, SaleNotCancellableError } from "../../src/APIs/Sale/Exceptions.js";
 import { SaleCustomer } from "../../src/APIs/Sale/SaleCustomer.js";
 import { SalePayment } from "../../src/APIs/Sale/SalePayment.js";
 import { SaleProduct } from "../../src/APIs/Sale/SaleProduct.js";
@@ -47,6 +47,7 @@ const createBlankSale = (application: MockApplication): MockCurrentSale => {
             internal: "",
             sale    : "",
         },
+        isCancellable: true,
     });
 };
 
@@ -433,6 +434,12 @@ suite("Testing the mocked `CurrentSale` class behaves properly", () => {
 
             assert(sale.getMetaData()).equals({ prop: "value" });
         });
+
+        test("The sale can be prevented from being cancelled", async () => {
+            await sale.preventCancellation(true);
+
+            assert(sale.getIsCancellable()).equals(false);
+        });
     });
 
     suite("A cancelled sale is handled correctly", () => {
@@ -440,6 +447,16 @@ suite("Testing the mocked `CurrentSale` class behaves properly", () => {
             await sale.cancelSale();
 
             assert(sale["cancelled"]).equals(true);
+        });
+
+        test("If the sale is marked as non-cancellable, it cannot be cancelled", async () => {
+            await sale.preventCancellation(true);
+
+            await assert(
+                sale.cancelSale()
+            ).rejects(
+                new SaleNotCancellableError()
+            );
         });
 
         test("If the sale is cancelled, it cannot be interacted with", async () => {
@@ -507,6 +524,12 @@ suite("Testing the mocked `CurrentSale` class behaves properly", () => {
 
             await assert(
                 sale.setMetaData({})
+            ).rejects(
+                new SaleCancelledError()
+            );
+
+            await assert(
+                sale.preventCancellation(true)
             ).rejects(
                 new SaleCancelledError()
             );

@@ -98,6 +98,11 @@ export abstract class BaseCurrentSale extends BaseSale {
     public abstract setMetaData(metaData: Record<string, unknown>): Promise<void>;
 
     /**
+     * Prevents the sale from being cancelled in the future.
+     */
+    public abstract preventCancellation(preventCancellation: boolean): Promise<void>;
+
+    /**
      * Update a product's details; currently this can update quantity, price and metadata
      */
     public abstract updateProduct(product: SaleProduct): Promise<void>;

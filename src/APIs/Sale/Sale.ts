@@ -112,6 +112,13 @@ export class Sale extends BaseSale {
     }
 
     /**
+     * Sets whether the sale can be cancelled
+     */
+    public async setIsCancellable(isCancellable: boolean): Promise<void> {
+        this.sale.isCancellable = isCancellable;
+    }
+
+    /**
      * Update a product in the sale
      */
     public async updateProduct(product: SaleProduct): Promise<void> {
@@ -166,6 +173,7 @@ export class Sale extends BaseSale {
             refundReason  : saleState.refundReason,
             priceSet      : saleState.priceSet,
             metaData      : saleState.metaData,
+            isCancellable : saleState.isCancellable,
             customer      : saleState.customer ? new SaleCustomer(saleState.customer.uuid) : null,
             payments      : saleState.payments.map(SalePayment.HydrateFromState),
             products      : saleState.products.map((product, index) => {

@@ -29,7 +29,7 @@
         "lint:commit:run": "npx core lint-commit",
         "type-check": "tsc --noEmit",
         "prepare": "husky || true",
-        "test": "npx @onshopfront/core test"
+        "test": "npx core test"
     },
     "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
     "license": "ISC",
@@ -41,7 +41,7 @@
     "devDependencies": {
         "@auto-it/all-contributors": "^11.3.0",
         "@auto-it/jira": "^11.3.0",
-        "@onshopfront/core": "^0.1.97",
+        "@onshopfront/core": "^0.1.113",
         "auto": "^11.3.0",
         "husky": "^9.1.7",
         "typescript": "^5.9.3",

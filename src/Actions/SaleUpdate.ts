@@ -48,6 +48,9 @@ export interface SaleUpdateChanges {
     SALE_META_DATA: {
         metaData: Record<string, unknown>;
     };
+    SALE_PREVENT_CANCELLATION: {
+        preventCancellation: boolean;
+    };
     PRODUCT_UPDATE: {
         id: string;
         indexAddress: Array<number>;

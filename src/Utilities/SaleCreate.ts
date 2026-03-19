@@ -89,5 +89,6 @@ export function buildSaleData(sale: Sale): SaleData {
             cashout : payment.getCashout() || 0,
             metaData: payment.getMetaData(),
         })),
+        isCancellable: sale.getIsCancellable(),
     };
 }

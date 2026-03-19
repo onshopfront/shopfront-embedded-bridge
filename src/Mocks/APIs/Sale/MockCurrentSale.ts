@@ -1,5 +1,5 @@
 import { BaseCurrentSale } from "../../../APIs/Sale/BaseCurrentSale.js";
-import { ProductNotExistsError, SaleCancelledError } from "../../../APIs/Sale/Exceptions.js";
+import { ProductNotExistsError, SaleCancelledError, SaleNotCancellableError } from "../../../APIs/Sale/Exceptions.js";
 import {
     SaleCustomer,
     SalePayment,
@@ -35,6 +35,7 @@ const emptySaleState: ShopfrontSaleState = {
     refundReason  : "",
     priceSet      : null,
     metaData      : {},
+    isCancellable : true,
 };
 
 export class MockCurrentSale extends BaseCurrentSale {
@@ -123,6 +124,10 @@ export class MockCurrentSale extends BaseCurrentSale {
      * @inheritDoc
      */
     public async cancelSale(): Promise<void> {
+        if(!this.sale.isCancellable) {
+            throw new SaleNotCancellableError();
+        }
+
         this.clearSale();
 
         this.cancelled = true;
@@ -374,6 +379,15 @@ export class MockCurrentSale extends BaseCurrentSale {
     /**
      * @inheritDoc
      */
+    public async preventCancellation(preventCancellation: boolean): Promise<void> {
+        this.checkIfCancelled();
+
+        this.sale.isCancellable = !preventCancellation;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public async updateProduct(product: SaleProduct): Promise<void> {
         this.checkIfCancelled();
 
@@ -524,6 +538,7 @@ export class MockCurrentSale extends BaseCurrentSale {
         this.payments.push(...[]);
 
         this.customer = null;
+        this.cancelled = false;
         this.sale = {
             internalId: UUID.generate(),
             register  : undefined,
@@ -542,6 +557,7 @@ export class MockCurrentSale extends BaseCurrentSale {
             refundReason  : "",
             priceSet      : null,
             metaData      : {},
+            isCancellable : true,
         };
     }
 }

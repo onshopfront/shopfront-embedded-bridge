@@ -51,6 +51,7 @@ const blankSaleData: SaleData = {
     linkedTo      : "",
     refundReason  : "",
     metaData      : {},
+    isCancellable : true,
 };
 
 suite("Testing the methods of the mock `Application` class", () => {
@@ -599,10 +600,10 @@ suite("Testing the methods of the mock `Application` class", () => {
                 assert(callback.mock.calls[0][0]).equals([]);
 
                 // Because of how we need to check for the trigger, we'll also check location in the same way
-                assert("location" in callback.mock.calls[0][1]).equals("location-id");
+                assert(callback.mock.calls[0][1].location).equals("location-id");
 
                 // No real easy way to check for equivalence with the trigger, so as long as it exists we're good
-                assert("trigger" in callback.mock.calls[0][1]).isDefined();
+                assert(callback.mock.calls[0][1].trigger).isDefined();
             });
 
             test("The `PAYMENT_METHODS_ENABLED` event can be triggered", async () => {
@@ -694,9 +695,10 @@ suite("Testing the methods of the mock `Application` class", () => {
                         sale    : "",
                         internal: "",
                     },
-                    linkedTo: "",
-                    priceSet: "",
-                    metaData: {},
+                    linkedTo     : "",
+                    priceSet     : "",
+                    metaData     : {},
+                    isCancellable: true,
                 };
 
                 application.addEventListener("FULFILMENT_PROCESS_ORDER", callback);

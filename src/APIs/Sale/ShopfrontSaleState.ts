@@ -66,4 +66,5 @@ export interface ShopfrontSaleState {
     refundReason: string;
     priceSet: string | null;
     metaData: Record<string, unknown>;
+    isCancellable: boolean;
 }
