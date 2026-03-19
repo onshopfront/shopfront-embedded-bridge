@@ -6,7 +6,7 @@ export class SaleCancelledError extends Error {
 
 export class SaleNotCancellableError extends Error {
     constructor() {
-        super("The sale is not cancelable.");
+        super("The sale is not cancellable.");
     }
 }
 
