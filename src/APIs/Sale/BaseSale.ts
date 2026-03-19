@@ -20,6 +20,7 @@ export interface BaseSaleData {
     refundReason: string;
     priceSet: string | null;
     metaData: Record<string, unknown>;
+    isCancellable: boolean;
 }
 
 export interface SaleData extends BaseSaleData {
@@ -161,6 +162,13 @@ export abstract class BaseSale {
      */
     public getMetaData(): Record<string, unknown> {
         return this.sale.metaData;
+    }
+
+    /**
+     * Get whether the sale is cancellable.
+     */
+    public getIsCancellable(): boolean {
+        return this.sale.isCancellable;
     }
 
     public abstract addProduct(product: SaleProduct): Promise<void>;

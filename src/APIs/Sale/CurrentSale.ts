@@ -1,6 +1,6 @@
 import { SaleUpdate, type SaleUpdateChanges } from "../../Actions/SaleUpdate.js";
 import { BaseCurrentSale } from "./BaseCurrentSale.js";
-import { InvalidSaleDeviceError, SaleCancelledError } from "./Exceptions.js";
+import { InvalidSaleDeviceError, SaleCancelledError, SaleNotCancellableError } from "./Exceptions.js";
 import type { SaleCustomer } from "./SaleCustomer.js";
 import type { SalePayment } from "./SalePayment.js";
 import type { SaleProduct } from "./SaleProduct.js";
@@ -44,6 +44,10 @@ export class CurrentSale extends BaseCurrentSale {
      * @inheritDoc
      */
     public async cancelSale(): Promise<void> {
+        if(!this.sale.isCancellable) {
+            throw new SaleNotCancellableError();
+        }
+
         await this.sendSaleUpdate(new SaleUpdate("SALE_CANCEL", {}));
         this.cancelled = true;
     }
@@ -147,6 +151,15 @@ export class CurrentSale extends BaseCurrentSale {
     public setMetaData(metaData: Record<string, unknown>): Promise<void> {
         return this.sendSaleUpdate(new SaleUpdate("SALE_META_DATA", {
             metaData,
+        }));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public async preventCancellation(preventCancellation: boolean): Promise<void> {
+        await this.sendSaleUpdate(new SaleUpdate("SALE_PREVENT_CANCELLATION", {
+            preventCancellation,
         }));
     }
 
