@@ -128,7 +128,7 @@ export class MockCurrentSale extends BaseCurrentSale {
             throw new SaleNotCancellableError();
         }
 
-        this.clearSale();
+        await this.clearSale();
 
         this.cancelled = true;
     }
