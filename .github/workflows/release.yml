@@ -4,6 +4,7 @@ env:
     HUSKY: 0
 permissions:
     id-token: write
+    contents: read
 jobs:
     release:
         runs-on: ubuntu-latest
