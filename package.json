@@ -29,7 +29,8 @@
         "lint:commit:run": "npx core lint-commit",
         "type-check": "tsc --noEmit",
         "prepare": "husky || true",
-        "test": "npx core test"
+        "test": "npx core test",
+        "release": "auto shipit"
     },
     "author": "Shopfront <api@shopfront.com.au> (https://shopfront.com.au)",
     "license": "ISC",
@@ -56,7 +57,12 @@
     },
     "auto": {
         "plugins": [
-            "npm",
+            [
+                "npm",
+                {
+                    "setRcToken": false
+                }
+            ],
             "all-contributors",
             [
                 "jira",

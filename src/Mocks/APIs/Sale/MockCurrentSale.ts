@@ -128,7 +128,7 @@ export class MockCurrentSale extends BaseCurrentSale {
             throw new SaleNotCancellableError();
         }
 
-        this.clearSale();
+        await this.clearSale();
 
         this.cancelled = true;
     }
@@ -249,6 +249,10 @@ export class MockCurrentSale extends BaseCurrentSale {
         await this.triggerEvent("SALE_REMOVE_PRODUCT", {
             indexAddress: product.getIndexAddress(),
         });
+
+        if(this.products.length === 0) {
+            await this.clearSale();
+        }
     }
 
     /**
@@ -269,9 +273,7 @@ export class MockCurrentSale extends BaseCurrentSale {
         const remaining = this.roundNumber(this.sale.totals.sale - this.sale.totals.paid);
 
         if(remaining <= 0) {
-            this.clearSale();
-
-            await this.triggerEvent("SALE_CLEAR", undefined);
+            await this.clearSale();
         }
     }
 
@@ -530,7 +532,7 @@ export class MockCurrentSale extends BaseCurrentSale {
     /**
      * Clear the sale data
      */
-    public clearSale(): void {
+    public async clearSale(): Promise<void> {
         this.products.length = 0;
         this.products.push(...[]);
 
@@ -559,5 +561,7 @@ export class MockCurrentSale extends BaseCurrentSale {
             metaData      : {},
             isCancellable : true,
         };
+
+        await this.triggerEvent("SALE_CLEAR", undefined);
     }
 }

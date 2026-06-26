@@ -2,12 +2,17 @@ name: Release
 on: [push]
 env:
     HUSKY: 0
+permissions:
+    id-token: write
+    contents: read
+    packages: read
+    pull-requests: write
 jobs:
     release:
         runs-on: ubuntu-latest
         if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
               with:
                   # Because of branch protection, we need to use a token which can bypass a push to main
                   token: ${{ secrets.BYPASS_TOKEN }}
@@ -15,20 +20,15 @@ jobs:
             - name: Prepare repository
               run: git fetch --unshallow --tags
 
-            - name: Use Node.js 20.x
-              uses: actions/setup-node@v4
+            - name: Use Node.js 24.x
+              uses: actions/setup-node@v6
               with:
-                 node-version: 20.x
+                 node-version: 24.x
 
             - name: Configure NPM for GitHub registry (for dependencies)
               run: |
                   npm config set @onshopfront:registry https://npm.pkg.github.com
                   npm config set //npm.pkg.github.com/:_authToken ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Configure NPM for public registry (for publishing)
-              run: |
-                  npm config set @shopfront:registry https://registry.npmjs.org
-                  npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
 
             - name: Cache node modules
               uses: actions/cache@v4
@@ -41,9 +41,8 @@ jobs:
             - name: Create Release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
               run: |
                   npm ci
                   npm run-script build
                   npm run-script lint
-                  npx auto shipit
+                  npm run-script release
