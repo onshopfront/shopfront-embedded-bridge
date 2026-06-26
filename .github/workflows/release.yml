@@ -4,7 +4,7 @@ env:
     HUSKY: 0
 permissions:
     id-token: write
-    contents: read
+    contents: write
     packages: read
     pull-requests: write
 jobs:
