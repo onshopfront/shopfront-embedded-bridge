@@ -44,4 +44,4 @@ jobs:
                   npm ci
                   npm run-script build
                   npm run-script lint
-                  npx auto shipit
+                  npm run-script release
