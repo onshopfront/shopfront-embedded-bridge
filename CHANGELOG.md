@@ -1,3 +1,15 @@
+# v3.0.16 (Fri Jun 26 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-9362](https://onshopfront.atlassian.net/SHOPFRONT-9362): EmbeddedBridge - Fire the `SALE_CLEAR` event when a `M… [#34](https://github.com/onshopfront/shopfront-embedded-bridge/pull/34) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.15 (Thu Mar 19 2026)
 
 #### 🐛 Bug Fix
