@@ -19,6 +19,7 @@ export interface SalePaymentData {
     rounding: number;
     cashout: number;
     metaData: Record<string, unknown>;
+    subType: undefined | string;
 }
 
 export interface SaleData extends BaseSaleData {
@@ -88,6 +89,7 @@ export function buildSaleData(sale: Sale): SaleData {
             rounding: payment.getRounding() || 0,
             cashout : payment.getCashout() || 0,
             metaData: payment.getMetaData(),
+            subType : payment.getOptions()?.subtype,
         })),
         isCancellable: sale.getIsCancellable(),
     };

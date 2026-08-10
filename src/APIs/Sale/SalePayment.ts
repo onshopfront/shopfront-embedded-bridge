@@ -49,7 +49,14 @@ export class SalePayment {
         this.amount = amount;
         this.cashout = cashout;
         this.status = status;
-        this.options = options;
+
+        const { metaData, ...rest } = options || {};
+
+        if(metaData) {
+            this.metaData = metaData;
+        }
+
+        this.options = rest;
     }
 
     /**
