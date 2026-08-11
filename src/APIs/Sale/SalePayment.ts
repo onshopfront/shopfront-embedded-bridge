@@ -56,7 +56,9 @@ export class SalePayment {
             this.metaData = metaData;
         }
 
-        this.options = rest;
+        if(rest && Object.keys(rest).length > 0) {
+            this.options = rest;
+        }
     }
 
     /**
