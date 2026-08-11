@@ -1,3 +1,15 @@
+# v3.0.18 (Tue Aug 11 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-10540](https://onshopfront.atlassian.net/SHOPFRONT-10540): Embedded API - Payment options are ignored when updat… [#36](https://github.com/onshopfront/shopfront-embedded-bridge/pull/36) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.16 (Fri Jun 26 2026)
 
 #### 🐛 Bug Fix
