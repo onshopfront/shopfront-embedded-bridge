@@ -59,7 +59,7 @@ beforeAll(() => {
 });
 
 afterEach(async () => {
-    sale.clearSale();
+    await sale.clearSale();
 });
 
 suite("Testing the mocked `CurrentSale` class behaves properly", () => {
