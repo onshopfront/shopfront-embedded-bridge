@@ -1,3 +1,15 @@
+# v3.0.20 (Wed Sep 02 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-10627](https://onshopfront.atlassian.net/SHOPFRONT-10627): Embedded API - Documentation for Fulfilment is incorrect [#38](https://github.com/onshopfront/shopfront-embedded-bridge/pull/38) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.19 (Wed Sep 02 2026)
 
 #### 🐛 Bug Fix
