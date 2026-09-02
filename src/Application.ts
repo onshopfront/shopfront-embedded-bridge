@@ -42,6 +42,12 @@ import ActionEventRegistrar from "./Utilities/ActionEventRegistrar.js";
 import { type MaybePromise } from "./Utilities/MiscTypes.js";
 import { buildSaleData } from "./Utilities/SaleCreate.js";
 
+declare global {
+    interface ImportMeta {
+        ARC_EMBEDDED_ENTRY_URL?: string;
+    }
+}
+
 export class Application extends BaseApplication {
     constructor(bridge: Bridge) {
         super(bridge, new Database(bridge));
@@ -742,13 +748,13 @@ export class Application extends BaseApplication {
 
         if(typeof import.meta !== "undefined" && window.parent === window) {
             loadedUrl = import.meta.url;
-        }
 
-        if(process && process.env && typeof process.env.ARC_EMBEDDED_ENTRY_URL !== "undefined") {
-            try {
-                loadedUrl = new URL(process.env.ARC_EMBEDDED_ENTRY_URL).toString();
-            } catch(e) {
-                // Do nothing, will fall back to the previous `loadedUrl`
+            if(typeof import.meta.ARC_EMBEDDED_ENTRY_URL === "string") {
+                try {
+                    loadedUrl = new URL(import.meta.ARC_EMBEDDED_ENTRY_URL).toString();
+                } catch(e) {
+                    // Do nothing, will fall back to the previous `loadedUrl`
+                }
             }
         }
 
