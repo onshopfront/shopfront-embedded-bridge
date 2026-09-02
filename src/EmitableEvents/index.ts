@@ -1,4 +1,6 @@
+// Keeping this for now to ensure backwards compatibility
 export * from "./Fulfilment/index.js";
+export * as Fulfilment from "./Fulfilment/index.js";
 export { InternalMessage } from "./InternalMessage.js";
 export { SellScreenOption } from "./SellScreenOption.js";
 export { SellScreenPromotionApplicable } from "./SellScreenPromotionApplicable.js";
