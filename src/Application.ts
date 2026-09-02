@@ -742,13 +742,13 @@ export class Application extends BaseApplication {
 
         if(typeof import.meta !== "undefined" && window.parent === window) {
             loadedUrl = import.meta.url;
+        }
 
-            if(process.env && typeof process.env.ARC_EMBEDDED_ENTRY_URL !== "undefined") {
-                try {
-                    loadedUrl = new URL(process.env.ARC_EMBEDDED_ENTRY_URL).toString();
-                } catch(e) {
-                    // Do nothing, fall back to the `import.meta.url`
-                }
+        if(process && process.env && typeof process.env.ARC_EMBEDDED_ENTRY_URL !== "undefined") {
+            try {
+                loadedUrl = new URL(process.env.ARC_EMBEDDED_ENTRY_URL).toString();
+            } catch(e) {
+                // Do nothing, will fall back to the previous `loadedUrl`
             }
         }
 
