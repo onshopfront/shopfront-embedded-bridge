@@ -1,3 +1,15 @@
+# v3.0.19 (Wed Sep 02 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-10724](https://onshopfront.atlassian.net/SHOPFRONT-10724): Embedded API - Access an embedded url variable for to… [#37](https://github.com/onshopfront/shopfront-embedded-bridge/pull/37) ([@ZachS98](https://github.com/ZachS98))
+
+#### Authors: 1
+
+- Zach Stanford ([@ZachS98](https://github.com/ZachS98))
+
+---
+
 # v3.0.18 (Tue Aug 11 2026)
 
 #### 🐛 Bug Fix
