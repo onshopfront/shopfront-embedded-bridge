@@ -741,10 +741,14 @@ export class Application extends BaseApplication {
         let loadedUrl = location.href;
 
         if(typeof import.meta !== "undefined" && window.parent === window) {
-            if(typeof process.env.ARC_EMBEDDED_ENTRY_URL !== "undefined") {
-                loadedUrl = process.env.ARC_EMBEDDED_ENTRY_URL;
-            } else {
-                loadedUrl = import.meta.url;
+            loadedUrl = import.meta.url;
+
+            if(process.env && typeof process.env.ARC_EMBEDDED_ENTRY_URL !== "undefined") {
+                try {
+                    loadedUrl = new URL(process.env.ARC_EMBEDDED_ENTRY_URL).toString();
+                } catch(e) {
+                    // Do nothing, fall back to the `import.meta.url`
+                }
             }
         }
 
