@@ -1,6 +1,6 @@
 import { Button } from "../Actions/Button.js";
 import { SaleKey } from "../Actions/SaleKey.js";
-import { type OrderDetails } from "../APIs/Fulfilment/FulfilmentTypes.js";
+import { type OrderDetails, type OrderStatus } from "../APIs/Fulfilment/FulfilmentTypes.js";
 import { InternalMessageSource } from "../APIs/InternalMessages/InternalMessageSource.js";
 import { Sale, type ShopfrontSaleState } from "../APIs/Sale/index.js";
 import { AudioPermissionChange } from "../Events/AudioPermissionChange.js";
@@ -9,6 +9,7 @@ import { Callback } from "../Events/Callback.js";
 import { FormatIntegratedProduct, type FormattedSaleProduct } from "../Events/FormatIntegratedProduct.js";
 import { FulfilmentCollectOrder } from "../Events/FulfilmentCollectOrder.js";
 import { FulfilmentCompleteOrder } from "../Events/FulfilmentCompleteOrder.js";
+import type { FulfilmentFilterPipeline } from "../Events/FulfilmentFilterPipeline.js";
 import { FulfilmentGetOrder } from "../Events/FulfilmentGetOrder.js";
 import { FulfilmentOrderApproval } from "../Events/FulfilmentOrderApproval.js";
 import { FulfilmentProcessOrder } from "../Events/FulfilmentProcessOrder.js";
@@ -152,6 +153,8 @@ export interface GiftCardCodeCheckResponse {
 
 export type SalePreFinishPipelineResponse = ShopfrontSaleState | false;
 
+export type FulfilmentFilterPipelineResponse = Array<FulfilmentFilterStatus>;
+
 interface InternalShopfrontResponse {
     requestId: string;
 }
@@ -204,6 +207,7 @@ export interface FromShopfrontResponse {
     RESPONSE_CREATE_SALE: ResponseCreateSaleResponse;
     GIFT_CARD_CODE_CHECK: GiftCardCodeCheckResponse;
     SALE_PRE_FINISH_PIPELINE: SalePreFinishPipelineResponse;
+    FULFILMENT_FILTER_PIPELINE: FulfilmentFilterPipelineResponse;
 }
 
 export interface InternalPageMessageEvent {
@@ -231,6 +235,13 @@ export interface GiftCardCodeCheckEvent {
 }
 
 export type SalePreFinishPipelineEvent = ShopfrontSaleState | false;
+
+/**
+ * The statuses that can be used to filter the Fulfilment tab (pending orders are shown separately)
+ */
+export type FulfilmentFilterStatus = Exclude<OrderStatus, "PENDING_APPROVAL">;
+
+export type FulfilmentFilterPipelineEvent = Array<FulfilmentFilterStatus>;
 
 export interface FormatIntegratedProductEvent {
     product: FormattedSaleProduct;
@@ -276,6 +287,10 @@ export interface PaymentMethodEnabledContext {
 export interface SalePreFinishPipelineContext {
     user: string | false;
     register: string;
+}
+
+export interface FulfilmentFilterPipelineContext {
+    availableStatuses: Array<FulfilmentFilterStatus>;
 }
 
 export interface FromShopfrontCallbacks {
@@ -328,6 +343,10 @@ export interface FromShopfrontCallbacks {
         event: SalePreFinishPipelineEvent,
         context: SalePreFinishPipelineContext
     ) => MaybePromise<FromShopfrontResponse["SALE_PRE_FINISH_PIPELINE"]>;
+    FULFILMENT_FILTER_PIPELINE: (
+        event: FulfilmentFilterPipelineEvent,
+        context: FulfilmentFilterPipelineContext
+    ) => MaybePromise<FromShopfrontResponse["FULFILMENT_FILTER_PIPELINE"]>;
 }
 
 export interface FromShopfront {
@@ -355,6 +374,7 @@ export interface FromShopfront {
     FULFILMENT_ORDER_COMPLETED: FulfilmentCompleteOrder;
     GIFT_CARD_CODE_CHECK: GiftCardCodeCheck;
     SALE_PRE_FINISH_PIPELINE: SalePreFinishPipeline;
+    FULFILMENT_FILTER_PIPELINE: FulfilmentFilterPipeline;
 }
 
 export type ListenableFromShopfrontEvent = keyof Omit<FromShopfront, "CALLBACK">;

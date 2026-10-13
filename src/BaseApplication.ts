@@ -32,6 +32,7 @@ import { SaleUpdateProducts } from "./Events/DirectEvents/SaleUpdateProducts.js"
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";
 import { FulfilmentCollectOrder } from "./Events/FulfilmentCollectOrder.js";
 import { FulfilmentCompleteOrder } from "./Events/FulfilmentCompleteOrder.js";
+import { FulfilmentFilterPipeline } from "./Events/FulfilmentFilterPipeline.js";
 import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder.js";
 import { FulfilmentOrderApproval } from "./Events/FulfilmentOrderApproval.js";
 import { FulfilmentProcessOrder } from "./Events/FulfilmentProcessOrder.js";
@@ -127,6 +128,7 @@ export abstract class BaseApplication {
         FULFILMENT_ORDER_COMPLETED   : new Map(),
         GIFT_CARD_CODE_CHECK         : new Map(),
         SALE_PRE_FINISH_PIPELINE     : new Map(),
+        FULFILMENT_FILTER_PIPELINE   : new Map(),
     };
     protected directListeners: {
         [key in DirectShopfrontEvent]: Map<
@@ -353,6 +355,16 @@ export abstract class BaseApplication {
                 }
 
                 c = new SalePreFinishPipeline(callback as FromShopfrontCallbacks["SALE_PRE_FINISH_PIPELINE"]);
+                this.listeners[event].set(callback, c);
+                break;
+            case "FULFILMENT_FILTER_PIPELINE":
+                if(this.listeners[event].size !== 0) {
+                    throw new TypeError(
+                        "Application already has 'FULFILMENT_FILTER_PIPELINE' event listener registered."
+                    );
+                }
+
+                c = new FulfilmentFilterPipeline(callback as FromShopfrontCallbacks["FULFILMENT_FILTER_PIPELINE"]);
                 this.listeners[event].set(callback, c);
                 break;
         }
