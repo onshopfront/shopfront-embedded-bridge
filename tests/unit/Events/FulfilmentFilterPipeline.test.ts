@@ -47,7 +47,7 @@ suite("The `FulfilmentFilterPipeline` event", () => {
     });
 
     suite("When the callback fails, the statuses are passed through unchanged and an error is logged", () => {
-        const expectPassThrough = async (callback: () => unknown) => {
+        const expectPassThrough = async (callback: (statuses?: unknown) => unknown) => {
             const originalError = console.error;
             const consoleError = mock.fn();
 
@@ -73,6 +73,12 @@ suite("The `FulfilmentFilterPipeline` event", () => {
         test("An unknown status", () => expectPassThrough(() => [ "PACKED", "PENDING_APPROVAL" ]));
 
         test("A callback that throws", () => expectPassThrough(() => {
+            throw new Error("Failed");
+        }));
+
+        test("A callback that changes the statuses before failing", () => expectPassThrough((statuses?: unknown) => {
+            (statuses as Array<string>).length = 0;
+
             throw new Error("Failed");
         }));
     });

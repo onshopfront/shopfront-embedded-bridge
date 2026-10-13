@@ -40,6 +40,8 @@ export class FulfilmentFilterPipeline extends BaseEvent<
     public async emit(
         data: FulfilmentFilterPipelineData
     ): Promise<FromShopfrontResponse["FULFILMENT_FILTER_PIPELINE"]> {
+        const statuses = [ ...data.data ];
+
         try {
             const result: unknown = await this.callback(data.data, data.context);
 
@@ -55,7 +57,7 @@ export class FulfilmentFilterPipeline extends BaseEvent<
         } catch(e) {
             console.error("Unable to change the fulfilment filter, the statuses have been passed through", e);
 
-            return data.data;
+            return statuses;
         }
     }
 
