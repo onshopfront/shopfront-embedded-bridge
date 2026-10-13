@@ -3,3 +3,6 @@ node_modules/
 .npmrc
 lib/
 lib-types/
+
+# macOS
+.DS_Store
