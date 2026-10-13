@@ -240,6 +240,22 @@ suite("Testing the methods of the mock `Application` class", () => {
             }));
 
             assert(application["listeners"]["GIFT_CARD_CODE_CHECK"]?.size).equals(1);
+
+            application.addEventListener("FULFILMENT_FILTER_PIPELINE", (statuses) => statuses);
+
+            assert(application["listeners"]["FULFILMENT_FILTER_PIPELINE"]?.size).equals(1);
+        });
+
+        test("Only one `FULFILMENT_FILTER_PIPELINE` listener can be registered", () => {
+            const application = createMockedApplication();
+
+            application.addEventListener("FULFILMENT_FILTER_PIPELINE", (statuses) => statuses);
+
+            assert(
+                () => application.addEventListener("FULFILMENT_FILTER_PIPELINE", (statuses) => statuses)
+            ).throws(
+                new TypeError("Application already has 'FULFILMENT_FILTER_PIPELINE' event listener registered.")
+            );
         });
     });
 
@@ -779,6 +795,25 @@ suite("Testing the methods of the mock `Application` class", () => {
                     code   : "1234",
                     message: "Message",
                 }, undefined);
+            });
+
+            test("The `FULFILMENT_FILTER_PIPELINE` event can be triggered", async () => {
+                const callback = mock.fn(() => [ "WAITING_FOR_PACKING" as const ]);
+
+                application.addEventListener("FULFILMENT_FILTER_PIPELINE", callback);
+
+                await application.fireEvent("FULFILMENT_FILTER_PIPELINE", {
+                    data   : [ "WAITING_FOR_PACKING", "PACKED", "COLLECTED" ],
+                    context: {
+                        availableStatuses: [ "WAITING_FOR_PACKING", "PACKED", "COLLECTED", "COMPLETED" ],
+                    },
+                });
+
+                assert(callback.mock.calls.length).equals(1);
+
+                assert(callback).wasLastCalledWith([ "WAITING_FOR_PACKING", "PACKED", "COLLECTED" ], {
+                    availableStatuses: [ "WAITING_FOR_PACKING", "PACKED", "COLLECTED", "COMPLETED" ],
+                });
             });
         });
     });

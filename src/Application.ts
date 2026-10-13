@@ -27,6 +27,7 @@ import { Bridge, type JavaScriptCommunicatorExports } from "./Bridge.js";
 import { type Serializable } from "./Common/Serializable.js";
 import { BaseEmitableEvent } from "./EmitableEvents/BaseEmitableEvent.js";
 import { FormatIntegratedProduct } from "./Events/FormatIntegratedProduct.js";
+import { FulfilmentFilterPipeline } from "./Events/FulfilmentFilterPipeline.js";
 import { FulfilmentGetOrder } from "./Events/FulfilmentGetOrder.js";
 import { GiftCardCodeCheck } from "./Events/GiftCardCodeCheck.js";
 import { PaymentMethodsEnabled } from "./Events/PaymentMethodsEnabled.js";
@@ -255,6 +256,13 @@ export class Application extends BaseApplication {
                 return Promise.all(results)
                     .then(res => {
                         return SalePreFinishPipeline.respond(this.bridge, res[0], id);
+                    });
+            case "FULFILMENT_FILTER_PIPELINE":
+                results = results as Array<Promise<FromShopfrontResponse["FULFILMENT_FILTER_PIPELINE"]>>;
+
+                return Promise.all(results)
+                    .then(res => {
+                        return FulfilmentFilterPipeline.respond(this.bridge, res[0], id);
                     });
         }
     }
