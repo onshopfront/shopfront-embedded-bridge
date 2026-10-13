@@ -34,18 +34,29 @@ export class FulfilmentFilterPipeline extends BaseEvent<
     }
 
     /**
-     * @inheritDoc
+     * Invokes the callback, passing the statuses through unchanged if it fails or returns an invalid filter,
+     * so Shopfront isn't left waiting for a response
      */
     public async emit(
         data: FulfilmentFilterPipelineData
     ): Promise<FromShopfrontResponse["FULFILMENT_FILTER_PIPELINE"]> {
-        const result: unknown = await this.callback(data.data, data.context);
+        try {
+            const result: unknown = await this.callback(data.data, data.context);
 
-        if(!Array.isArray(result) || !result.every(status => FILTER_STATUSES.includes(status))) {
-            throw new TypeError("Callback must return an array of fulfilment order statuses");
+            if(
+                !Array.isArray(result) ||
+                result.length === 0 ||
+                !result.every(status => FILTER_STATUSES.includes(status))
+            ) {
+                throw new TypeError("Callback must return a non-empty array of fulfilment order statuses");
+            }
+
+            return result;
+        } catch(e) {
+            console.error("Unable to change the fulfilment filter, the statuses have been passed through", e);
+
+            return data.data;
         }
-
-        return result;
     }
 
     /**

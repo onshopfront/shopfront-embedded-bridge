@@ -46,24 +46,35 @@ suite("The `FulfilmentFilterPipeline` event", () => {
         })).equals([ "COLLECTED" ]);
     });
 
-    test("When the callback doesn't return an array, an error is thrown", async () => {
-        // @ts-expect-error Forcing an invalid return for testing
-        const event = new FulfilmentFilterPipeline(() => "PACKED");
+    suite("When the callback fails, the statuses are passed through unchanged and an error is logged", () => {
+        const expectPassThrough = async (callback: () => unknown) => {
+            const originalError = console.error;
+            const consoleError = mock.fn();
 
-        await assert(event.emit({
-            data: [],
-            context,
-        })).rejects(new TypeError("Callback must return an array of fulfilment order statuses"));
-    });
+            console.error = consoleError;
 
-    test("When the callback returns an unknown status, an error is thrown", async () => {
-        // @ts-expect-error Forcing an invalid status for testing
-        const event = new FulfilmentFilterPipeline(() => [ "PACKED", "PENDING_APPROVAL" ]);
+            // @ts-expect-error Forcing an invalid callback for testing
+            const event = new FulfilmentFilterPipeline(callback);
 
-        await assert(event.emit({
-            data: [],
-            context,
-        })).rejects(new TypeError("Callback must return an array of fulfilment order statuses"));
+            assert(await event.emit({
+                data: [ "WAITING_FOR_PACKING", "PACKED" ],
+                context,
+            })).equals([ "WAITING_FOR_PACKING", "PACKED" ]);
+
+            assert(consoleError.mock.calls.length).equals(1);
+
+            console.error = originalError;
+        };
+
+        test("A result that isn't an array", () => expectPassThrough(() => "PACKED"));
+
+        test("An empty array", () => expectPassThrough(() => []));
+
+        test("An unknown status", () => expectPassThrough(() => [ "PACKED", "PENDING_APPROVAL" ]));
+
+        test("A callback that throws", () => expectPassThrough(() => {
+            throw new Error("Failed");
+        }));
     });
 
     test("The response is sent through the pipeline response event", async () => {
