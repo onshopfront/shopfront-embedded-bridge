@@ -1,3 +1,15 @@
+# v3.0.21 (Tue Oct 13 2026)
+
+#### 🐛 Bug Fix
+
+- [SHOPFRONT-10581](https://onshopfront.atlassian.net/SHOPFRONT-10581): Fulfilment Tab - Allow the default order status filter to be changed [#39](https://github.com/onshopfront/shopfront-embedded-bridge/pull/39) ([@g4ther](https://github.com/g4ther))
+
+#### Authors: 1
+
+- Nicholas Clark ([@g4ther](https://github.com/g4ther))
+
+---
+
 # v3.0.20 (Wed Sep 02 2026)
 
 #### 🐛 Bug Fix
